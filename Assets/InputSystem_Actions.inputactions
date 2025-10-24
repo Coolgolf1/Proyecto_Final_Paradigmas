@@ -88,12 +88,21 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Drag",
-                    "type": "Value",
+                    "name": "IsDragging",
+                    "type": "Button",
                     "id": "0f139678-b62e-4d8a-adb5-bb438b65465b",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "Hold,Hold,Hold,Press,Press",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Zoom",
+                    "type": "Value",
+                    "id": "b98bf8f0-27c7-4c8d-bdf1-f3008ddbba58",
                     "expectedControlType": "Vector2",
                     "processors": "",
-                    "interactions": "Hold,Hold",
+                    "interactions": "",
                     "initialStateCheck": true
                 }
             ],
@@ -485,12 +494,23 @@
                 },
                 {
                     "name": "",
-                    "id": "87e84a38-58e2-4053-8571-1126f9f2f150",
-                    "path": "<Mouse>/delta",
-                    "interactions": "Hold",
+                    "id": "05d8a4dc-8e0d-45e5-8a0b-08ef439baefb",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
                     "processors": "",
-                    "groups": ";Touch",
-                    "action": "Drag",
+                    "groups": ";Keyboard&Mouse;Touch",
+                    "action": "IsDragging",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c8f647d4-8be6-4f4d-bb07-94f678c7fb12",
+                    "path": "<Mouse>/scroll",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Zoom",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

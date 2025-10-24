@@ -455,16 +455,35 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   earth: {fileID: 2063964382}
-  sensitivity: 2
-  look:
-    m_Name: Look
+  sensitivity: 0.5
+  drag:
+    m_Name: Drag
     m_Type: 0
     m_ExpectedControlType: 
-    m_Id: ebeca205-55b4-40af-a7c6-502fa6d89e54
+    m_Id: 9dde88ac-5183-4ebd-bca9-7dd336a3a055
     m_Processors: 
     m_Interactions: 
     m_SingletonActionBindings: []
     m_Flags: 0
+  look:
+    m_Name: Look
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 2c9b9ba3-923e-448e-a71a-c7b3c2bed08a
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  zoom:
+    m_Name: Zoom
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 5ef449b4-2405-46d8-96c2-536b5aa58c62
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  decay: 8
 --- !u!1 &2063964382 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 132870, guid: 27fe6d2a15a377f4587f716a2d37ca8a, type: 3}
