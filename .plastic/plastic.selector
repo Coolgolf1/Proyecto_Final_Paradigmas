@@ -1,4 +1,0 @@
-repository "Proyecto_Final_Paradigmas/Proyecto_Final_Paradigmas@6872153457662@cloud"
-  path "/"
-    br "/main"
-    co "/main"
