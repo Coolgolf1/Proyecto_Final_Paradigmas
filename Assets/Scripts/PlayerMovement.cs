@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -6,16 +5,19 @@ public class PlayerMovement : MonoBehaviour
 {
 
     public GameObject earth;
-    public float sensitivity = 0.5f;
     public InputAction drag;
     public InputAction look;
     public InputAction zoom;
     private Vector2 velocity;
     private Vector2 moveValue;
     private Vector2 zoomValue;
-    [SerializeField]  
-    private float decay = 8f;
     private double modulo;
+    private float zoomFactor;
+    private float distance;
+    [SerializeField]
+    private float decay = 8f;
+    private float zoomSensitivity = 0.1f;
+    public float sensitivity = 1f;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -29,18 +31,24 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         InertiaDrag();
-        moveValue = velocity;
-        transform.RotateAround(earth.transform.position, -Vector3.up, -moveValue[0] * sensitivity); //use transform.Rotate(-transform.up * rotateHorizontal * sensitivity) instead if you dont want the camera to rotate around the player
-        transform.RotateAround(Vector3.zero, transform.right, -moveValue[1] * sensitivity); // again, use transform.Rotate(transform.right * rotateVertical * sensitivity) if you don't want the camera to rotate around the player
 
         zoomValue = zoom.ReadValue<Vector2>();
-        //Debug.Log(zoomValue.ToString());
         modulo = transform.position.magnitude;
-        if (modulo > 25 || zoomValue[1] < 0)
+
+        distance = Vector3.Distance(transform.position, earth.transform.position);
+        //Debug.Log(distance);
+        zoomFactor = Mathf.Clamp(distance * 0.05f, 0.1f, 5f) * zoomSensitivity;
+
+        moveValue = velocity;
+        transform.RotateAround(earth.transform.position, -Vector3.up, -moveValue[0] * sensitivity * zoomFactor);
+        transform.RotateAround(Vector3.zero, transform.right, -moveValue[1] * sensitivity * zoomFactor);
+
+
+        //Debug.Log(zoomValue.ToString());
+        if ((modulo > 30 || zoomValue[1] < 0) && (modulo < 75 || zoomValue[1] > 0))
         {
             transform.position += zoomValue[1] * transform.forward;
         }
-
     }
 
     private void InertiaDrag()
@@ -49,12 +57,10 @@ public class PlayerMovement : MonoBehaviour
         {
             moveValue = look.ReadValue<Vector2>();
             velocity = moveValue;
-
         }
         else
         {
             velocity -= velocity * decay * Time.deltaTime;
-
         }
     }
 }

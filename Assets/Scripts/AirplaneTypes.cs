@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Assets.Scripts
+﻿namespace Assets.Scripts
 {
     public enum AirplaneTypes
     {
-        Regional = 0,
-        Continental = 1,
-        Intercontinental = 2
+        Small = 0,
+        Medium = 1,
+        Large = 2
     }
 }

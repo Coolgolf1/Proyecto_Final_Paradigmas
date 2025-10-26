@@ -3,25 +3,17 @@ using UnityEngine;
 
 public abstract class Airplane : MonoBehaviour
 {
-    public string Id { get; private set; }
-    
-    public AirplaneTypes type { get; private set; }
+    public int Id { get; private set; }
+    private static int ctrId;
 
-    public Levels level { get; private set; } 
+    public Levels Level { get; private set; }
 
+    [SerializeField]
     public GameObject modelPrefab;
 
-
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public Airplane(Levels level)
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        Id = ctrId;
+        ctrId += 1;
     }
 }
