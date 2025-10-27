@@ -16,7 +16,7 @@ public class PlayerMovement : MonoBehaviour
     private float distance;
     [SerializeField]
     private float decay = 8f;
-    private float zoomSensitivity = 0.1f;
+    private float zoomSensitivity = 100f;
     public float sensitivity = 1f;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -35,9 +35,7 @@ public class PlayerMovement : MonoBehaviour
         zoomValue = zoom.ReadValue<Vector2>();
         modulo = transform.position.magnitude;
 
-        distance = Vector3.Distance(transform.position, earth.transform.position);
-        //Debug.Log(distance);
-        zoomFactor = Mathf.Clamp(distance * 0.05f, 0.1f, 5f) * zoomSensitivity;
+        zoomFactor = (float)(modulo / zoomSensitivity);
 
         moveValue = velocity;
         transform.RotateAround(earth.transform.position, -Vector3.up, -moveValue[0] * sensitivity * zoomFactor);
