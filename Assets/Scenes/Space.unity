@@ -307,7 +307,6 @@ GameObject:
   - component: {fileID: 982269677}
   - component: {fileID: 982269676}
   - component: {fileID: 982269675}
-  - component: {fileID: 982269674}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -315,21 +314,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &982269674
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 982269673}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3db27a4c18431eb4c85298da7c242d01, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Airplane
-  <Id>k__BackingField: 0
-  <Level>k__BackingField: 0
-  modelPrefab: {fileID: 8462887653715005264, guid: 7400e145d90b69f4b8c251d7c1adfca8, type: 3}
 --- !u!65 &982269675
 BoxCollider:
   m_ObjectHideFlags: 0
