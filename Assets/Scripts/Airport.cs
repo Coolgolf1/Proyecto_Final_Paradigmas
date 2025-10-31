@@ -6,6 +6,8 @@ public class Airport : MonoBehaviour
     public string Id { get; private set; }
     public string Name { get; private set; }
 
+    public int NumberOfRunways { get; private set; }
+
     [SerializeField]
     public Location location;
     public GameObject modelPrefab;
