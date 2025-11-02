@@ -1,11 +1,9 @@
 using UnityEngine;
 
-public class Location : MonoBehaviour
+public class Sun : MonoBehaviour
 {
-    public string id;
-    public Vector3 coords;
 
-    
+    [SerializeField] private float speed = 2f;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -15,6 +13,6 @@ public class Location : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        transform.Rotate(-Vector3.right * Time.deltaTime * speed, Space.Self);
     }
 }

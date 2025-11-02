@@ -9,18 +9,20 @@ public class Route : MonoBehaviour
     public Airport airport1;
     public Airport airport2;
 
+    [SerializeField] private int nSegments = 20;
+    
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        LineRenderer line = gameObject.AddComponent<LineRenderer>();
+        LineRenderer line = gameObject.GetComponent<LineRenderer>();
         line.useWorldSpace = true;
-        line.startWidth = 0.02f;
-        line.endWidth = 0.02f;
-        line.material = new Material(Shader.Find("Materials/ColorRojo"));
+        line.startWidth = 0.1f;
+        line.endWidth = 0.1f;
         line.positionCount = 0;
 
-        var points = GetGreatCirclePoints(airport1.location.coords, airport2.location.coords, 3);
-        //points = ElevatePoints(points, elevation);
+        var points = GetGreatCirclePoints(airport1.location.coords, airport2.location.coords, nSegments);
+        points = ElevatePoints(points, 0.2f);
 
         line.positionCount = points.Count;
         line.SetPositions(points.ToArray());
@@ -33,7 +35,7 @@ public class Route : MonoBehaviour
         
     }
 
-    List<Vector3> GetGreatCirclePoints(Vector3 A, Vector3 B, int segments)
+    public List<Vector3> GetGreatCirclePoints(Vector3 A, Vector3 B, int segments)
     {
         List<Vector3> points = new List<Vector3>();
         for (int i = 0; i <= segments; i++)
@@ -44,4 +46,20 @@ public class Route : MonoBehaviour
         }
         return points;
     }
+
+    public List<Vector3> ElevatePoints(List<Vector3> points, float maxElevation)
+    {
+        List<Vector3> elevated = new List<Vector3>();
+        int n = points.Count;
+        for (int i = 0; i < n; i++)
+        {
+            float t = (float)i / (n - 1);
+            float elevation = Mathf.Sin(t * Mathf.PI) * maxElevation;
+            Vector3 elevatedPoint = points[i].normalized * (points[i].magnitude * (1 + elevation));
+            elevated.Add(elevatedPoint);
+        }
+        return elevated;
+    }
+
+
 }
