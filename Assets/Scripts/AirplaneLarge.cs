@@ -1,7 +1,11 @@
 using Assets.Scripts;
 using UnityEngine;
 
-public abstract class AirplaneLarge : Airplane
+public class AirplaneLarge : Airplane
 {
-
+    public override void Awake()
+    {
+        base.Awake();
+        Speed = 40;
+    }
 }

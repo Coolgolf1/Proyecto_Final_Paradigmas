@@ -10,7 +10,7 @@ public class Route : MonoBehaviour
     public Airport airport2;
 
     [SerializeField] private int nSegments = 20;
-    
+    public List<Vector3> routePoints;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -23,7 +23,7 @@ public class Route : MonoBehaviour
 
         var points = GetGreatCirclePoints(airport1.location.coords, airport2.location.coords, nSegments);
         points = ElevatePoints(points, 0.2f);
-
+        routePoints = points;
         line.positionCount = points.Count;
         line.SetPositions(points.ToArray());
 

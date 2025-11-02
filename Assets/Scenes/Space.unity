@@ -455,6 +455,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   airportPrefab: {fileID: 4368227543551652601, guid: ca6b7a23a14c0034c9272555040eb22c, type: 3}
+  largeAirplanePrefab: {fileID: 4092379697025543684, guid: 060c6d6f715feac43923cb94fdb26dc8, type: 3}
   routePrefab: {fileID: 1680500001691059765, guid: 936c85bbc2c3233429505a60d1e88755, type: 3}
   earth: {fileID: 2063964382}
 --- !u!4 &1650489212

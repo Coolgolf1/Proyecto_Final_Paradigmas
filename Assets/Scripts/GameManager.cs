@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviour
 
     [SerializeField]
     private GameObject airportPrefab;
+    [SerializeField] private GameObject largeAirplanePrefab;
     [SerializeField]
     private GameObject routePrefab;
     [SerializeField]
@@ -32,6 +33,8 @@ public class GameManager : MonoBehaviour
     };
 
     private Dictionary<string, Airport> savedAirports = new Dictionary<string, Airport>();
+    private Dictionary<string, Route> savedRoutes = new Dictionary<string, Route>();
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -59,8 +62,16 @@ public class GameManager : MonoBehaviour
             rutaComp.airport1 = savedAirports[routeTuple.Item1];
             rutaComp.airport2 = savedAirports[routeTuple.Item2];
             route.name = $"{routeTuple.Item1}-{routeTuple.Item2}";
-            
+            savedRoutes[route.name] = rutaComp;
         }
+
+        GameObject flightTest = new GameObject();
+        flightTest.name = "TestRuta";
+        Flight flightComp = flightTest.AddComponent<Flight>();
+        flightComp.route = savedRoutes["Madrid-Dubai"];
+        flightComp.airplane = Instantiate(largeAirplanePrefab, earth.transform).GetComponent<AirplaneLarge>();
+
+        flightComp.distance = 400;
 
     }
 
