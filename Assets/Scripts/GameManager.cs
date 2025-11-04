@@ -1,15 +1,17 @@
-using UnityEngine;
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
+using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-
     [SerializeField]
     private GameObject airportPrefab;
+
     [SerializeField] private GameObject largeAirplanePrefab;
+
     [SerializeField]
     private GameObject routePrefab;
+
     [SerializeField]
     private GameObject earth;
 
@@ -36,7 +38,7 @@ public class GameManager : MonoBehaviour
     private Dictionary<string, Route> savedRoutes = new Dictionary<string, Route>();
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private void Start()
     {
         foreach (string city in locations.Keys)
         {
@@ -44,15 +46,14 @@ public class GameManager : MonoBehaviour
             airportGO.name = city;
 
             Airport airport = airportGO.GetComponent<Airport>();
-            airport.name = $"{city}";
+            airport.Name = city;
             savedAirports[city] = airport;
-
+            airport.Id = Auxiliary.codes[city];
 
             Location locationComp = airportGO.GetComponentInChildren<Location>();
-            locationComp.id = city;
+            locationComp.Id = city;
             locationComp.coords = locations[city];
-            locationComp.name = $"{city}_Loc";
-
+            locationComp.Name = $"{city}_Loc";
         }
 
         foreach (Tuple<string, string> routeTuple in availableRoutes)
@@ -71,13 +72,11 @@ public class GameManager : MonoBehaviour
         flightComp.route = savedRoutes["Madrid-Dubai"];
         flightComp.airplane = Instantiate(largeAirplanePrefab, earth.transform).GetComponent<AirplaneLarge>();
 
-        flightComp.distance = 400;
-
+        flightComp.route.distance = 400;
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        
     }
 }

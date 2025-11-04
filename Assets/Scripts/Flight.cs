@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,12 +9,30 @@ public class Flight : MonoBehaviour
 
     public Route route;
     public Airplane airplane;
-    
 
-    public double distance;
     private bool started;
 
+    public event EventHandler LandedEvent;
+    public bool landed;
+
+    public bool finished = false;
+
     public Dictionary<Airport, int> TravellersToAirport { get; private set; }
+
+    public void BoardFlight(Dictionary<Airport, int> passengers)
+    {
+        int numPassengers = 0;
+        foreach (Airport airport in AirportList.items)
+        {
+            TravellersToAirport[airport] = passengers[airport];
+            numPassengers += passengers[airport];
+        }
+
+        if (numPassengers > airplane.Capacity)
+        {
+            throw new Exception("Airplane capacity surpassed.");
+        }
+    }
 
     public void StartFlight()
     {
@@ -23,9 +42,9 @@ public class Flight : MonoBehaviour
             {
                 AirportOrig.TravellersToAirport[airport] -= TravellersToAirport[airport];
             }
-
-            started = true;
         }
+
+        AirportDest.TrackFlight(this);
     }
 
     public void EndFlight()
@@ -37,28 +56,58 @@ public class Flight : MonoBehaviour
                 AirportDest.TravellersToAirport[airport] += TravellersToAirport[airport];
                 TravellersToAirport[airport] = 0;
             }
-
-            started = false;
+            else
+            {
+                TravellersToAirport[airport] = 0;
+                // GIVE COINS FOR EACH PASSENGER TAKEN TO CORRECT AIRPORT SUCCESSFULLY
+            }
         }
     }
 
+    protected virtual void OnLanded()
+    {
+        LandedEvent?.Invoke(this, EventArgs.Empty);
+    }
+
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private void Start()
     {
         started = true;
+        landed = false;
+        airplane.CurrentAirport = AirportOrig;
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        if (started)
+        if (started && !landed)
         {
+            // StartFlight();
             airplane.gameObject.SetActive(true);
-            started = airplane.UpdatePosition(route.routePoints, distance);
+            airplane.UpdatePosition(route.routePoints, route.distance);
+            landed = airplane.CheckLanded(route.distance);
         }
-        else
+        else if (landed)
         {
+            // Remove plane from world simulation
             airplane.gameObject.SetActive(false);
+
+            // Update current Airport of airplane
+            airplane.CurrentAirport = AirportDest;
+
+            // Add Passengers to Airport
+            // EndFlight();
+
+            // Notify Airport of Landing
+            //OnLanded();
+
+            finished = true;
+        }
+
+        if (finished)
+        {
+            Destroy(this);
         }
     }
 }

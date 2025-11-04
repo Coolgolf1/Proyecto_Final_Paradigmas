@@ -1,13 +1,12 @@
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using static UnityEngine.Rendering.HableCurve;
 
 public class Route : MonoBehaviour
 {
 
     public Airport airport1;
     public Airport airport2;
+    public double distance;
 
     [SerializeField] private int nSegments = 20;
     public List<Vector3> routePoints;
@@ -32,7 +31,7 @@ public class Route : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     public List<Vector3> GetGreatCirclePoints(Vector3 A, Vector3 B, int segments)

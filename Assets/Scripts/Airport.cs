@@ -1,13 +1,12 @@
-using Assets.Scripts;
-using UnityEngine;
+using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 public class Airport : MonoBehaviour
 {
-    public string Id { get; private set; }
-    public string Name { get; private set; }
-
-    public int NumberOfRunways { get; private set; }
+    public string Id;
+    public string Name;
+    public int NumberOfRunways;
 
     public Dictionary<Airport, int> TravellersToAirport { get; private set; }
 
@@ -17,8 +16,8 @@ public class Airport : MonoBehaviour
 
     public void InitNumberOfTravellersToAirports()
     {
-        foreach (Airport airport in AirportList.items) 
-        { 
+        foreach (Airport airport in AirportList.items)
+        {
             if (airport != this)
             {
                 // TODO: CHANGE LATER TO RANDOM OR SOMETHING DIFFERENT ======================================
@@ -27,15 +26,27 @@ public class Airport : MonoBehaviour
         }
     }
 
+    public void TrackFlight(Flight flight)
+    {
+        flight.LandedEvent += HandleLanding;
+    }
+
+    public void HandleLanding(object sender, EventArgs e)
+    {
+        Flight flight = (Flight)sender;
+
+        // UPDATE DIJKSTRA IN AIRPORT FOR NEW TRAVELLERS
+
+    }
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private void Start()
     {
         transform.position = location.coords;
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
-
     }
 }
