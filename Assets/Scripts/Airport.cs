@@ -4,9 +4,11 @@ using UnityEngine;
 
 public class Airport : MonoBehaviour
 {
-    public string Id;
+    public string id;
     public string Name;
-    public int NumberOfRunways;
+    public int numberOfRunways;
+
+    public List<Airplane> hangar;
 
     public Dictionary<Airport, int> TravellersToAirport { get; private set; }
 
@@ -35,7 +37,7 @@ public class Airport : MonoBehaviour
     {
         Flight flight = (Flight)sender;
 
-        // UPDATE DIJKSTRA IN AIRPORT FOR NEW TRAVELLERS
+        // UPDATE DIJKSTRA IN AIRPORT FOR NEW TRAVELLERS ======================================
 
     }
 

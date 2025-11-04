@@ -15,7 +15,7 @@ public class RouteAssigner
         }
     }
 
-    public (Airport? nextHop, double totalHours) DijkstraWithPlanes(
+    public (Airport? nextHop, double totalHours) Dijkstra(
           Dictionary<Airport, List<Edge>> graph,
           Airport start,
           Airport end,
@@ -41,7 +41,7 @@ public class RouteAssigner
                 if (plane.Speed <= 0) continue;
 
                 // Distance from plane's current position to the origin airport
-                Airport currentLocation = plane.CurrentAirport;
+                Airport currentLocation = Auxiliary.GetCurrentAirportOfAirplane(plane);
 
                 if (currentLocation == null)
                     continue;

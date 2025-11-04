@@ -8,6 +8,8 @@ public class Route : MonoBehaviour
     public Airport airport2;
     public double distance;
 
+    public List<Airplane> airplanes;
+
     [SerializeField] private int nSegments = 20;
     public List<Vector3> routePoints;
 

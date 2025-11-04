@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class Airplane : MonoBehaviour
@@ -12,13 +11,6 @@ public abstract class Airplane : MonoBehaviour
     public int Capacity { get; private set; }
     public double Speed { get; protected set; }
 
-    public double FlightProgress { get; private set; }
-    public double ElapsedKM { get; private set; }
-    private int targetIndex;
-    private float indexProgress;
-
-    public Airport CurrentAirport;
-
     //[SerializeField]
     //public GameObject modelPrefab;
 
@@ -27,35 +19,5 @@ public abstract class Airplane : MonoBehaviour
     {
         Id = ctrId;
         ctrId += 1;
-        FlightProgress = 0;
-        ElapsedKM = 0;
-    }
-
-    public void UpdatePosition(List<Vector3> routePositions, double totalDistance)
-    {
-        ElapsedKM += Speed * Time.deltaTime;
-        FlightProgress = ElapsedKM / totalDistance;
-
-        if (FlightProgress < 1)
-        {
-            indexProgress = (float)(FlightProgress * (routePositions.Count - 1));
-
-            targetIndex = (int)Mathf.Floor(indexProgress);
-
-            this.transform.position = Vector3.Lerp(routePositions[targetIndex], routePositions[targetIndex + 1], indexProgress - targetIndex);
-            this.transform.LookAt(routePositions[targetIndex + 1], this.transform.position - Vector3.zero);
-        }
-    }
-
-    public bool CheckLanded(double totalDistance)
-    {
-        if (FlightProgress < 1)
-        {
-            return false;
-        }
-        else
-        {
-            return true;
-        }
     }
 }

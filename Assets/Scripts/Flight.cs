@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class Flight : MonoBehaviour
 {
-    public Airport AirportOrig;
-    public Airport AirportDest;
+    public Airport airportOrig;
+    public Airport airportDest;
 
     public Route route;
     public Airplane airplane;
@@ -16,6 +16,11 @@ public class Flight : MonoBehaviour
     public bool landed;
 
     public bool finished = false;
+
+    public double FlightProgress { get; private set; }
+    public double ElapsedKM { get; private set; }
+    public int targetIndex;
+    public float indexProgress;
 
     public Dictionary<Airport, int> TravellersToAirport { get; private set; }
 
@@ -36,31 +41,62 @@ public class Flight : MonoBehaviour
 
     public void StartFlight()
     {
+        FlightProgress = 0;
+        ElapsedKM = 0;
+
         foreach (Airport airport in AirportList.items)
         {
-            if (airport != AirportOrig)
+            if (airport != airportOrig)
             {
-                AirportOrig.TravellersToAirport[airport] -= TravellersToAirport[airport];
+                airportOrig.TravellersToAirport[airport] -= TravellersToAirport[airport];
             }
         }
 
-        AirportDest.TrackFlight(this);
+        airportDest.TrackFlight(this);
     }
 
     public void EndFlight()
     {
         foreach (Airport airport in AirportList.items)
         {
-            if (airport != AirportDest && airport != AirportOrig)
+            if (airport != airportDest && airport != airportOrig)
             {
-                AirportDest.TravellersToAirport[airport] += TravellersToAirport[airport];
+                airportDest.TravellersToAirport[airport] += TravellersToAirport[airport];
                 TravellersToAirport[airport] = 0;
             }
             else
             {
                 TravellersToAirport[airport] = 0;
-                // GIVE COINS FOR EACH PASSENGER TAKEN TO CORRECT AIRPORT SUCCESSFULLY
+                // GIVE COINS FOR EACH PASSENGER TAKEN TO CORRECT AIRPORT SUCCESSFULLY ======================================
             }
+        }
+    }
+
+    public void UpdateAirplanePosition()
+    {
+        ElapsedKM += airplane.Speed * Time.deltaTime;
+        FlightProgress = ElapsedKM / route.distance;
+
+        if (FlightProgress < 1)
+        {
+            indexProgress = (float)(FlightProgress * (route.routePoints.Count - 1));
+
+            targetIndex = (int)Mathf.Floor(indexProgress);
+
+            airplane.transform.position = Vector3.Lerp(route.routePoints[targetIndex], route.routePoints[targetIndex + 1], indexProgress - targetIndex);
+            airplane.transform.LookAt(route.routePoints[targetIndex + 1], this.transform.position - Vector3.zero);
+        }
+    }
+
+    public bool CheckLanded(double totalDistance)
+    {
+        if (FlightProgress < 1)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
         }
     }
 
@@ -73,9 +109,13 @@ public class Flight : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Start()
     {
+        // BoardFlight();
         started = true;
         landed = false;
-        airplane.CurrentAirport = AirportOrig;
+
+        // REMOVE THIS LATER AS IT IS IN STARTFLIGHT
+        FlightProgress = 0;
+        ElapsedKM = 0;
     }
 
     // Update is called once per frame
@@ -85,22 +125,19 @@ public class Flight : MonoBehaviour
         {
             // StartFlight();
             airplane.gameObject.SetActive(true);
-            airplane.UpdatePosition(route.routePoints, route.distance);
-            landed = airplane.CheckLanded(route.distance);
+            UpdateAirplanePosition();
+            landed = CheckLanded(route.distance);
         }
         else if (landed)
         {
             // Remove plane from world simulation
             airplane.gameObject.SetActive(false);
 
-            // Update current Airport of airplane
-            airplane.CurrentAirport = AirportDest;
-
             // Add Passengers to Airport
             // EndFlight();
 
             // Notify Airport of Landing
-            //OnLanded();
+            // OnLanded();
 
             finished = true;
         }
