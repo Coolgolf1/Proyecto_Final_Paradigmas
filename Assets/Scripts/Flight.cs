@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Flight : MonoBehaviour
@@ -24,13 +25,22 @@ public class Flight : MonoBehaviour
 
     public Dictionary<Airport, int> TravellersToAirport { get; private set; }
 
+    public void Awake()
+    {
+        TravellersToAirport = new Dictionary<Airport, int>();
+
+        foreach (Airport airport in Info.savedAirports.Values.ToList())
+        {
+            TravellersToAirport.Add(airport, 0);
+        }
+    }
     public void BoardFlight(Dictionary<Airport, int> passengers)
     {
         int numPassengers = 0;
-        foreach (Airport airport in AirportList.items)
+        foreach (Airport airport in Info.savedAirports.Values.ToList())
         {
-            TravellersToAirport[airport] = passengers[airport];
-            numPassengers += passengers[airport];
+            TravellersToAirport[airport] += passengers[airport];
+            numPassengers += TravellersToAirport[airport];
         }
 
         if (numPassengers > airplane.Capacity)
@@ -44,7 +54,7 @@ public class Flight : MonoBehaviour
         FlightProgress = 0;
         ElapsedKM = 0;
 
-        foreach (Airport airport in AirportList.items)
+        foreach (Airport airport in Info.savedAirports.Values.ToList())
         {
             if (airport != airportOrig)
             {
@@ -52,15 +62,18 @@ public class Flight : MonoBehaviour
             }
         }
 
+
         airportDest.TrackFlight(this);
     }
 
     public void EndFlight()
     {
-        foreach (Airport airport in AirportList.items)
+        foreach (Airport airport in Info.savedAirports.Values.ToList())
         {
-            if (airport != airportDest && airport != airportOrig)
+            if (airport != airportDest)
             {
+                Debug.Log(airport);
+                Debug.Log(TravellersToAirport[airport]);
                 airportDest.TravellersToAirport[airport] += TravellersToAirport[airport];
                 TravellersToAirport[airport] = 0;
             }
@@ -109,13 +122,9 @@ public class Flight : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Start()
     {
-        // BoardFlight();
+        //StartFlight();
         started = true;
         landed = false;
-
-        // REMOVE THIS LATER AS IT IS IN STARTFLIGHT
-        FlightProgress = 0;
-        ElapsedKM = 0;
     }
 
     // Update is called once per frame
@@ -123,7 +132,6 @@ public class Flight : MonoBehaviour
     {
         if (started && !landed)
         {
-            // StartFlight();
             airplane.gameObject.SetActive(true);
             UpdateAirplanePosition();
             landed = CheckLanded(route.distance);
@@ -133,11 +141,14 @@ public class Flight : MonoBehaviour
             // Remove plane from world simulation
             airplane.gameObject.SetActive(false);
 
+            // Change hangar of airplane
+            airportOrig.hangar.Remove(airplane);
+
             // Add Passengers to Airport
-            // EndFlight();
+            this.EndFlight();
 
             // Notify Airport of Landing
-            // OnLanded();
+            this.OnLanded();
 
             finished = true;
         }

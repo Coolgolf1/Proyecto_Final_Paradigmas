@@ -14,7 +14,7 @@ public static class Info
         { "Dubai", new Vector3(18.3099995f,6.26000023f,5.48000002f) }
     };
 
-    public static List<Tuple<string, string>> availableRoutes = new List<Tuple<string, string>>()
+    public static List<Tuple<string, string>> stringCityRoutes = new List<Tuple<string, string>>()
     {
         new Tuple<string, string>("Madrid", "Dubai"),
         new Tuple<string, string>("Madrid", "Paris"),
@@ -24,7 +24,7 @@ public static class Info
         new Tuple<string, string>("San Francisco", "Shanghai")
     };
 
-    public static Dictionary<string, string> codes = new Dictionary<string, string>()
+    public static Dictionary<string, string> stringCityCodes = new Dictionary<string, string>()
     {
         { "Madrid", "mad" },
         { "San Francisco", "sfo" },
@@ -38,14 +38,77 @@ public static class Info
     public static List<Flight> flights = new List<Flight>();
     public static List<Airplane> airplanes = new List<Airplane>();
 
+    public static List<Route> userRoutes = new List<Route>();
+
+    public static Dictionary<Airport, List<RouteAssigner.Edge>> DijkstraGraph {  get; private set; }
+
+
+    public static void CalculateDijkstraGraph()
+    {
+        if (DijkstraGraph == null)
+        {
+            DijkstraGraph = new Dictionary<Airport, List<RouteAssigner.Edge>>();
+
+            foreach (Airport airport in savedAirports.Values.ToList())
+            {
+                DijkstraGraph.Add(airport, new List<RouteAssigner.Edge>());
+            }
+        }
+
+        foreach (Airport airport in savedAirports.Values.ToList())
+        {
+            DijkstraGraph[airport].Clear();
+
+            foreach (Route route in savedRoutes.Values.ToList()) 
+            { 
+                if (airport == route.airport1 || airport == route.airport2)
+                {
+                    Airport airportDest = null;
+
+                    if (airport == route.airport1)
+                    {
+                        airportDest = route.airport2;
+                    } 
+                    else if (airport == route.airport2)
+                    { 
+                        airportDest = route.airport1;
+                    }
+
+                    DijkstraGraph[airport].Add(new RouteAssigner.Edge(airportDest, route.distance));
+                }
+            }
+        }
+    }
+
     public static Airport GetTakeoffAirportOfAirplane(Airplane airplane)
     {
-        // FIX THIS TO USE THINGS WE HAVE NOT STATIC CLASS
-        foreach (Airport airport in AirportList.items)
+        foreach (Airport airport in savedAirports.Values.ToList())
         {
             if (airport.hangar.Contains(airplane))
             {
                 return airport;
+            }
+        }
+
+        return null;
+    }
+
+    public static Airport GetLandingAirportOfAirplane(Airplane airplane)
+    {
+        Airport takeoffAirport = GetTakeoffAirportOfAirplane(airplane);
+
+        foreach (Route route in savedRoutes.Values.ToList())
+        {
+            if (takeoffAirport == route.airport1 || takeoffAirport == route.airport2)
+            {
+                if (takeoffAirport == route.airport1)
+                {
+                    return route.airport2;
+                }
+                else if (takeoffAirport == route.airport2) 
+                { 
+                    return route.airport1; 
+                }   
             }
         }
 

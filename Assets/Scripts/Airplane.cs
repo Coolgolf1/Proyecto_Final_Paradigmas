@@ -19,5 +19,6 @@ public abstract class Airplane : MonoBehaviour
     {
         Id = ctrId;
         ctrId += 1;
+        Capacity = 100;
     }
 }

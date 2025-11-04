@@ -20,8 +20,8 @@ static class Auxiliary
             string a1 = route.airport1.Name;
             string a2 = route.airport2.Name;
 
-            string codeA1 = Info.codes[a1];
-            string codeA2 = Info.codes[a2];
+            string codeA1 = Info.stringCityCodes[a1];
+            string codeA2 = Info.stringCityCodes[a2];
 
             bool found = false;
             foreach (string line in lines)

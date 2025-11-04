@@ -1,20 +1,20 @@
 using System.Collections.Generic;
 
-public class RouteAssigner
+public static class RouteAssigner
 {
     public class Edge
     {
         public Airport To { get; private set; }
         public double distance { get; private set; }
 
-        public Edge(Airport to, double distanceKm)
+        public Edge(Airport to, double distance)
         {
             To = to;
-            distance = distanceKm;
+            this.distance = distance;
         }
     }
 
-    private (Airplane, double) GetFastestAirplaneAndTime(Airport origin, Edge edge)
+    private static (Airplane, double) GetFastestAirplaneAndTime(Airport origin, Edge edge)
     {
         // Compute the shortest possible time (in hours) among all airplanes
         double bestTime = double.PositiveInfinity;
@@ -59,7 +59,7 @@ public class RouteAssigner
         return (bestAirplane, bestTime);
     }
 
-    public (Airport, Airplane) Dijkstra(
+    public static Airplane Dijkstra(
           Dictionary<Airport, List<Edge>> graph,
           Airport start,
           Airport end)
@@ -104,7 +104,7 @@ public class RouteAssigner
 
         // If nothing found
         if (!previous.ContainsKey(end) && start != end)
-            return (null, null);
+            return null;
 
         // Reconstruct path
         List<Airport> path = new List<Airport>();
@@ -122,6 +122,6 @@ public class RouteAssigner
         if (nextHop != null)
             airplaneUsed.TryGetValue(nextHop, out nextAirplane);
 
-        return (nextHop, nextAirplane);
+        return nextAirplane;
     }
 }
