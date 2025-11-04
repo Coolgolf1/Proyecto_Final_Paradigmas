@@ -43,6 +43,10 @@ public class Airport : MonoBehaviour
     private void Start()
     {
         transform.position = location.coords;
+
+        Vector3 up = (location.coords - Vector3.zero).normalized;
+
+        this.transform.rotation = Quaternion.LookRotation(Vector3.forward, up);
     }
 
     // Update is called once per frame
