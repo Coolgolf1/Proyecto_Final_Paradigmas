@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -15,42 +16,41 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private GameObject earth;
 
-    private Dictionary<string, Airport> savedAirports = new Dictionary<string, Airport>();
-    private Dictionary<string, Route> savedRoutes = new Dictionary<string, Route>();
-
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Start()
     {
-        foreach (string city in Auxiliary.locations.Keys)
+        foreach (string city in Info.locations.Keys)
         {
             var airportGO = Instantiate(airportPrefab, earth.transform);
             airportGO.name = city;
 
             Airport airport = airportGO.GetComponent<Airport>();
             airport.Name = city;
-            savedAirports[city] = airport;
-            airport.id = Auxiliary.codes[city];
+            Info.savedAirports[city] = airport;
+            airport.id = Info.codes[city];
 
             Location locationComp = airportGO.GetComponentInChildren<Location>();
             locationComp.Id = city;
-            locationComp.coords = Auxiliary.locations[city];
+            locationComp.coords = Info.locations[city];
             locationComp.Name = $"{city}_Loc";
         }
 
-        foreach (Tuple<string, string> routeTuple in Auxiliary.availableRoutes)
+        foreach (Tuple<string, string> routeTuple in Info.availableRoutes)
         {
             var route = Instantiate(routePrefab, earth.transform);
             Route rutaComp = route.GetComponent<Route>();
-            rutaComp.airport1 = savedAirports[routeTuple.Item1];
-            rutaComp.airport2 = savedAirports[routeTuple.Item2];
+            rutaComp.airport1 = Info.savedAirports[routeTuple.Item1];
+            rutaComp.airport2 = Info.savedAirports[routeTuple.Item2];
             route.name = $"{routeTuple.Item1}-{routeTuple.Item2}";
-            savedRoutes[route.name] = rutaComp;
+            Info.savedRoutes[route.name] = rutaComp;
         }
 
+        Auxiliary.LoadDistances(Info.savedRoutes);
+
         GameObject flightTest = new GameObject();
-        flightTest.name = "TestRuta";
+        flightTest.name = "Madrid-Dubai";
         Flight flightComp = flightTest.AddComponent<Flight>();
-        flightComp.route = savedRoutes["Madrid-Dubai"];
+        flightComp.route = Info.savedRoutes["Madrid-Dubai"];
         flightComp.airplane = Instantiate(largeAirplanePrefab, earth.transform).GetComponent<AirplaneLarge>();
 
         flightComp.route.distance = 400;
