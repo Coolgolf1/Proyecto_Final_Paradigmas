@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class Flight : MonoBehaviour
@@ -29,16 +28,24 @@ public class Flight : MonoBehaviour
     {
         TravellersToAirport = new Dictionary<Airport, int>();
 
-        foreach (Airport airport in Info.savedAirports.Values.ToList())
+        foreach (Airport airport in Info.savedAirports.Values)
         {
             TravellersToAirport.Add(airport, 0);
         }
     }
+
     public void BoardFlight(Dictionary<Airport, int> passengers)
     {
         int numPassengers = 0;
-        foreach (Airport airport in Info.savedAirports.Values.ToList())
+        foreach (Airport airport in Info.savedAirports.Values)
         {
+            if (airport == airportOrig)
+            {
+                continue;
+            }
+
+            Debug.Log(passengers);
+            Debug.Log(passengers[airport]);
             TravellersToAirport[airport] += passengers[airport];
             numPassengers += TravellersToAirport[airport];
         }
@@ -54,7 +61,7 @@ public class Flight : MonoBehaviour
         FlightProgress = 0;
         ElapsedKM = 0;
 
-        foreach (Airport airport in Info.savedAirports.Values.ToList())
+        foreach (Airport airport in Info.savedAirports.Values)
         {
             if (airport != airportOrig)
             {
@@ -68,12 +75,10 @@ public class Flight : MonoBehaviour
 
     public void EndFlight()
     {
-        foreach (Airport airport in Info.savedAirports.Values.ToList())
+        foreach (Airport airport in Info.savedAirports.Values)
         {
             if (airport != airportDest)
             {
-                Debug.Log(airport);
-                Debug.Log(TravellersToAirport[airport]);
                 airportDest.TravellersToAirport[airport] += TravellersToAirport[airport];
                 TravellersToAirport[airport] = 0;
             }
@@ -145,10 +150,10 @@ public class Flight : MonoBehaviour
             airportOrig.hangar.Remove(airplane);
 
             // Add Passengers to Airport
-            this.EndFlight();
+            EndFlight();
 
             // Notify Airport of Landing
-            this.OnLanded();
+            OnLanded();
 
             finished = true;
         }

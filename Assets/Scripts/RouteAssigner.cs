@@ -22,9 +22,12 @@ public static class RouteAssigner
 
         foreach (Airplane airplane in Info.airplanes)
         {
-            if (airplane.Speed <= 0) continue;
+            if (Info.GetTakeoffAirportOfAirplane(airplane) != origin && Info.GetLandingAirportOfAirplane(airplane) != origin)
+            {
+                continue;
+            }
 
-            // Get Takeoff Airplane
+            // Get Takeoff Airport
             Airport takeoffAirport = Info.GetTakeoffAirportOfAirplane(airplane);
 
             if (takeoffAirport == null)
@@ -69,6 +72,7 @@ public static class RouteAssigner
         List<Airport> queue = new List<Airport>(graph.Keys);
         Dictionary<Airport, Airplane> airplaneUsed = new Dictionary<Airport, Airplane>();
 
+        // Initialize 
         foreach (Airport node in graph.Keys)
             timeFromStart[node] = double.PositiveInfinity;
 
@@ -80,15 +84,13 @@ public static class RouteAssigner
             Airport current = queue[0];
             queue.RemoveAt(0);
 
-            if (current == end)
-                break;
-
             if (!graph.ContainsKey(current))
                 continue;
 
             foreach (Edge edge in graph[current])
             {
                 (Airplane airplane, double cost) = GetFastestAirplaneAndTime(current, edge);
+
                 if (airplane is null) continue;
                 if (double.IsInfinity(cost)) continue;
 
@@ -100,6 +102,10 @@ public static class RouteAssigner
                     airplaneUsed[edge.To] = airplane;
                 }
             }
+
+            if (current == end)
+                break;
+
         }
 
         // If nothing found

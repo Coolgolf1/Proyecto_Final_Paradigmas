@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class Airport : MonoBehaviour
@@ -12,19 +11,22 @@ public class Airport : MonoBehaviour
 
     public List<Airplane> hangar = new List<Airplane>();
 
-    public Dictionary<Airport, int> TravellersToAirport;
+    public Dictionary<Airport, int> TravellersToAirport { get; private set; }
 
     [SerializeField]
     public Location location;
     public GameObject modelPrefab;
 
-    public void InitNumberOfTravellersToAirports()
+    public void Awake()
     {
-        if (TravellersToAirport == null)
-        {
-            TravellersToAirport = new Dictionary<Airport, int>();
+        TravellersToAirport = new Dictionary<Airport, int>();
+    }
 
-            foreach (Airport airport in Info.savedAirports.Values.ToList())
+    public void InitTravellers()
+    {
+        foreach (Airport airport in Info.savedAirports.Values.ToList())
+        {
+            if (airport != this)
             {
                 TravellersToAirport.Add(airport, 0);
             }
@@ -40,11 +42,11 @@ public class Airport : MonoBehaviour
         }
     }
 
-    public Airplane FindFlightForTravellersToAirport(Airport objectiveAirport)
+    public Airplane FindAirplaneForTravellersToAirport(Airport objectiveAirport)
     {
         Airplane nextAirplane = RouteAssigner.Dijkstra(Info.DijkstraGraph, this, objectiveAirport);
 
-        if (nextAirplane is null) 
+        if (nextAirplane is null)
         {
             Debug.Log("Cannot find next airplane of path for travellers.");
             return null;
@@ -60,12 +62,8 @@ public class Airport : MonoBehaviour
 
     public void AssignTravellersToNextFlightOfAirplane(Airplane objAirplane, Airport objAirport)
     {
-        GameObject flightGO = new GameObject();
-        Flight flight = flightGO.AddComponent<Flight>();
-        flight.airplane = objAirplane;
-        flight.airportOrig = this;
-        flight.airportDest = Info.GetLandingAirportOfAirplane(objAirplane);
-        flight.route = Info.GetRouteOfAirplane(objAirplane);
+        // Create New Flight of Airplane
+        Flight flight = Auxiliary.CreateFlight(this, objAirport, Info.GetRouteOfAirplane(objAirplane), objAirplane);
 
         int occupiedCapacity = flight.TravellersToAirport.Values.ToList().Sum();
         int remainingCapacity = objAirplane.Capacity - occupiedCapacity;
@@ -75,10 +73,12 @@ public class Airport : MonoBehaviour
         if (travellersInAirport <= remainingCapacity)
         {
             flight.TravellersToAirport[objAirport] += travellersInAirport;
-        } 
+            TravellersToAirport[objAirport] -= travellersInAirport;
+        }
         else
         {
             flight.TravellersToAirport[objAirport] += (travellersInAirport - remainingCapacity);
+            TravellersToAirport[objAirport] -= (travellersInAirport - remainingCapacity);
         }
     }
 
@@ -91,10 +91,9 @@ public class Airport : MonoBehaviour
         Info.CalculateDijkstraGraph();
         foreach (Airport airport in TravellersToAirport.Keys)
         {
-            Airplane objAirplane = FindFlightForTravellersToAirport(airport);
+            Airplane objAirplane = FindAirplaneForTravellersToAirport(airport);
             AssignTravellersToNextFlightOfAirplane(objAirplane, airport);
         }
-
 
         // Create new flight from flight that landed
         LaunchNewPlaneAfterLanding(flight);
@@ -102,12 +101,8 @@ public class Airport : MonoBehaviour
 
     public void LaunchNewPlaneAfterLanding(Flight flight)
     {
-        Airplane landedAirplane = flight.airplane;
-        Flight newFlight = new Flight();
-        newFlight.airplane = landedAirplane;
-        newFlight.airportOrig = this;
-        newFlight.airportDest = Info.GetLandingAirportOfAirplane(landedAirplane);
-        newFlight.route = Info.GetRouteOfAirplane(landedAirplane);
+        Airplane airplane = flight.airplane;
+        Flight newFlight = Auxiliary.CreateFlight(this, Info.GetLandingAirportOfAirplane(airplane), Info.GetRouteOfAirplane(airplane), airplane);
 
         newFlight.BoardFlight(TravellersToAirport);
         Instantiate(newFlight);
@@ -121,8 +116,6 @@ public class Airport : MonoBehaviour
         Vector3 up = (location.coords - Vector3.zero).normalized;
 
         this.transform.rotation = Quaternion.LookRotation(Vector3.forward, up);
-
-        InitNumberOfTravellersToAirports();
     }
 
     // Update is called once per frame

@@ -13,6 +13,16 @@ public class Route : MonoBehaviour
     [SerializeField] private int nSegments = 20;
     public List<Vector3> routePoints;
 
+    public void AddPlaneToRoute(Airplane airplane)
+    {
+        airplanes.Add(airplane);
+    }
+
+    public void RemovePlaneFromRoute(Airplane airplane)
+    {
+        airplanes.Remove(airplane);
+    }
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {

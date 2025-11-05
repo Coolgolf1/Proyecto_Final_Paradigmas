@@ -19,7 +19,7 @@ public class GameManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Start()
     {
-        // Save data of airports and routes
+        // Save data of airports 
         foreach (string city in Info.locations.Keys)
         {
             GameObject airportGO = Instantiate(airportPrefab, earth.transform);
@@ -29,48 +29,56 @@ public class GameManager : MonoBehaviour
             airport.Name = city;
             Info.savedAirports[city] = airport;
             airport.id = Info.stringCityCodes[city];
-            airport.InitNumberOfTravellersToAirports();
 
-            Location locationComp = airportGO.GetComponentInChildren<Location>();
-            locationComp.Id = city;
-            locationComp.coords = Info.locations[city];
-            locationComp.Name = $"{city}_Loc";
+            Location location = airportGO.GetComponentInChildren<Location>();
+            location.Id = city;
+            location.coords = Info.locations[city];
+            location.Name = $"{city}_Loc";
         }
 
+        // Save data of airplanes
+        Airplane airplane = Instantiate(largeAirplanePrefab, earth.transform).GetComponent<AirplaneLarge>();
+        Info.airplanes.Add(airplane);
+
+        // Save data of routes
         foreach (Tuple<string, string> routeTuple in Info.stringCityRoutes)
         {
-            GameObject route = Instantiate(routePrefab, earth.transform);
-            Route rutaComp = route.GetComponent<Route>();
-            rutaComp.airport1 = Info.savedAirports[routeTuple.Item1];
-            rutaComp.airport2 = Info.savedAirports[routeTuple.Item2];
-            route.name = $"{routeTuple.Item1}-{routeTuple.Item2}";
-            Info.savedRoutes[route.name] = rutaComp;
+            GameObject routeGO = Instantiate(routePrefab, earth.transform);
+            routeGO.name = $"{routeTuple.Item1}-{routeTuple.Item2}";
+            Route route = routeGO.GetComponent<Route>();
+            route.airport1 = Info.savedAirports[routeTuple.Item1];
+            route.airport2 = Info.savedAirports[routeTuple.Item2];
+            route.AddPlaneToRoute(airplane);
+            route.airport1.hangar.Add(airplane);
+            Info.savedRoutes[routeGO.name] = route;
         }
 
+        // Init travellers in each airport
+        foreach (Airport airport in Info.savedAirports.Values)
+        {
+            airport.InitTravellers();
+        }
+
+        // Load the real distances from dataset
         Auxiliary.LoadDistances(Info.savedRoutes);
 
+        // Calculate initial Dijkstra Graph
         Info.CalculateDijkstraGraph();
 
-        GameObject flightTest = new GameObject();
-        flightTest.name = "Madrid-Dubai";
-        Flight flightComp = flightTest.AddComponent<Flight>();
-        flightComp.route = Info.savedRoutes["Madrid-Dubai"];
-        flightComp.airportOrig = Info.savedAirports["Madrid"];
-        flightComp.airportDest = Info.savedAirports["Dubai"];
+        // Create Madrid-Dubai Flight
+        Flight flight = Auxiliary.CreateFlight(Info.savedAirports["Madrid"], Info.savedAirports["Dubai"], Info.savedRoutes["Madrid-Dubai"], airplane);
 
-        flightComp.airplane = Instantiate(largeAirplanePrefab, earth.transform).GetComponent<AirplaneLarge>();
-        Info.airplanes.Add(flightComp.airplane);
+        List<Airport> madridDestinations = Info.savedAirports["Madrid"].TravellersToAirport.Keys.ToList();
 
-        foreach (Airport airport in flightComp.airportOrig.TravellersToAirport.Keys)
+        // For all travellers in origin airport, assign each of the travellers an airplane
+        foreach (Airport airport in madridDestinations)
         {
-            Airplane objAirplane = flightComp.airportOrig.FindFlightForTravellersToAirport(airport);
-            flightComp.airportOrig.AssignTravellersToNextFlightOfAirplane(objAirplane, airport);
+            Airplane objAirplane = Info.savedAirports["Madrid"].FindAirplaneForTravellersToAirport(airport);
+            Info.savedAirports["Madrid"].AssignTravellersToNextFlightOfAirplane(objAirplane, airport);
         }
 
-        flightComp.BoardFlight(flightComp.airportOrig.TravellersToAirport);
+        flight.BoardFlight(Info.savedAirports["Madrid"].TravellersToAirport);
 
-        flightComp.route.distance = 400;
-        
     }
 
     // Update is called once per frame
