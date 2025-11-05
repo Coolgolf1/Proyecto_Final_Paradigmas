@@ -74,8 +74,7 @@ public class Flight : MonoBehaviour
 
         airportDest.TrackFlight(this);
 
-        Debug.Log("TRACKED");
-        Debug.Log(started);
+       
 
     }
 
@@ -133,7 +132,15 @@ public class Flight : MonoBehaviour
         {
             airplane.gameObject.SetActive(true);
 
-            (ElapsedKM, FlightProgress) = airplane.UpdatePosition(route.routePoints, route.distance, ElapsedKM);
+            List<Vector3> airplanePoints = new List<Vector3> (route.routePoints);
+
+            if (route.airport1 == airportDest)
+            {
+                airplanePoints.Reverse();
+            }
+            
+
+            (ElapsedKM, FlightProgress) = airplane.UpdatePosition(airplanePoints, route.distance, ElapsedKM);
             landed = CheckLanded(route.distance);
         }
         else if (landed && !finished)

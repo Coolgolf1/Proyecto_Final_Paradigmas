@@ -40,6 +40,9 @@ public class GameManager : MonoBehaviour
         Airplane airplane = Instantiate(largeAirplanePrefab, earth.transform).GetComponent<AirplaneLarge>();
         Info.airplanes.Add(airplane);
 
+        Airplane airplane2 = Instantiate(largeAirplanePrefab, earth.transform).GetComponent<AirplaneLarge>();
+        Info.airplanes.Add(airplane2);
+
         // Save data of routes
         foreach (Tuple<string, string> routeTuple in Info.stringCityRoutes)
         {
@@ -55,6 +58,8 @@ public class GameManager : MonoBehaviour
         }
 
         Info.savedAirports["Madrid"].hangar.Add(airplane);
+        Info.savedAirports["Madrid"].hangar.Add(airplane2);
+
 
         // Init travellers in each airport
         foreach (Airport airport in Info.savedAirports.Values)
@@ -76,6 +81,7 @@ public class GameManager : MonoBehaviour
         Dictionary<Airplane, Flight> madridFlights = new Dictionary<Airplane, Flight>();
 
         // For all travellers in origin airport, assign each of the travellers an airplane
+
         foreach (Airport airport in madridDestinations)
         {
             Flight flight;
@@ -100,10 +106,10 @@ public class GameManager : MonoBehaviour
             Info.savedAirports["Madrid"].AssignTravellersToNextFlightOfAirplane(flight, objAirplane, nextHop, airport);
         }
 
-        Debug.Log("====================");
+        
         foreach (Flight flight in madridFlights.Values)
         {
-            Debug.Log("HOLAAAAAAAA");
+            
             flight.StartFlight();
         }
     }
