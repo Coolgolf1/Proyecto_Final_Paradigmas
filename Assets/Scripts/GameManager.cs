@@ -48,10 +48,12 @@ public class GameManager : MonoBehaviour
             Route route = routeGO.GetComponent<Route>();
             route.airport1 = Info.savedAirports[routeTuple.Item1];
             route.airport2 = Info.savedAirports[routeTuple.Item2];
-            route.AddPlaneToRoute(airplane);
-            route.airport1.hangar.Add(airplane);
+            //route.AddPlaneToRoute(airplane);
+            //route.airport1.hangar.Add(airplane);
             Info.savedRoutes[routeGO.name] = route;
         }
+
+        Info.savedAirports["Madrid"].hangar.Add(airplane);
 
         // Init travellers in each airport
         foreach (Airport airport in Info.savedAirports.Values)
@@ -66,18 +68,27 @@ public class GameManager : MonoBehaviour
         Info.CalculateDijkstraGraph();
 
         // Create Madrid-Dubai Flight
-        Flight flight = Auxiliary.CreateFlight(Info.savedAirports["Madrid"], Info.savedAirports["Dubai"], Info.savedRoutes["Madrid-Dubai"], airplane);
+        //Flight flight = Auxiliary.CreateFlight(Info.savedAirports["Madrid"], Info.savedAirports["Dubai"], Info.savedRoutes["Madrid-Dubai"], airplane);
 
         List<Airport> madridDestinations = Info.savedAirports["Madrid"].TravellersToAirport.Keys.ToList();
 
         // For all travellers in origin airport, assign each of the travellers an airplane
+        Debug.Log(madridDestinations.Count);
         foreach (Airport airport in madridDestinations)
         {
+            Debug.Log("hola");
             Airplane objAirplane = Info.savedAirports["Madrid"].FindAirplaneForTravellersToAirport(airport);
-            Info.savedAirports["Madrid"].AssignTravellersToNextFlightOfAirplane(objAirplane, airport);
+            Debug.Log(objAirplane);
+            if (objAirplane != null && Info.savedAirports["Madrid"].hangar.Contains(objAirplane))
+            {
+                Debug.Log(Info.savedAirports["Madrid"].hangar.Count);
+                Flight flight = Info.savedAirports["Madrid"].AssignTravellersToNextFlightOfAirplane(objAirplane, airport);
+                flight.BoardFlight(Info.savedAirports["Madrid"].TravellersToAirport);
+                flight.StartFlight();
+            }
         }
 
-        flight.BoardFlight(Info.savedAirports["Madrid"].TravellersToAirport);
+        
 
     }
 

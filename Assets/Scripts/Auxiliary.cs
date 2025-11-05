@@ -49,6 +49,7 @@ static class Auxiliary
 
     public static Flight CreateFlight(Airport airportOrig, Airport airportDest, Route route, Airplane airplane)
     {
+        
         GameObject flightGO = new GameObject();
         flightGO.name = $"{airportOrig.Name}-{airportDest.Name}";
         Flight flight = flightGO.AddComponent<Flight>();

@@ -19,8 +19,6 @@ public class Flight : MonoBehaviour
 
     public double FlightProgress { get; private set; }
     public double ElapsedKM { get; private set; }
-    public int targetIndex;
-    public float indexProgress;
 
     public Dictionary<Airport, int> TravellersToAirport { get; private set; }
 
@@ -58,6 +56,7 @@ public class Flight : MonoBehaviour
 
     public void StartFlight()
     {
+        started = true;
         FlightProgress = 0;
         ElapsedKM = 0;
 
@@ -90,21 +89,7 @@ public class Flight : MonoBehaviour
         }
     }
 
-    public void UpdateAirplanePosition()
-    {
-        ElapsedKM += airplane.Speed * Time.deltaTime;
-        FlightProgress = ElapsedKM / route.distance;
-
-        if (FlightProgress < 1)
-        {
-            indexProgress = (float)(FlightProgress * (route.routePoints.Count - 1));
-
-            targetIndex = (int)Mathf.Floor(indexProgress);
-
-            airplane.transform.position = Vector3.Lerp(route.routePoints[targetIndex], route.routePoints[targetIndex + 1], indexProgress - targetIndex);
-            airplane.transform.LookAt(route.routePoints[targetIndex + 1], this.transform.position - Vector3.zero);
-        }
-    }
+    
 
     public bool CheckLanded(double totalDistance)
     {
@@ -120,15 +105,17 @@ public class Flight : MonoBehaviour
 
     protected virtual void OnLanded()
     {
+        
         LandedEvent?.Invoke(this, EventArgs.Empty);
+        
     }
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Start()
     {
-        //StartFlight();
-        started = true;
+        
+        started = false;
         landed = false;
     }
 
@@ -138,10 +125,11 @@ public class Flight : MonoBehaviour
         if (started && !landed)
         {
             airplane.gameObject.SetActive(true);
-            UpdateAirplanePosition();
+            
+            (ElapsedKM, FlightProgress) = airplane.UpdatePosition(route.routePoints, route.distance, ElapsedKM);
             landed = CheckLanded(route.distance);
         }
-        else if (landed)
+        else if (landed && !finished)
         {
             // Remove plane from world simulation
             airplane.gameObject.SetActive(false);
@@ -152,15 +140,16 @@ public class Flight : MonoBehaviour
             // Add Passengers to Airport
             EndFlight();
 
+            finished = true;
             // Notify Airport of Landing
             OnLanded();
 
-            finished = true;
+            
         }
 
         if (finished)
         {
-            Destroy(this);
+            Destroy(this.gameObject);
         }
     }
 }

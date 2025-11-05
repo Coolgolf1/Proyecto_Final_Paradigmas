@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Diagnostics;
+using UnityEngine;
 
 public static class RouteAssigner
 {
@@ -22,6 +24,10 @@ public static class RouteAssigner
 
         foreach (Airplane airplane in Info.airplanes)
         {
+            //if (origin.hangar.Contains(airplane))
+            //{
+            //    return (airplane, 0.1);
+            //}
             if (Info.GetTakeoffAirportOfAirplane(airplane) != origin && Info.GetLandingAirportOfAirplane(airplane) != origin)
             {
                 continue;
@@ -107,11 +113,12 @@ public static class RouteAssigner
                 break;
 
         }
-
+        
         // If nothing found
         if (!previous.ContainsKey(end) && start != end)
             return null;
 
+        
         // Reconstruct path
         List<Airport> path = new List<Airport>();
         Airport u = end;

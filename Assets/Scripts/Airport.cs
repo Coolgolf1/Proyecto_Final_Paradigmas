@@ -60,11 +60,11 @@ public class Airport : MonoBehaviour
         flight.LandedEvent += HandleLanding;
     }
 
-    public void AssignTravellersToNextFlightOfAirplane(Airplane objAirplane, Airport objAirport)
+    public Flight AssignTravellersToNextFlightOfAirplane(Airplane objAirplane, Airport objAirport)
     {
         // Create New Flight of Airplane
         Flight flight = Auxiliary.CreateFlight(this, objAirport, Info.GetRouteOfAirplane(objAirplane), objAirplane);
-
+        hangar.Remove(objAirplane);
         int occupiedCapacity = flight.TravellersToAirport.Values.ToList().Sum();
         int remainingCapacity = objAirplane.Capacity - occupiedCapacity;
 
@@ -80,11 +80,14 @@ public class Airport : MonoBehaviour
             flight.TravellersToAirport[objAirport] += (travellersInAirport - remainingCapacity);
             TravellersToAirport[objAirport] -= (travellersInAirport - remainingCapacity);
         }
+
+        return flight;
     }
 
     public void HandleLanding(object sender, EventArgs e)
     {
         Flight flight = (Flight)sender;
+        
         hangar.Add(flight.airplane);
 
         // UPDATE DIJKSTRA IN AIRPORT FOR NEW TRAVELLERS ======================================
@@ -92,11 +95,15 @@ public class Airport : MonoBehaviour
         foreach (Airport airport in TravellersToAirport.Keys)
         {
             Airplane objAirplane = FindAirplaneForTravellersToAirport(airport);
-            AssignTravellersToNextFlightOfAirplane(objAirplane, airport);
+            Flight newFlight = AssignTravellersToNextFlightOfAirplane(objAirplane, airport);
+            newFlight.BoardFlight(TravellersToAirport);
+            newFlight.StartFlight();
         }
 
         // Create new flight from flight that landed
-        LaunchNewPlaneAfterLanding(flight);
+        
+        //LaunchNewPlaneAfterLanding(flight);
+        
     }
 
     public void LaunchNewPlaneAfterLanding(Flight flight)
