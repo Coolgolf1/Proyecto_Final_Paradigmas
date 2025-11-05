@@ -82,6 +82,18 @@ public static class Info
 
     public static Airport GetTakeoffAirportOfAirplane(Airplane airplane)
     {
+        Flight flight = GetFlightOfAirplane(airplane);
+
+        if (flight == null)
+        {
+            return null;
+        }
+
+        return flight.airportOrig;
+    }
+
+    public static Airport GetAirportOfAirplane(Airplane airplane)
+    {
         foreach (Airport airport in savedAirports.Values)
         {
             if (airport.hangar.Contains(airplane))
@@ -97,7 +109,7 @@ public static class Info
     {
         Airport takeoffAirport = GetTakeoffAirportOfAirplane(airplane);
 
-        foreach (Route route in savedRoutes.Values.ToList())
+        foreach (Route route in savedRoutes.Values)
         {
             if (takeoffAirport == route.airport1 || takeoffAirport == route.airport2)
             {
@@ -130,7 +142,7 @@ public static class Info
 
     public static Route GetRouteOfAirplane(Airplane airplane)
     {
-        foreach (Route route in savedRoutes.Values.ToList())
+        foreach (Route route in savedRoutes.Values)
         {
             if (route.airplanes.Contains(airplane))
             {

@@ -1,6 +1,4 @@
 using System.Collections.Generic;
-using System.Diagnostics;
-using UnityEngine;
 
 public static class RouteAssigner
 {
@@ -21,54 +19,118 @@ public static class RouteAssigner
         // Compute the shortest possible time (in hours) among all airplanes
         double bestTime = double.PositiveInfinity;
         Airplane bestAirplane = null;
+        //double flightTime = 0;
 
         foreach (Airplane airplane in Info.airplanes)
         {
-            //if (origin.hangar.Contains(airplane))
-            //{
-            //    return (airplane, 0.1);
-            //}
-            if (Info.GetTakeoffAirportOfAirplane(airplane) != origin && Info.GetLandingAirportOfAirplane(airplane) != origin)
+            // Check if it is in another hangar different to the ones in route
+            Airport airportHangar = Info.GetAirportOfAirplane(airplane);
+            if (airportHangar != origin && airportHangar != edge.To)
             {
                 continue;
             }
 
-            // Get Takeoff Airport
-            Airport takeoffAirport = Info.GetTakeoffAirportOfAirplane(airplane);
-
-            if (takeoffAirport == null)
-                continue;
-
-            double distance = 0;
-
-            // Flying away from origin airport
-            if (takeoffAirport == origin)
+            if (airportHangar != origin)
             {
-                // Add distance of coming back to origin airport
-                distance += edge.distance;
-
-                // Add remaining distance to destination airport
-                distance += (1 - Info.GetFlightOfAirplane(airplane).FlightProgress) * edge.distance;
+                continue;
             }
             else
             {
-                // Add remaining distance to destination airport
-                distance += (1 - Info.GetFlightOfAirplane(airplane).FlightProgress) * edge.distance;
+                Flight flight = Info.GetFlightOfAirplane(airplane);
+
+                // 1. Flight assigned but in Hangar
+                if (flight is not null)
+                {
+                    Airport airportDest = flight.airportDest;
+
+                    if (airportDest == edge.To)
+                    {
+                        return (airplane, 0);
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
+                // 2. Flight not yet created
+                else
+                {
+                    return (airplane, 0);
+                }
+
+                // Calcular Ruta Más Corta y Barata
             }
 
-            double flightTime = distance / airplane.Speed;
+            //// Check if the airplane is in possible route
+            //if (Info.GetTakeoffAirportOfAirplane(airplane) != origin && Info.GetLandingAirportOfAirplane(airplane) != origin)
+            //{
+            //    continue;
+            //}
 
-            if (flightTime < bestTime)
-            {
-                bestTime = flightTime;
-                bestAirplane = airplane;
-            }
+            //// Get Takeoff Airport if in Flight
+            //Airport takeoffAirport = Info.GetTakeoffAirportOfAirplane(airplane);
+
+            //// Not in Flight
+            //if (takeoffAirport == null)
+            //{
+            //    if (Info.GetAirportOfAirplane(airplane) == origin)
+            //    {
+            //        return (airplane, 0);
+            //    }
+            //    else if (Info.GetAirportOfAirplane(airplane) == edge.To)
+            //    {
+            //        flightTime = edge.distance / airplane.Speed;
+
+            //        if (flightTime < bestTime)
+            //        {
+            //            bestTime = flightTime;
+            //            bestAirplane = airplane;
+            //        }
+            //    }
+            //    else
+            //    {
+            //        continue;
+            //    }
+            //}
+            //// In Flight
+            //else
+            //{
+            //    double distance = 0;
+
+            //    // Flying away from origin airport
+            //    if (takeoffAirport == origin)
+            //    {
+            //        // Add distance of coming back to origin airport
+            //        distance += edge.distance;
+
+            //        // Add remaining distance to destination airport
+            //        distance += (1 - Info.GetFlightOfAirplane(airplane).FlightProgress) * edge.distance;
+            //    }
+            //    else
+            //    {
+            //        // Add remaining distance to destination airport
+            //        distance += (1 - Info.GetFlightOfAirplane(airplane).FlightProgress) * edge.distance;
+            //    }
+
+            //    flightTime = distance / airplane.Speed;
+
+            //    if (flightTime < bestTime)
+            //    {
+            //        bestTime = flightTime;
+            //        bestAirplane = airplane;
+            //    }
+            //}
         }
 
         return (bestAirplane, bestTime);
     }
 
-    public static Airplane Dijkstra(
+    //public static (Airplane) GetAirplaneInHangar()
+    //{
+    //    
+    //}
+
+    public static (Airplane, Airport) Dijkstra(
           Dictionary<Airport, List<Edge>> graph,
           Airport start,
           Airport end)
@@ -113,12 +175,12 @@ public static class RouteAssigner
                 break;
 
         }
-        
+
         // If nothing found
         if (!previous.ContainsKey(end) && start != end)
-            return null;
+            return (null, null);
 
-        
+
         // Reconstruct path
         List<Airport> path = new List<Airport>();
         Airport u = end;
@@ -135,6 +197,6 @@ public static class RouteAssigner
         if (nextHop != null)
             airplaneUsed.TryGetValue(nextHop, out nextAirplane);
 
-        return nextAirplane;
+        return (nextAirplane, nextHop);
     }
 }

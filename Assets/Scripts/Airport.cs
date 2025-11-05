@@ -42,17 +42,34 @@ public class Airport : MonoBehaviour
         }
     }
 
-    public Airplane FindAirplaneForTravellersToAirport(Airport objectiveAirport)
+    public (Airplane, Airport) FindAirplaneForTravellersToAirport(Airport objectiveAirport)
     {
-        Airplane nextAirplane = RouteAssigner.Dijkstra(Info.DijkstraGraph, this, objectiveAirport);
+        (Airplane nextAirplane, Airport nextHop) = RouteAssigner.Dijkstra(Info.DijkstraGraph, this, objectiveAirport);
 
         if (nextAirplane is null)
         {
             Debug.Log("Cannot find next airplane of path for travellers.");
-            return null;
+            return (null, null);
         }
 
-        return nextAirplane;
+        if (nextHop is null)
+        {
+            Debug.Log("Cannot find next airport of path for travellers.");
+            return (null, null);
+        }
+
+
+        // INCLUDE THIS IN DIJKSTRA LATER ON ==============================================
+        Airport airport = Info.GetAirportOfAirplane(nextAirplane);
+
+        if (airport is not null)
+        {
+            return (nextAirplane, nextHop);
+        }
+        else
+        {
+            return (null, null);
+        }
     }
 
     public void TrackFlight(Flight flight)
@@ -60,11 +77,8 @@ public class Airport : MonoBehaviour
         flight.LandedEvent += HandleLanding;
     }
 
-    public Flight AssignTravellersToNextFlightOfAirplane(Airplane objAirplane, Airport objAirport)
+    public void AssignTravellersToNextFlightOfAirplane(Flight flight, Airplane objAirplane, Airport nextHop, Airport objAirport)
     {
-        // Create New Flight of Airplane
-        Flight flight = Auxiliary.CreateFlight(this, objAirport, Info.GetRouteOfAirplane(objAirplane), objAirplane);
-        hangar.Remove(objAirplane);
         int occupiedCapacity = flight.TravellersToAirport.Values.ToList().Sum();
         int remainingCapacity = objAirplane.Capacity - occupiedCapacity;
 
@@ -80,30 +94,49 @@ public class Airport : MonoBehaviour
             flight.TravellersToAirport[objAirport] += (travellersInAirport - remainingCapacity);
             TravellersToAirport[objAirport] -= (travellersInAirport - remainingCapacity);
         }
-
-        return flight;
     }
 
     public void HandleLanding(object sender, EventArgs e)
     {
         Flight flight = (Flight)sender;
-        
+
         hangar.Add(flight.airplane);
 
         // UPDATE DIJKSTRA IN AIRPORT FOR NEW TRAVELLERS ======================================
         Info.CalculateDijkstraGraph();
+
+        Dictionary<Airplane, Flight> createdFlights = new Dictionary<Airplane, Flight>();
+
+        // For all travellers in origin airport, assign each of the travellers an airplane
         foreach (Airport airport in TravellersToAirport.Keys)
         {
-            Airplane objAirplane = FindAirplaneForTravellersToAirport(airport);
-            Flight newFlight = AssignTravellersToNextFlightOfAirplane(objAirplane, airport);
-            newFlight.BoardFlight(TravellersToAirport);
-            newFlight.StartFlight();
+            Flight newFlight;
+
+            (Airplane objAirplane, Airport nextHop) = FindAirplaneForTravellersToAirport(airport);
+
+            if (objAirplane is null || nextHop is null)
+            {
+                continue;
+            }
+
+            if (createdFlights.Keys.Contains(objAirplane))
+            {
+                newFlight = createdFlights[objAirplane];
+            }
+            else
+            {
+                newFlight = Auxiliary.CreateFlight(this, nextHop, Info.savedRoutes[$"{Name}-{nextHop.Name}"], objAirplane);
+                createdFlights[objAirplane] = newFlight;
+            }
+
+            AssignTravellersToNextFlightOfAirplane(newFlight, objAirplane, nextHop, airport);
         }
 
-        // Create new flight from flight that landed
-        
-        //LaunchNewPlaneAfterLanding(flight);
-        
+        foreach (Flight tempFlight in createdFlights.Values)
+        {
+            tempFlight.StartFlight();
+        }
+
     }
 
     public void LaunchNewPlaneAfterLanding(Flight flight)

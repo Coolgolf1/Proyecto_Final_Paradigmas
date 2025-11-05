@@ -10,12 +10,12 @@ public class Flight : MonoBehaviour
     public Route route;
     public Airplane airplane;
 
-    private bool started;
+    public bool started;
 
     public event EventHandler LandedEvent;
     public bool landed;
 
-    public bool finished = false;
+    public bool finished;
 
     public double FlightProgress { get; private set; }
     public double ElapsedKM { get; private set; }
@@ -30,6 +30,10 @@ public class Flight : MonoBehaviour
         {
             TravellersToAirport.Add(airport, 0);
         }
+
+        started = false;
+        landed = false;
+        finished = false;
     }
 
     public void BoardFlight(Dictionary<Airport, int> passengers)
@@ -42,8 +46,6 @@ public class Flight : MonoBehaviour
                 continue;
             }
 
-            Debug.Log(passengers);
-            Debug.Log(passengers[airport]);
             TravellersToAirport[airport] += passengers[airport];
             numPassengers += TravellersToAirport[airport];
         }
@@ -68,8 +70,13 @@ public class Flight : MonoBehaviour
             }
         }
 
+        airportOrig.hangar.Remove(airplane);
 
         airportDest.TrackFlight(this);
+
+        Debug.Log("TRACKED");
+        Debug.Log(started);
+
     }
 
     public void EndFlight()
@@ -89,7 +96,7 @@ public class Flight : MonoBehaviour
         }
     }
 
-    
+
 
     public bool CheckLanded(double totalDistance)
     {
@@ -105,19 +112,19 @@ public class Flight : MonoBehaviour
 
     protected virtual void OnLanded()
     {
-        
+
         LandedEvent?.Invoke(this, EventArgs.Empty);
-        
+
     }
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    private void Start()
-    {
-        
-        started = false;
-        landed = false;
-    }
+    //private void Start()
+    //{
+
+    //    started = false;
+    //    landed = false;
+    //}
 
     // Update is called once per frame
     private void Update()
@@ -125,7 +132,7 @@ public class Flight : MonoBehaviour
         if (started && !landed)
         {
             airplane.gameObject.SetActive(true);
-            
+
             (ElapsedKM, FlightProgress) = airplane.UpdatePosition(route.routePoints, route.distance, ElapsedKM);
             landed = CheckLanded(route.distance);
         }
@@ -144,7 +151,7 @@ public class Flight : MonoBehaviour
             // Notify Airport of Landing
             OnLanded();
 
-            
+
         }
 
         if (finished)

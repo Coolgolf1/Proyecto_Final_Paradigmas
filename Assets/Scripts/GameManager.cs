@@ -51,6 +51,7 @@ public class GameManager : MonoBehaviour
             //route.AddPlaneToRoute(airplane);
             //route.airport1.hangar.Add(airplane);
             Info.savedRoutes[routeGO.name] = route;
+            Info.savedRoutes[$"{routeTuple.Item2}-{routeTuple.Item1}"] = route;
         }
 
         Info.savedAirports["Madrid"].hangar.Add(airplane);
@@ -72,24 +73,39 @@ public class GameManager : MonoBehaviour
 
         List<Airport> madridDestinations = Info.savedAirports["Madrid"].TravellersToAirport.Keys.ToList();
 
+        Dictionary<Airplane, Flight> madridFlights = new Dictionary<Airplane, Flight>();
+
         // For all travellers in origin airport, assign each of the travellers an airplane
-        Debug.Log(madridDestinations.Count);
         foreach (Airport airport in madridDestinations)
         {
-            Debug.Log("hola");
-            Airplane objAirplane = Info.savedAirports["Madrid"].FindAirplaneForTravellersToAirport(airport);
-            Debug.Log(objAirplane);
-            if (objAirplane != null && Info.savedAirports["Madrid"].hangar.Contains(objAirplane))
+            Flight flight;
+
+            (Airplane objAirplane, Airport nextHop) = Info.savedAirports["Madrid"].FindAirplaneForTravellersToAirport(airport);
+
+            if (objAirplane is null || nextHop is null)
             {
-                Debug.Log(Info.savedAirports["Madrid"].hangar.Count);
-                Flight flight = Info.savedAirports["Madrid"].AssignTravellersToNextFlightOfAirplane(objAirplane, airport);
-                flight.BoardFlight(Info.savedAirports["Madrid"].TravellersToAirport);
-                flight.StartFlight();
+                continue;
             }
+
+            if (madridFlights.Keys.Contains(objAirplane))
+            {
+                flight = madridFlights[objAirplane];
+            }
+            else
+            {
+                flight = Auxiliary.CreateFlight(Info.savedAirports["Madrid"], nextHop, Info.savedRoutes[$"Madrid-{nextHop.Name}"], objAirplane);
+                madridFlights[objAirplane] = flight;
+            }
+
+            Info.savedAirports["Madrid"].AssignTravellersToNextFlightOfAirplane(flight, objAirplane, nextHop, airport);
         }
 
-        
-
+        Debug.Log("====================");
+        foreach (Flight flight in madridFlights.Values)
+        {
+            Debug.Log("HOLAAAAAAAA");
+            flight.StartFlight();
+        }
     }
 
     // Update is called once per frame
