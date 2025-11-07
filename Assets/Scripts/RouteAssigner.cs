@@ -57,7 +57,6 @@ public static class RouteAssigner
                 // 2. Flight not yet created
                 else
                 {
-                    
                     return (airplane, 0);
                 }
 
@@ -155,6 +154,11 @@ public static class RouteAssigner
             Airport current = queue[0];
             queue.RemoveAt(0);
 
+            if (current == start)
+            {
+                continue;
+            }
+
             if (!graph.ContainsKey(current))
                 continue;
 
@@ -174,8 +178,8 @@ public static class RouteAssigner
                 }
             }
 
-            if (current == end)
-                break;
+            //if (current == end)
+            //    break;
 
         }
 

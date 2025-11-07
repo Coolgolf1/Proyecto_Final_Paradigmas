@@ -67,6 +67,9 @@ public class GameManager : MonoBehaviour
             airport.InitTravellers();
         }
 
+        //Info.savedAirports["Madrid"].TravellersToAirport[Info.savedAirports["Paris"]] = 10;
+        Info.savedAirports["Madrid"].TravellersToAirport[Info.savedAirports["San Francisco"]] = 10;
+
         // Load the real distances from dataset
         Auxiliary.LoadDistances(Info.savedRoutes);
 
@@ -84,6 +87,11 @@ public class GameManager : MonoBehaviour
 
         foreach (Airport airport in madridDestinations)
         {
+            if (Info.savedAirports["Madrid"].TravellersToAirport[airport] <= 0)
+            {
+                continue;
+            }
+
             Flight flight;
 
             (Airplane objAirplane, Airport nextHop) = Info.savedAirports["Madrid"].FindAirplaneForTravellersToAirport(airport);
@@ -111,7 +119,10 @@ public class GameManager : MonoBehaviour
         {
             
             flight.StartFlight();
+            Debug.Log(flight.TravellersToAirport[Info.savedAirports["San Francisco"]]);
         }
+
+        
     }
 
     // Update is called once per frame

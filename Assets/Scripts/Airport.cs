@@ -32,14 +32,14 @@ public class Airport : MonoBehaviour
             }
         }
 
-        foreach (Airport airport in Info.savedAirports.Values.ToList())
-        {
-            if (airport != this)
-            {
-                // TODO: CHANGE LATER TO RANDOM OR SOMETHING DIFFERENT ======================================
-                TravellersToAirport[airport] = 10;
-            }
-        }
+        //foreach (Airport airport in Info.savedAirports.Values.ToList())
+        //{
+        //    if (airport != this)
+        //    {
+        //        // TODO: CHANGE LATER TO RANDOM OR SOMETHING DIFFERENT ======================================
+        //        TravellersToAirport[airport] = 10;
+        //    }
+        //}
     }
 
     public (Airplane, Airport) FindAirplaneForTravellersToAirport(Airport objectiveAirport)
@@ -104,15 +104,22 @@ public class Airport : MonoBehaviour
         Info.flights.Remove(flight);
 
         // UPDATE DIJKSTRA IN AIRPORT FOR NEW TRAVELLERS ======================================
-        Info.CalculateDijkstraGraph();
+        //Info.CalculateDijkstraGraph();
 
         Dictionary<Airplane, Flight> createdFlights = new Dictionary<Airplane, Flight>();
-        
+
         // For all travellers in origin airport, assign each of the travellers an airplane
         var origKeys = new List<Airport> (TravellersToAirport.Keys);
         foreach (Airport airport in origKeys)
         {
-            
+            // If no travellers to airport, skip airport
+            if (TravellersToAirport[airport] <= 0)
+            {
+                continue;
+            }
+
+            //Debug.Log($"{this}: {airport}-{TravellersToAirport[airport]}");
+
             Flight newFlight;
 
             (Airplane objAirplane, Airport nextHop) = FindAirplaneForTravellersToAirport(airport);
@@ -144,7 +151,6 @@ public class Airport : MonoBehaviour
             tempFlight.StartFlight();
             
         }
-
     }
 
     public void LaunchNewPlaneAfterLanding(Flight flight)

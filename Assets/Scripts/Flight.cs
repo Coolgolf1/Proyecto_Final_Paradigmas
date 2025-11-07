@@ -74,8 +74,6 @@ public class Flight : MonoBehaviour
 
         airportDest.TrackFlight(this);
 
-       
-
     }
 
     public void EndFlight()
@@ -147,9 +145,6 @@ public class Flight : MonoBehaviour
         {
             // Remove plane from world simulation
             airplane.gameObject.SetActive(false);
-
-            // Change hangar of airplane
-            airportOrig.hangar.Remove(airplane);
 
             // Add Passengers to Airport
             EndFlight();
