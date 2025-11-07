@@ -161,9 +161,15 @@ public class Airport : MonoBehaviour
     {
         transform.position = location.coords;
 
-        Vector3 up = (location.coords - Vector3.zero).normalized;
+        Vector3 up = (transform.position - Vector3.zero).normalized;
 
-        this.transform.rotation = Quaternion.LookRotation(Vector3.forward, up);
+        // Elige un vector "forward" perpendicular a "up".
+        // Si "up" está cerca de Vector3.up, usa Vector3.forward, si no, usa Vector3.up.
+        Vector3 forward = Vector3.Cross(up, Vector3.right);
+        if (forward == Vector3.zero)
+            forward = Vector3.Cross(up, Vector3.forward);
+
+        transform.rotation = Quaternion.LookRotation(forward, up);
     }
 
     // Update is called once per frame
