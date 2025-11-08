@@ -42,6 +42,10 @@ public static class Info
 
     public static Dictionary<Airport, List<RouteAssigner.Edge>> DijkstraGraph { get; private set; }
 
+    public static AirportUI airportUI;
+
+    public static Camera playerCamera;
+
 
     public static void CalculateDijkstraGraph()
     {

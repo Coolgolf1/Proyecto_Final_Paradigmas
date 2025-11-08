@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor.Timeline.Actions;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class Airport : MonoBehaviour
 {
@@ -17,9 +19,42 @@ public class Airport : MonoBehaviour
     public Location location;
     public GameObject modelPrefab;
 
+    private InputAction clickAction;
+    private Camera cam;
+
     public void Awake()
     {
         TravellersToAirport = new Dictionary<Airport, int>();
+        clickAction = InputSystem.actions.FindAction("Click");
+        cam = Info.playerCamera;
+    }
+    private void OnEnable()
+    {
+        clickAction.performed += OnClick;
+        clickAction.Enable();
+    }
+
+    private void OnDisable()
+    {
+        clickAction.performed -= OnClick;
+        clickAction.Disable();
+    }
+
+    private void OnClick(InputAction.CallbackContext ctx)
+    {
+        Vector2 screenPos = Mouse.current.position.ReadValue();
+        Ray ray = cam.ScreenPointToRay(screenPos);
+        
+        if (Physics.Raycast(ray, out RaycastHit hit))
+        {
+            // Detecta colisión con este objeto
+            if (hit.collider.gameObject == this.gameObject)
+            {
+                Info.airportUI.gameObject.SetActive(true);
+                Info.airportUI.ShowAirport(this);
+            }
+            
+        }
     }
 
     public void InitTravellers()
@@ -181,5 +216,6 @@ public class Airport : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
+        
     }
 }
