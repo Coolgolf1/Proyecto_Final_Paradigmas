@@ -16,9 +16,14 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private GameObject earth;
 
+    [SerializeField] private AirportUI airportUI;
+    [SerializeField] private Camera playerCamera;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Start()
     {
+        Info.airportUI = airportUI;
+        Info.playerCamera = playerCamera;
         // Save data of airports 
         foreach (string city in Info.locations.Keys)
         {
