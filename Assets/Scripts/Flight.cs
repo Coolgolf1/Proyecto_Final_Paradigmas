@@ -36,25 +36,25 @@ public class Flight : MonoBehaviour
         finished = false;
     }
 
-    public void BoardFlight(Dictionary<Airport, int> passengers)
-    {
-        int numPassengers = 0;
-        foreach (Airport airport in Info.savedAirports.Values)
-        {
-            if (airport == airportOrig)
-            {
-                continue;
-            }
+    //public void BoardFlight(Dictionary<Airport, int> passengers)
+    //{
+    //    int numPassengers = 0;
+    //    foreach (Airport airport in Info.savedAirports.Values)
+    //    {
+    //        if (airport == airportOrig)
+    //        {
+    //            continue;
+    //        }
 
-            TravellersToAirport[airport] += passengers[airport];
-            numPassengers += TravellersToAirport[airport];
-        }
+    //        TravellersToAirport[airport] += passengers[airport];
+    //        numPassengers += TravellersToAirport[airport];
+    //    }
 
-        if (numPassengers > airplane.Capacity)
-        {
-            throw new Exception("Airplane capacity surpassed.");
-        }
-    }
+    //    if (numPassengers > airplane.Capacity)
+    //    {
+    //        throw new Exception("Airplane capacity surpassed.");
+    //    }
+    //}
 
     public void StartFlight()
     {
@@ -62,13 +62,13 @@ public class Flight : MonoBehaviour
         FlightProgress = 0;
         ElapsedKM = 0;
 
-        foreach (Airport airport in Info.savedAirports.Values)
-        {
-            if (airport != airportOrig)
-            {
-                airportOrig.TravellersToAirport[airport] -= TravellersToAirport[airport];
-            }
-        }
+        //foreach (Airport airport in Info.savedAirports.Values)
+        //{
+        //    if (airport != airportOrig)
+        //    {
+        //        airportOrig.TravellersToAirport[airport] -= TravellersToAirport[airport];
+        //    }
+        //}
 
         airportOrig.hangar.Remove(airplane);
 

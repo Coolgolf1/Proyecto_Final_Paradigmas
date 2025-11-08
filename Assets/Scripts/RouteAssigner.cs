@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using UnityEngine;
 
 public static class RouteAssigner
 {
@@ -41,7 +40,7 @@ public static class RouteAssigner
 
             Flight flight = Info.GetFlightOfAirplane(airplane);
 
-            Debug.Log(airplane);
+            //Debug.Log(airplane);
 
             // 1. Flight assigned but in Hangar
             if (flight is not null)
