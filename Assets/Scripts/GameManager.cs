@@ -68,8 +68,8 @@ public class GameManager : MonoBehaviour
         }
 
         //Info.savedAirports["Madrid"].TravellersToAirport[Info.savedAirports["Paris"]] = 10;
+        Info.savedAirports["Madrid"].TravellersToAirport[Info.savedAirports["Dubai"]] = 1000;
         Info.savedAirports["Madrid"].TravellersToAirport[Info.savedAirports["Shanghai"]] = 10;
-        //Info.savedAirports["Dubai"].TravellersToAirport[Info.savedAirports["Madrid"]] = 10;
 
         // Load the real distances from dataset
         Auxiliary.LoadRouteDistances(Info.savedRoutes);
@@ -86,8 +86,12 @@ public class GameManager : MonoBehaviour
 
         // For all travellers in origin airport, assign each of the travellers an airplane
 
-        foreach (Airport airport in destinations)
+        Queue<Airport> airportQueue = new Queue<Airport>(destinations);
+
+        while (airportQueue.Count > 0)
         {
+            Airport airport = airportQueue.Dequeue();
+
             if (airport == Info.savedAirports["Madrid"])
             {
                 continue;
@@ -98,34 +102,48 @@ public class GameManager : MonoBehaviour
                 continue;
             }
 
-            Debug.Log(airport);
+            HashSet<Airplane> usedThisIteration = new HashSet<Airplane>();
 
-            Flight flight;
-
-            (Airplane objAirplane, Airport nextHop) = Info.savedAirports["Madrid"].FindAirplaneForTravellersToAirport(airport);
-
-            if (objAirplane is null || nextHop is null)
+            while (Info.savedAirports["Madrid"].TravellersToAirport[airport] > 0)
             {
-                continue;
+                Flight flight;
+
+                (Airplane objAirplane, Airport nextHop) = Info.savedAirports["Madrid"].FindAirplaneForTravellersToAirport(airport);
+
+                if (objAirplane is null || nextHop is null)
+                {
+                    continue;
+                }
+
+                if (usedThisIteration.Contains(objAirplane))
+                {
+                    break; // or: try to pick another plane if your selector supports exclusion
+                }
+                usedThisIteration.Add(objAirplane);
+
+
+                if (madridFlights.Keys.Contains(objAirplane))
+                {
+                    flight = madridFlights[objAirplane];
+                }
+                else
+                {
+                    flight = Auxiliary.CreateFlight(Info.savedAirports["Madrid"], nextHop, Info.savedRoutes[$"Madrid-{nextHop.Name}"], objAirplane);
+                    madridFlights[objAirplane] = flight;
+                }
+
+                Info.savedAirports["Madrid"].AssignTravellersToNextFlightOfAirplane(flight, objAirplane, nextHop, airport);
             }
 
-            if (madridFlights.Keys.Contains(objAirplane))
+            if (Info.savedAirports["Madrid"].TravellersToAirport[airport] > 0)
             {
-                flight = madridFlights[objAirplane];
+                airportQueue.Enqueue(airport);
             }
-            else
-            {
-                flight = Auxiliary.CreateFlight(Info.savedAirports["Madrid"], nextHop, Info.savedRoutes[$"Madrid-{nextHop.Name}"], objAirplane);
-                madridFlights[objAirplane] = flight;
-            }
-
-            Info.savedAirports["Madrid"].AssignTravellersToNextFlightOfAirplane(flight, objAirplane, nextHop, airport);
         }
 
 
         foreach (Flight flight in madridFlights.Values)
         {
-
             flight.StartFlight();
         }
 
