@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEngine;
 
 public static class RouteAssigner
 {
@@ -17,51 +18,62 @@ public static class RouteAssigner
     private static (Airplane, double) GetFastestAirplaneAndTime(Airport origin, Edge edge, Airport start)
     {
         // Compute the shortest possible time (in hours) among all airplanes
-        double bestTime = double.PositiveInfinity;
+        double bestDistance = double.PositiveInfinity;
         Airplane bestAirplane = null;
         //double flightTime = 0;
 
-        foreach (Airplane airplane in Info.airplanes)
+        foreach (Airplane airplane in start.hangar)
         {
             // Check if it is in another hangar different to the ones in route
             Airport airportHangar = Info.GetAirportOfAirplane(airplane);
 
-            if (airportHangar != start && airportHangar != edge.To)
-            {
-                continue;
-            }
+            //if (airportHangar != start && airportHangar != edge.To)
+            //{
+            //    continue;
+            //}
 
-            if (airportHangar != start)
-            {
-                continue;
-            }
-            else
-            {
-                Flight flight = Info.GetFlightOfAirplane(airplane);
+            //if (airportHangar != start)
+            //{
+            //    continue;
+            //}
 
-                // 1. Flight assigned but in Hangar
-                if (flight is not null)
+            double tempDistance;
+
+            Flight flight = Info.GetFlightOfAirplane(airplane);
+
+            Debug.Log(airplane);
+
+            // 1. Flight assigned but in Hangar
+            if (flight is not null)
+            {
+                Airport airportDest = flight.airportDest;
+
+                if (airportDest == edge.To)
                 {
-                    Airport airportDest = flight.airportDest;
-
-                    if (airportDest == edge.To)
-                    {
-                        return (airplane, 0);
-                    }
-                    else
-                    {
-                        // Get optimal path from one node to another
-                        return (airplane, flight.route.distance);
-                    }
+                    tempDistance = 0;
                 }
-                // 2. Flight not yet created
                 else
                 {
-                    return (airplane, Auxiliary.GetDistanceBeteweenAirports(origin, edge.To));
-                }
+                    tempDistance = flight.route.distance;
 
-                // Calcular Ruta Más Corta y Barata
+                }
             }
+            // 2. Flight not yet created
+            else
+            {
+                tempDistance = Auxiliary.GetDistanceBeteweenAirports(origin, edge.To);
+            }
+
+            // Choose best airplane with distance
+            if (tempDistance <= bestDistance)
+            {
+                bestDistance = tempDistance;
+                bestAirplane = airplane;
+            }
+
+
+
+            // Calcular Ruta Más Corta y Barata
 
             //// Check if the airplane is in possible route
             //if (Info.GetTakeoffAirportOfAirplane(airplane) != origin && Info.GetLandingAirportOfAirplane(airplane) != origin)
@@ -124,7 +136,7 @@ public static class RouteAssigner
             //}
         }
 
-        return (bestAirplane, bestTime);
+        return (bestAirplane, bestDistance);
     }
 
     //public static (Airplane) GetAirplaneInHangar()
@@ -132,10 +144,15 @@ public static class RouteAssigner
     //    
     //}
 
-    public static (Airplane, Airport) Dijkstra(
+    public static Airport GetNextHop(List<Airport> path)
+    {
+        return path.Count >= 2 ? path[1] : null;
+    }
+
+    public static (Airplane, List<Airport>) Dijkstra(
           Dictionary<Airport, List<Edge>> graph,
           Airport start,
-          Airport end)
+          Airport end, bool getFullPath = false)
     {
         Dictionary<Airport, double> distanceFromStart = new Dictionary<Airport, double>();
         Dictionary<Airport, Airport> previous = new Dictionary<Airport, Airport>();
@@ -213,12 +230,13 @@ public static class RouteAssigner
         }
         path.Insert(0, start);
 
-        Airport nextHop = path.Count >= 2 ? path[1] : null;
+        Airport nextHop = GetNextHop(path);
 
         Airplane nextAirplane = null;
         if (nextHop != null)
             airplaneUsed.TryGetValue(nextHop, out nextAirplane);
 
-        return (nextAirplane, nextHop);
+
+        return (nextAirplane, path);
     }
 }

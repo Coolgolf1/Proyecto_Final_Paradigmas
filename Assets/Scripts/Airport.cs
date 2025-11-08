@@ -44,7 +44,7 @@ public class Airport : MonoBehaviour
 
     public (Airplane, Airport) FindAirplaneForTravellersToAirport(Airport objectiveAirport)
     {
-        (Airplane nextAirplane, Airport nextHop) = RouteAssigner.Dijkstra(Info.DijkstraGraph, this, objectiveAirport);
+        (Airplane nextAirplane, List<Airport> path) = RouteAssigner.Dijkstra(Info.DijkstraGraph, this, objectiveAirport);
 
         if (nextAirplane is null)
         {
@@ -52,19 +52,20 @@ public class Airport : MonoBehaviour
             return (null, null);
         }
 
-        if (nextHop is null)
+        if (path is null)
         {
-            Debug.Log("Cannot find next airport of path for travellers.");
+            Debug.Log("Cannot find path for travellers.");
             return (null, null);
         }
 
+        // ======== USE PATH LATER ON TO CHOOSE AIRPLANES IF NECESSARY ===================
 
         // INCLUDE THIS IN DIJKSTRA LATER ON ==============================================
         Airport airport = Info.GetAirportOfAirplane(nextAirplane);
 
         if (airport is not null)
         {
-            return (nextAirplane, nextHop);
+            return (nextAirplane, RouteAssigner.GetNextHop(path));
         }
         else
         {
@@ -110,8 +111,18 @@ public class Airport : MonoBehaviour
 
         // For all travellers in origin airport, assign each of the travellers an airplane
         var origKeys = new List<Airport>(TravellersToAirport.Keys);
-        foreach (Airport airport in origKeys)
+
+        Queue<Airport> airportQueue = new Queue<Airport>(Info.savedAirports.Values.ToList());
+
+        while (airportQueue.Count > 0)
         {
+            Airport airport = airportQueue.Dequeue();
+
+            if (airport == this)
+            {
+                continue;
+            }
+
             // If no travellers to airport, skip airport
             if (TravellersToAirport[airport] <= 0)
             {
@@ -120,47 +131,60 @@ public class Airport : MonoBehaviour
 
             //Debug.Log($"{this}: {airport}-{TravellersToAirport[airport]}");
 
-            Flight newFlight;
+            HashSet<Airplane> usedThisIteration = new HashSet<Airplane>();
 
-            (Airplane objAirplane, Airport nextHop) = FindAirplaneForTravellersToAirport(airport);
-
-            if (objAirplane is null || nextHop is null)
+            while (TravellersToAirport[airport] > 0)
             {
-                continue;
+                Flight newFlight;
+
+                (Airplane objAirplane, Airport nextHop) = FindAirplaneForTravellersToAirport(airport);
+
+                if (objAirplane is null || nextHop is null)
+                {
+                    continue;
+                }
+
+                if (usedThisIteration.Contains(objAirplane))
+                {
+                    break; // or: try to pick another plane 
+                }
+                usedThisIteration.Add(objAirplane);
+
+                if (createdFlights.Keys.Contains(objAirplane))
+                {
+                    newFlight = createdFlights[objAirplane];
+
+                }
+                else
+                {
+                    newFlight = Auxiliary.CreateFlight(this, nextHop, Info.savedRoutes[$"{Name}-{nextHop.Name}"], objAirplane);
+                    createdFlights[objAirplane] = newFlight;
+
+                }
+
+                AssignTravellersToNextFlightOfAirplane(newFlight, objAirplane, nextHop, airport);
             }
 
-            if (createdFlights.Keys.Contains(objAirplane))
+            if (TravellersToAirport[airport] > 0)
             {
-                newFlight = createdFlights[objAirplane];
-
+                airportQueue.Enqueue(airport);
             }
-            else
-            {
-                newFlight = Auxiliary.CreateFlight(this, nextHop, Info.savedRoutes[$"{Name}-{nextHop.Name}"], objAirplane);
-                createdFlights[objAirplane] = newFlight;
-
-            }
-
-            AssignTravellersToNextFlightOfAirplane(newFlight, objAirplane, nextHop, airport);
-
         }
 
         foreach (Flight tempFlight in createdFlights.Values)
         {
-
             tempFlight.StartFlight();
-
         }
     }
 
-    public void LaunchNewPlaneAfterLanding(Flight flight)
-    {
-        Airplane airplane = flight.airplane;
-        Flight newFlight = Auxiliary.CreateFlight(this, Info.GetLandingAirportOfAirplane(airplane), Info.GetRouteOfAirplane(airplane), airplane);
+    //public void LaunchNewPlaneAfterLanding(Flight flight)
+    //{
+    //    Airplane airplane = flight.airplane;
+    //    Flight newFlight = Auxiliary.CreateFlight(this, Info.GetLandingAirportOfAirplane(airplane), Info.GetRouteOfAirplane(airplane), airplane);
 
-        newFlight.BoardFlight(TravellersToAirport);
-        Instantiate(newFlight);
-    }
+    //    newFlight.BoardFlight(TravellersToAirport);
+    //    Instantiate(newFlight);
+    //}
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Start()

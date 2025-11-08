@@ -68,8 +68,8 @@ public class GameManager : MonoBehaviour
         }
 
         //Info.savedAirports["Madrid"].TravellersToAirport[Info.savedAirports["Paris"]] = 10;
-        Info.savedAirports["Madrid"].TravellersToAirport[Info.savedAirports["Dubai"]] = 1000;
-        Info.savedAirports["Madrid"].TravellersToAirport[Info.savedAirports["Shanghai"]] = 10;
+        Info.savedAirports["Madrid"].TravellersToAirport[Info.savedAirports["Dubai"]] = 10;
+        Info.savedAirports["Madrid"].TravellersToAirport[Info.savedAirports["Paris"]] = 10;
 
         // Load the real distances from dataset
         Auxiliary.LoadRouteDistances(Info.savedRoutes);
@@ -117,7 +117,7 @@ public class GameManager : MonoBehaviour
 
                 if (usedThisIteration.Contains(objAirplane))
                 {
-                    break; // or: try to pick another plane if your selector supports exclusion
+                    break; // or: try to pick another plane 
                 }
                 usedThisIteration.Add(objAirplane);
 
