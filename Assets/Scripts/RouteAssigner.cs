@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using UnityEngine;
 
 public static class RouteAssigner
 {
@@ -15,7 +14,7 @@ public static class RouteAssigner
         }
     }
 
-    private static (Airplane, double) GetFastestAirplaneAndTime(Airport origin, Edge edge)
+    private static (Airplane, double) GetFastestAirplaneAndTime(Airport origin, Edge edge, Airport start)
     {
         // Compute the shortest possible time (in hours) among all airplanes
         double bestTime = double.PositiveInfinity;
@@ -26,12 +25,13 @@ public static class RouteAssigner
         {
             // Check if it is in another hangar different to the ones in route
             Airport airportHangar = Info.GetAirportOfAirplane(airplane);
-            if (airportHangar != origin && airportHangar != edge.To)
+
+            if (airportHangar != start && airportHangar != edge.To)
             {
                 continue;
             }
 
-            if (airportHangar != origin)
+            if (airportHangar != start)
             {
                 continue;
             }
@@ -46,18 +46,18 @@ public static class RouteAssigner
 
                     if (airportDest == edge.To)
                     {
-                    
                         return (airplane, 0);
                     }
                     else
                     {
-                        continue;
+                        // Get optimal path from one node to another
+                        return (airplane, flight.route.distance);
                     }
                 }
                 // 2. Flight not yet created
                 else
                 {
-                    return (airplane, 0);
+                    return (airplane, Auxiliary.GetDistanceBeteweenAirports(origin, edge.To));
                 }
 
                 // Calcular Ruta Más Corta y Barata
@@ -137,56 +137,71 @@ public static class RouteAssigner
           Airport start,
           Airport end)
     {
-        Dictionary<Airport, double> timeFromStart = new Dictionary<Airport, double>();
+        Dictionary<Airport, double> distanceFromStart = new Dictionary<Airport, double>();
         Dictionary<Airport, Airport> previous = new Dictionary<Airport, Airport>();
-        List<Airport> queue = new List<Airport>(graph.Keys);
+        PriorityQueue<Airport> queue = new PriorityQueue<Airport>();
         Dictionary<Airport, Airplane> airplaneUsed = new Dictionary<Airport, Airplane>();
 
         // Initialize 
         foreach (Airport node in graph.Keys)
-            timeFromStart[node] = double.PositiveInfinity;
+        {
+            distanceFromStart[node] = double.PositiveInfinity;
+        }
 
-        timeFromStart[start] = 0;
+        distanceFromStart[start] = 0;
+        queue.Enqueue(start, 0);
+
+        HashSet<Airport> processed = new HashSet<Airport>();
 
         while (queue.Count > 0)
         {
-            queue.Sort((a, b) => timeFromStart[a].CompareTo(timeFromStart[b]));
-            Airport current = queue[0];
-            queue.RemoveAt(0);
+            Airport current = queue.Dequeue();
+            double currentDistance = distanceFromStart[current];
 
-            if (current == start)
-            {
-                continue;
-            }
+            if (current == end)
+                break;
 
             if (!graph.ContainsKey(current))
                 continue;
 
+            if (processed.Contains(current))
+                continue;
+
+            processed.Add(current);
+
+            //Debug.Log("===============");
             foreach (Edge edge in graph[current])
             {
-                (Airplane airplane, double cost) = GetFastestAirplaneAndTime(current, edge);
+                (Airplane airplane, double cost) = GetFastestAirplaneAndTime(current, edge, start);
 
                 if (airplane is null) continue;
                 if (double.IsInfinity(cost)) continue;
 
-                double alt = timeFromStart[current] + cost;
-                if (alt < timeFromStart[edge.To])
+                Airport neighbor = edge.To;
+                double newDistance = currentDistance + cost;
+
+                //Debug.Log(newDistance);
+                //Debug.Log(distanceFromStart[neighbor]);
+
+                //Debug.Log(edge.To);
+                //Debug.Log(distanceFromStart[neighbor]);
+                if (newDistance <= distanceFromStart[neighbor])
                 {
-                    timeFromStart[edge.To] = alt;
-                    previous[edge.To] = current;
-                    airplaneUsed[edge.To] = airplane;
+                    //Debug.Log(neighbor);
+                    distanceFromStart[neighbor] = newDistance;
+                    previous[neighbor] = current;
+                    airplaneUsed[neighbor] = airplane;
+                    queue.Enqueue(neighbor, (int)newDistance);
                 }
             }
-
-            //if (current == end)
-            //    break;
-
         }
 
         // If nothing found
         if (!previous.ContainsKey(end) && start != end)
+        {
+            //Debug.Log("HEEEEEELPPPPPPPPPPPPPP");
             return (null, null);
-
+        }
 
         // Reconstruct path
         List<Airport> path = new List<Airport>();

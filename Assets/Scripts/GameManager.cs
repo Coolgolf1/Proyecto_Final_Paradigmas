@@ -68,10 +68,11 @@ public class GameManager : MonoBehaviour
         }
 
         //Info.savedAirports["Madrid"].TravellersToAirport[Info.savedAirports["Paris"]] = 10;
-        Info.savedAirports["Madrid"].TravellersToAirport[Info.savedAirports["San Francisco"]] = 10;
+        Info.savedAirports["Madrid"].TravellersToAirport[Info.savedAirports["Shanghai"]] = 10;
+        //Info.savedAirports["Dubai"].TravellersToAirport[Info.savedAirports["Madrid"]] = 10;
 
         // Load the real distances from dataset
-        Auxiliary.LoadDistances(Info.savedRoutes);
+        Auxiliary.LoadRouteDistances(Info.savedRoutes);
 
         // Calculate initial Dijkstra Graph
         Info.CalculateDijkstraGraph();
@@ -79,18 +80,25 @@ public class GameManager : MonoBehaviour
         // Create Madrid-Dubai Flight
         //Flight flight = Auxiliary.CreateFlight(Info.savedAirports["Madrid"], Info.savedAirports["Dubai"], Info.savedRoutes["Madrid-Dubai"], airplane);
 
-        List<Airport> madridDestinations = Info.savedAirports["Madrid"].TravellersToAirport.Keys.ToList();
+        List<Airport> destinations = Info.savedAirports.Values.ToList();
 
         Dictionary<Airplane, Flight> madridFlights = new Dictionary<Airplane, Flight>();
 
         // For all travellers in origin airport, assign each of the travellers an airplane
 
-        foreach (Airport airport in madridDestinations)
+        foreach (Airport airport in destinations)
         {
+            if (airport == Info.savedAirports["Madrid"])
+            {
+                continue;
+            }
+
             if (Info.savedAirports["Madrid"].TravellersToAirport[airport] <= 0)
             {
                 continue;
             }
+
+            Debug.Log(airport);
 
             Flight flight;
 
@@ -114,15 +122,14 @@ public class GameManager : MonoBehaviour
             Info.savedAirports["Madrid"].AssignTravellersToNextFlightOfAirplane(flight, objAirplane, nextHop, airport);
         }
 
-        
+
         foreach (Flight flight in madridFlights.Values)
         {
-            
+
             flight.StartFlight();
-            Debug.Log(flight.TravellersToAirport[Info.savedAirports["San Francisco"]]);
         }
 
-        
+
     }
 
     // Update is called once per frame

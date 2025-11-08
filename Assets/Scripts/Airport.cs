@@ -109,7 +109,7 @@ public class Airport : MonoBehaviour
         Dictionary<Airplane, Flight> createdFlights = new Dictionary<Airplane, Flight>();
 
         // For all travellers in origin airport, assign each of the travellers an airplane
-        var origKeys = new List<Airport> (TravellersToAirport.Keys);
+        var origKeys = new List<Airport>(TravellersToAirport.Keys);
         foreach (Airport airport in origKeys)
         {
             // If no travellers to airport, skip airport
@@ -132,24 +132,24 @@ public class Airport : MonoBehaviour
             if (createdFlights.Keys.Contains(objAirplane))
             {
                 newFlight = createdFlights[objAirplane];
-                
+
             }
             else
             {
                 newFlight = Auxiliary.CreateFlight(this, nextHop, Info.savedRoutes[$"{Name}-{nextHop.Name}"], objAirplane);
                 createdFlights[objAirplane] = newFlight;
-               
+
             }
 
             AssignTravellersToNextFlightOfAirplane(newFlight, objAirplane, nextHop, airport);
-            
+
         }
-       
+
         foreach (Flight tempFlight in createdFlights.Values)
         {
-            
+
             tempFlight.StartFlight();
-            
+
         }
     }
 

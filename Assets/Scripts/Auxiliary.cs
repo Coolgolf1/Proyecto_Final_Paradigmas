@@ -8,7 +8,34 @@ static class Auxiliary
 
     static double defaultDistance = 10000;
 
-    public static void LoadDistances(Dictionary<string, Route> routes)
+    public static double GetDistanceBeteweenAirports(Airport airport1, Airport airport2)
+    {
+        string[] lines = File.ReadAllLines(pathName)[1..];
+
+        string a1 = airport1.Name;
+        string a2 = airport2.Name;
+
+        string codeA1 = Info.stringCityCodes[a1];
+        string codeA2 = Info.stringCityCodes[a2];
+
+        foreach (string line in lines)
+        {
+            string[] data = line.Split(",");
+            string codes = data[0];
+
+            if (codes == $"{codeA1}-{codeA2}" || codes == $"{codeA2}-{codeA1}")
+            {
+                double distance = double.Parse(data[1]);
+                return distance;
+            }
+        }
+
+        // If search fails
+        Debug.Log($"DISTANCE FAIL SEARCH {airport1}-{airport2}.");
+        return defaultDistance;
+    }
+
+    public static void LoadRouteDistances(Dictionary<string, Route> routes)
     {
         string[] lines = File.ReadAllLines(pathName)[1..];
 

@@ -45,6 +45,7 @@ public static class Info
 
     public static void CalculateDijkstraGraph()
     {
+        // Initialize Dijkstra Graph
         if (DijkstraGraph == null)
         {
             DijkstraGraph = new Dictionary<Airport, List<RouteAssigner.Edge>>();
@@ -55,27 +56,68 @@ public static class Info
             }
         }
 
-        foreach (Airport airport in savedAirports.Values.ToList())
+        // Make sure all airports are included
+        foreach (Airport airport in savedAirports.Values)
+        {
+            if (!DijkstraGraph.ContainsKey(airport))
+            {
+                DijkstraGraph.Add(airport, new List<RouteAssigner.Edge>());
+            }
+        }
+
+        // Clear all airport information
+        foreach (Airport airport in DijkstraGraph.Keys)
         {
             DijkstraGraph[airport].Clear();
+        }
 
-            foreach (Route route in savedRoutes.Values.ToList())
+        // Save edges information in Dijkstra Graph
+        foreach (Route route in savedRoutes.Values)
+        {
+            Airport airport1 = route.airport1;
+            Airport airport2 = route.airport2;
+            double distance = route.distance;
+
+            // Ensure keys exist (in case a route references an airport not in savedAirports)
+            //if (!DijkstraGraph.ContainsKey(airport1))
+            //    DijkstraGraph.Add(airport1, new List<RouteAssigner.Edge>());
+            //if (!DijkstraGraph.ContainsKey(airport2))
+            //    DijkstraGraph.Add(airport2, new List<RouteAssigner.Edge>());
+
+            // Forward: airport1 -> airport2 
+            List<RouteAssigner.Edge> edges1 = DijkstraGraph[airport1];
+
+            // Check if edge from airport1 to airport2 already exists
+            bool exists1 = false;
+            foreach (RouteAssigner.Edge edge in edges1)
             {
-                if (airport == route.airport1 || airport == route.airport2)
+                if (edge.To == airport2)
                 {
-                    Airport airportDest = null;
-
-                    if (airport == route.airport1)
-                    {
-                        airportDest = route.airport2;
-                    }
-                    else if (airport == route.airport2)
-                    {
-                        airportDest = route.airport1;
-                    }
-
-                    DijkstraGraph[airport].Add(new RouteAssigner.Edge(airportDest, route.distance));
+                    exists1 = true;
                 }
+            }
+
+            if (!exists1)
+            {
+                edges1.Add(new RouteAssigner.Edge(airport2, distance));
+            }
+
+            // Reverse: airport2 -> airport1
+            List<RouteAssigner.Edge> edges2 = DijkstraGraph[airport2];
+
+            // Check if edge from airport2 to airport1 already exists
+            bool exists2 = false;
+            foreach (RouteAssigner.Edge edge in edges2)
+            {
+                if (edge.To == airport1)
+                {
+                    exists2 = true;
+                }
+            }
+
+            if (!exists2)
+            {
+                edges2.Add(new RouteAssigner.Edge(airport1, distance));
             }
         }
     }
