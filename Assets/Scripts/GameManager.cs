@@ -24,6 +24,7 @@ public class GameManager : MonoBehaviour
     {
         Info.airportUI = airportUI;
         Info.playerCamera = playerCamera;
+
         // Save data of airports 
         foreach (string city in Info.locations.Keys)
         {
@@ -70,6 +71,8 @@ public class GameManager : MonoBehaviour
         foreach (Airport airport in Info.savedAirports.Values)
         {
             airport.InitTravellers();
+
+            Info.airplanesGoingFromEmptyAirport[airport] = new List<Airplane>();
         }
 
         //Info.savedAirports["Madrid"].TravellersToAirport[Info.savedAirports["Paris"]] = 10;

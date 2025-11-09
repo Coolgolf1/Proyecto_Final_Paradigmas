@@ -148,8 +148,8 @@ public class Airport : MonoBehaviour
             if (travellers <= 0)
                 continue;
 
-            // Check airport doesn't have any airplanes 
-            if (airport.hangar.Count <= 0)
+            // Check airport doesn't have any airplanes in hangar
+            if (airport.hangar.Count > 0)
                 continue;
 
             // If a plane is already going there and its capacity is enough, no need to take plane
@@ -158,8 +158,12 @@ public class Airport : MonoBehaviour
             {
                 Flight flight = Info.GetFlightOfAirplane(airplane);
 
+                // Check if flight exists
+                if (flight == null)
+                    continue;
+
                 // Check if airplane going to airport
-                if (flight.airportDest != airport)
+                if (flight.airportDest != airport && !Info.airplanesGoingFromEmptyAirport[airport].Contains(airplane))
                     continue;
 
                 // Check if airplane has enough capacity
@@ -180,24 +184,31 @@ public class Airport : MonoBehaviour
         return null;
     }
 
-    public (Airplane, Airport) GetAirplaneAndAirportToEmptyAirport()
+    public (Airplane, Airport, Airport) GetAirplaneAndAirportToEmptyAirport()
     {
         int travellers = TravellersToAirport.Values.Sum();
 
         if (travellers > 0)
-            return (null, null);
+            return (null, null, null);
 
-        // ============================================================ FALLA ALGO AQUÍ AL BUSCAR UN AEROPUERTO SI EN SU AEROPUERTO NO HAY MÁS GENTE ====================
         Airport emptyAirport = GetNotEmptyAirport();
+
+        if (emptyAirport == null)
+        {
+            return (null, null, null);
+        }
 
         (Airplane objAirplane, Airport nextHop) = FindAirplaneForTravellersToAirport(emptyAirport);
 
-        return (objAirplane, nextHop);
+        return (objAirplane, nextHop, emptyAirport);
     }
 
     public void HandleLanding(object sender, EventArgs e)
     {
         Flight flight = (Flight)sender;
+
+        if (Info.airplanesGoingFromEmptyAirport.Keys.Contains(this))
+            Info.airplanesGoingFromEmptyAirport[this].Remove(flight.airplane);
 
         hangar.Add(flight.airplane);
         Info.flights.Remove(flight);
@@ -206,11 +217,13 @@ public class Airport : MonoBehaviour
         //Info.CalculateDijkstraGraph();
 
         // If origin airport has no travellers, take any airplane to another airport with passengers
-        (Airplane emptyAirplane, Airport emptyHop) = GetAirplaneAndAirportToEmptyAirport();
+        (Airplane emptyAirplane, Airport emptyHop, Airport emptyAirport) = GetAirplaneAndAirportToEmptyAirport();
 
         if (emptyAirplane is not null && emptyHop is not null)
         {
-            Auxiliary.CreateFlight(this, emptyHop, Info.savedRoutes[$"{Name}-{emptyHop.Name}"], emptyAirplane);
+            Flight emptyFlight = Auxiliary.CreateFlight(this, emptyHop, Info.savedRoutes[$"{Name}-{emptyHop.Name}"], emptyAirplane);
+            emptyFlight.StartFlight();
+            Info.airplanesGoingFromEmptyAirport[emptyAirport].Add(emptyAirplane);
             return;
         }
 

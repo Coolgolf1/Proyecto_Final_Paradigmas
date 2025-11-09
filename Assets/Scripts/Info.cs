@@ -40,6 +40,8 @@ public static class Info
 
     public static List<Route> userRoutes = new List<Route>();
 
+    public static Dictionary<Airport, List<Airplane>> airplanesGoingFromEmptyAirport = new Dictionary<Airport, List<Airplane>>();
+
     public static Dictionary<Airport, List<RouteAssigner.Edge>> DijkstraGraph { get; private set; }
 
     public static AirportUI airportUI;
