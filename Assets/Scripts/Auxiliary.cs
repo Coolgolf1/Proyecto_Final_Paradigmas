@@ -8,6 +8,9 @@ static class Auxiliary
 
     static double defaultDistance = 10000;
 
+    private static InfoSingleton info = InfoSingleton.GetInstance();
+
+
     public static double GetDistanceBetweenAirports(Airport airport1, Airport airport2)
     {
         if (airport1 == airport2)
@@ -20,8 +23,8 @@ static class Auxiliary
         string a1 = airport1.Name;
         string a2 = airport2.Name;
 
-        string codeA1 = Info.stringCityCodes[a1];
-        string codeA2 = Info.stringCityCodes[a2];
+        string codeA1 = info.stringCityCodes[a1];
+        string codeA2 = info.stringCityCodes[a2];
 
         foreach (string line in lines)
         {
@@ -51,8 +54,8 @@ static class Auxiliary
             string a1 = route.airport1.Name;
             string a2 = route.airport2.Name;
 
-            string codeA1 = Info.stringCityCodes[a1];
-            string codeA2 = Info.stringCityCodes[a2];
+            string codeA1 = info.stringCityCodes[a1];
+            string codeA2 = info.stringCityCodes[a2];
 
             bool found = false;
             foreach (string line in lines)
@@ -90,7 +93,7 @@ static class Auxiliary
         flight.airportOrig = airportOrig;
         flight.airportDest = airportDest;
         flight.route = route;
-        Info.flights.Add(flight);
+        info.flights.Add(flight);
 
         return flight;
     }

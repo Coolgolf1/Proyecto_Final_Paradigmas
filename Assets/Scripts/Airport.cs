@@ -13,7 +13,7 @@ public class Airport : MonoBehaviour
     public List<Airplane> hangar = new List<Airplane>();
 
     public int receivedTravellers;
-
+    private InfoSingleton info = InfoSingleton.GetInstance();
     public Dictionary<Airport, int> TravellersToAirport { get; private set; }
 
     [SerializeField]
@@ -27,22 +27,22 @@ public class Airport : MonoBehaviour
     {
         TravellersToAirport = new Dictionary<Airport, int>();
         clickAction = InputSystem.actions.FindAction("Click");
-        cam = Info.playerCamera;
+        cam = info.playerCamera;
         receivedTravellers = 0;
     }
     private void OnEnable()
     {
-        clickAction.performed += OnClick;
-        clickAction.Enable();
+        clickAction.performed += OnClickAirport;
+        //clickAction.Enable();
     }
 
     private void OnDisable()
     {
-        clickAction.performed -= OnClick;
-        clickAction.Disable();
+        clickAction.performed -= OnClickAirport;
+        //clickAction.Disable();
     }
 
-    private void OnClick(InputAction.CallbackContext ctx)
+    private void OnClickAirport(InputAction.CallbackContext ctx)
     {
         Vector2 screenPos = Mouse.current.position.ReadValue();
         Ray ray = cam.ScreenPointToRay(screenPos);
@@ -52,8 +52,9 @@ public class Airport : MonoBehaviour
             // Detecta colisión con este objeto
             if (hit.collider.gameObject == this.gameObject)
             {
-                Info.airportUI.gameObject.SetActive(true);
-                Info.airportUI.ShowAirport(this);
+                info.flightUI.gameObject.SetActive(false);
+                info.airportUI.gameObject.SetActive(true);
+                info.airportUI.ShowAirport(this);
             }
 
         }
@@ -61,7 +62,7 @@ public class Airport : MonoBehaviour
 
     public void InitTravellers()
     {
-        foreach (Airport airport in Info.savedAirports.Values.ToList())
+        foreach (Airport airport in info.savedAirports.Values.ToList())
         {
             if (airport != this)
             {
@@ -69,7 +70,7 @@ public class Airport : MonoBehaviour
             }
         }
 
-        //foreach (Airport airport in Info.savedAirports.Values.ToList())
+        //foreach (Airport airport in info.savedAirports.Values.ToList())
         //{
         //    if (airport != this)
         //    {
@@ -81,7 +82,7 @@ public class Airport : MonoBehaviour
 
     public (Airplane, Airport) FindAirplaneForTravellersToAirport(Airport objectiveAirport)
     {
-        (Airplane nextAirplane, List<Airport> path) = RouteAssigner.Dijkstra(Info.DijkstraGraph, this, objectiveAirport);
+        (Airplane nextAirplane, List<Airport> path) = RouteAssigner.Dijkstra(info.DijkstraGraph, this, objectiveAirport);
 
         if (nextAirplane is null)
         {
@@ -98,7 +99,7 @@ public class Airport : MonoBehaviour
         // ======== USE PATH LATER ON TO CHOOSE AIRPLANES IF NECESSARY ===================
 
         // INCLUDE THIS IN DIJKSTRA LATER ON ==============================================
-        Airport airport = Info.GetAirportOfAirplane(nextAirplane);
+        Airport airport = info.GetAirportOfAirplane(nextAirplane);
 
         if (airport is not null)
         {
@@ -137,7 +138,7 @@ public class Airport : MonoBehaviour
 
     public Airport GetNotEmptyAirport()
     {
-        foreach (Airport airport in Info.savedAirports.Values)
+        foreach (Airport airport in info.savedAirports.Values)
         {
             // Check airport is not the same as origin
             if (this == airport)
@@ -154,16 +155,16 @@ public class Airport : MonoBehaviour
 
             // If a plane is already going there and its capacity is enough, no need to take plane
             bool airplaneGoing = false;
-            foreach (Airplane airplane in Info.airplanes)
+            foreach (Airplane airplane in info.airplanes)
             {
-                Flight flight = Info.GetFlightOfAirplane(airplane);
+                Flight flight = info.GetFlightOfAirplane(airplane);
 
                 // Check if flight exists
                 if (flight == null)
                     continue;
 
                 // Check if airplane going to airport
-                if (flight.airportDest != airport && !Info.airplanesGoingFromEmptyAirport[airport].Contains(airplane))
+                if (flight.airportDest != airport && !info.airplanesGoingFromEmptyAirport[airport].Contains(airplane))
                     continue;
 
                 // Check if airplane has enough capacity
@@ -207,23 +208,23 @@ public class Airport : MonoBehaviour
     {
         Flight flight = (Flight)sender;
 
-        if (Info.airplanesGoingFromEmptyAirport.Keys.Contains(this))
-            Info.airplanesGoingFromEmptyAirport[this].Remove(flight.airplane);
+        if (info.airplanesGoingFromEmptyAirport.Keys.Contains(this))
+            info.airplanesGoingFromEmptyAirport[this].Remove(flight.airplane);
 
         hangar.Add(flight.airplane);
-        Info.flights.Remove(flight);
+        info.flights.Remove(flight);
 
         // UPDATE DIJKSTRA IN AIRPORT FOR NEW TRAVELLERS ======================================
-        //Info.CalculateDijkstraGraph();
+        //info.CalculateDijkstraGraph();
 
         // If origin airport has no travellers, take any airplane to another airport with passengers
         (Airplane emptyAirplane, Airport emptyHop, Airport emptyAirport) = GetAirplaneAndAirportToEmptyAirport();
 
         if (emptyAirplane is not null && emptyHop is not null)
         {
-            Flight emptyFlight = Auxiliary.CreateFlight(this, emptyHop, Info.savedRoutes[$"{Name}-{emptyHop.Name}"], emptyAirplane);
+            Flight emptyFlight = Auxiliary.CreateFlight(this, emptyHop, info.savedRoutes[$"{Name}-{emptyHop.Name}"], emptyAirplane);
             emptyFlight.StartFlight();
-            Info.airplanesGoingFromEmptyAirport[emptyAirport].Add(emptyAirplane);
+            info.airplanesGoingFromEmptyAirport[emptyAirport].Add(emptyAirplane);
             return;
         }
 
@@ -233,7 +234,7 @@ public class Airport : MonoBehaviour
         // For all travellers in origin airport, assign each of the travellers an airplane
         var origKeys = new List<Airport>(TravellersToAirport.Keys);
 
-        Queue<Airport> airportQueue = new Queue<Airport>(Info.savedAirports.Values.ToList());
+        Queue<Airport> airportQueue = new Queue<Airport>(info.savedAirports.Values.ToList());
 
         while (airportQueue.Count > 0)
         {
@@ -271,7 +272,7 @@ public class Airport : MonoBehaviour
                 }
                 else
                 {
-                    newFlight = Auxiliary.CreateFlight(this, nextHop, Info.savedRoutes[$"{Name}-{nextHop.Name}"], objAirplane);
+                    newFlight = Auxiliary.CreateFlight(this, nextHop, info.savedRoutes[$"{Name}-{nextHop.Name}"], objAirplane);
                     createdFlights[objAirplane] = newFlight;
                 }
 
@@ -293,7 +294,7 @@ public class Airport : MonoBehaviour
     //public void LaunchNewPlaneAfterLanding(Flight flight)
     //{
     //    Airplane airplane = flight.airplane;
-    //    Flight newFlight = Auxiliary.CreateFlight(this, Info.GetLandingAirportOfAirplane(airplane), Info.GetRouteOfAirplane(airplane), airplane);
+    //    Flight newFlight = Auxiliary.CreateFlight(this, info.GetLandingAirportOfAirplane(airplane), info.GetRouteOfAirplane(airplane), airplane);
 
     //    newFlight.BoardFlight(TravellersToAirport);
     //    Instantiate(newFlight);

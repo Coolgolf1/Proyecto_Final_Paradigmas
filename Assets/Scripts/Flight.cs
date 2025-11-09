@@ -22,11 +22,15 @@ public class Flight : MonoBehaviour
 
     public Dictionary<Airport, int> TravellersToAirport { get; private set; }
 
+    private InfoSingleton info = InfoSingleton.GetInstance();
+
+    public string flightID;
+
     public void Awake()
     {
         TravellersToAirport = new Dictionary<Airport, int>();
 
-        foreach (Airport airport in Info.savedAirports.Values)
+        foreach (Airport airport in info.savedAirports.Values)
         {
             TravellersToAirport.Add(airport, 0);
         }
@@ -39,7 +43,7 @@ public class Flight : MonoBehaviour
     //public void BoardFlight(Dictionary<Airport, int> passengers)
     //{
     //    int numPassengers = 0;
-    //    foreach (Airport airport in Info.savedAirports.Values)
+    //    foreach (Airport airport in info.savedAirports.Values)
     //    {
     //        if (airport == airportOrig)
     //        {
@@ -62,7 +66,7 @@ public class Flight : MonoBehaviour
         FlightProgress = 0;
         ElapsedKM = 0;
 
-        //foreach (Airport airport in Info.savedAirports.Values)
+        //foreach (Airport airport in info.savedAirports.Values)
         //{
         //    if (airport != airportOrig)
         //    {
@@ -78,7 +82,7 @@ public class Flight : MonoBehaviour
 
     public void EndFlight()
     {
-        foreach (Airport airport in Info.savedAirports.Values)
+        foreach (Airport airport in info.savedAirports.Values)
         {
             if (airport != airportDest)
             {

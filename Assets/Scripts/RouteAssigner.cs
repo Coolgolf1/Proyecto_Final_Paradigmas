@@ -3,6 +3,9 @@ using System.Linq;
 
 public static class RouteAssigner
 {
+
+    private static InfoSingleton info = InfoSingleton.GetInstance();
+
     public class Edge
     {
         public Airport To { get; private set; }
@@ -25,7 +28,7 @@ public static class RouteAssigner
         foreach (Airplane airplane in start.hangar)
         {
             // Check if it is in another hangar different to the ones in route
-            Airport airportHangar = Info.GetAirportOfAirplane(airplane);
+            Airport airportHangar = info.GetAirportOfAirplane(airplane);
 
             //if (airportHangar != start && airportHangar != edge.To)
             //{
@@ -39,7 +42,7 @@ public static class RouteAssigner
 
             double tempDistance;
 
-            Flight flight = Info.GetFlightOfAirplane(airplane);
+            Flight flight = info.GetFlightOfAirplane(airplane);
 
             // Do not check full planes
             if (flight is not null)

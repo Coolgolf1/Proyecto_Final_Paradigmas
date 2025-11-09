@@ -3,9 +3,29 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public static class Info
+public class InfoSingleton
 {
-    public static Dictionary<string, Vector3> locations = new Dictionary<string, Vector3>()
+    private InfoSingleton() {
+        DijkstraGraph = new Dictionary<Airport, List<RouteAssigner.Edge>>();
+
+        foreach (Airport airport in savedAirports.Values.ToList())
+        {
+            DijkstraGraph.Add(airport, new List<RouteAssigner.Edge>());
+        }
+    }
+
+    private static InfoSingleton _instance;
+
+    public static InfoSingleton GetInstance()
+    {
+        if (_instance == null)
+        {
+            _instance = new InfoSingleton();
+        }
+        return _instance;
+    }
+
+    public Dictionary<string, Vector3> locations = new Dictionary<string, Vector3>()
     {
         { "Madrid", new Vector3(11.2700005f, 14.1899996f, -8.56000042f) },
         { "San Francisco", new Vector3(-14.2299995f,14.0200005f,-2.3499999f) },
@@ -14,7 +34,7 @@ public static class Info
         { "Dubai", new Vector3(18.3099995f,6.26000023f,5.48000002f) }
     };
 
-    public static List<Tuple<string, string>> stringCityRoutes = new List<Tuple<string, string>>()
+    public List<Tuple<string, string>> stringCityRoutes = new List<Tuple<string, string>>()
     {
         new Tuple<string, string>("Madrid", "Dubai"),
         new Tuple<string, string>("Madrid", "Paris"),
@@ -24,7 +44,7 @@ public static class Info
         new Tuple<string, string>("San Francisco", "Shanghai")
     };
 
-    public static Dictionary<string, string> stringCityCodes = new Dictionary<string, string>()
+    public Dictionary<string, string> stringCityCodes = new Dictionary<string, string>()
     {
         { "Madrid", "mad" },
         { "San Francisco", "sfo" },
@@ -33,35 +53,26 @@ public static class Info
         { "Dubai", "dxb" }
     };
 
-    public static Dictionary<string, Airport> savedAirports = new Dictionary<string, Airport>();
-    public static Dictionary<string, Route> savedRoutes = new Dictionary<string, Route>();
-    public static List<Flight> flights = new List<Flight>();
-    public static List<Airplane> airplanes = new List<Airplane>();
+    public Dictionary<string, Airport> savedAirports = new Dictionary<string, Airport>();
+    public Dictionary<string, Route> savedRoutes = new Dictionary<string, Route>();
+    public List<Flight> flights = new List<Flight>();
+    public List<Airplane> airplanes = new List<Airplane>();
 
-    public static List<Route> userRoutes = new List<Route>();
+    public List<Route> userRoutes = new List<Route>();
 
-    public static Dictionary<Airport, List<Airplane>> airplanesGoingFromEmptyAirport = new Dictionary<Airport, List<Airplane>>();
+    public Dictionary<Airport, List<Airplane>> airplanesGoingFromEmptyAirport = new Dictionary<Airport, List<Airplane>>();
 
-    public static Dictionary<Airport, List<RouteAssigner.Edge>> DijkstraGraph { get; private set; }
+    public Dictionary<Airport, List<RouteAssigner.Edge>> DijkstraGraph { get; private set; }
 
-    public static AirportUI airportUI;
+    public AirportUI airportUI;
+    public FlightUI flightUI;
 
-    public static Camera playerCamera;
+
+    public Camera playerCamera;
 
 
-    public static void CalculateDijkstraGraph()
+    public void CalculateDijkstraGraph()
     {
-        // Initialize Dijkstra Graph
-        if (DijkstraGraph == null)
-        {
-            DijkstraGraph = new Dictionary<Airport, List<RouteAssigner.Edge>>();
-
-            foreach (Airport airport in savedAirports.Values.ToList())
-            {
-                DijkstraGraph.Add(airport, new List<RouteAssigner.Edge>());
-            }
-        }
-
         // Make sure all airports are included
         foreach (Airport airport in savedAirports.Values)
         {
@@ -122,7 +133,7 @@ public static class Info
         }
     }
 
-    public static Airport GetTakeoffAirportOfAirplane(Airplane airplane)
+    public Airport GetTakeoffAirportOfAirplane(Airplane airplane)
     {
         Flight flight = GetFlightOfAirplane(airplane);
 
@@ -134,7 +145,7 @@ public static class Info
         return flight.airportOrig;
     }
 
-    public static Airport GetAirportOfAirplane(Airplane airplane)
+    public Airport GetAirportOfAirplane(Airplane airplane)
     {
         foreach (Airport airport in savedAirports.Values)
         {
@@ -147,7 +158,7 @@ public static class Info
         return null;
     }
 
-    public static Airport GetLandingAirportOfAirplane(Airplane airplane)
+    public Airport GetLandingAirportOfAirplane(Airplane airplane)
     {
         Airport takeoffAirport = GetTakeoffAirportOfAirplane(airplane);
 
@@ -169,7 +180,7 @@ public static class Info
         return null;
     }
 
-    public static Flight GetFlightOfAirplane(Airplane airplane)
+    public Flight GetFlightOfAirplane(Airplane airplane)
     {
         foreach (Flight flight in flights)
         {
@@ -182,7 +193,7 @@ public static class Info
         return null;
     }
 
-    public static Route GetRouteOfAirplane(Airplane airplane)
+    public Route GetRouteOfAirplane(Airplane airplane)
     {
         foreach (Route route in savedRoutes.Values)
         {

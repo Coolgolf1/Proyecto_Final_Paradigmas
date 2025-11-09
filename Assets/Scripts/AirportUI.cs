@@ -5,15 +5,18 @@ using UnityEngine.UI;
 
 public class AirportUI : MonoBehaviour
 {
+    [SerializeField] private TMP_Text airportID;
+
     [SerializeField] private TMP_Text airportName;
     [SerializeField] private TMP_Text passengers;
     [SerializeField] private Button closeButton;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        airportID = GameObject.Find("AirportID").GetComponent<TMP_Text>();
         airportName = GameObject.Find("CityName").GetComponent<TMP_Text>();
-        passengers = GameObject.Find("ClientList").GetComponent<TMP_Text>();
-        closeButton = GameObject.Find("CloseUI").GetComponent<Button>();
+        passengers = GameObject.Find("AirportClientList").GetComponent<TMP_Text>();
+        closeButton = GameObject.Find("CloseAirportUI").GetComponent<Button>();
         closeButton.onClick.AddListener(CloseUI);
         gameObject.SetActive(false);
     }
@@ -32,11 +35,12 @@ public class AirportUI : MonoBehaviour
 
     public void ShowAirport(Airport airport)
     {
+        airportID.text = airport.id.ToUpper();
         airportName.text = airport.name;
         string passengersText = "";
         foreach (Airport destAirport in airport.TravellersToAirport.Keys)
         {
-            passengersText += $"- {destAirport.name}: {airport.TravellersToAirport[destAirport]} pasajeros\n";
+            passengersText += $"- {destAirport.name}: {airport.TravellersToAirport[destAirport]}\n";
         }
 
         passengersText += $"\n- En Destino Final: {airport.receivedTravellers} pasajeros\n";

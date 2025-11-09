@@ -28,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 1253744756585277655}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.1336, y: 0.767, z: -0.0905}
+  m_LocalPosition: {x: -0.002, y: 0.767, z: 0.001}
   m_LocalScale: {x: 0.015941001, y: 0.015941001, z: 0.015941001}
   m_ConstrainProportionsScale: 1
   m_Children:
@@ -163,6 +163,7 @@ MonoBehaviour:
   Name: 
   numberOfRunways: 0
   hangar: []
+  receivedTravellers: 0
   location: {fileID: 787081354997723788}
   modelPrefab: {fileID: 0}
 --- !u!65 &6621061556808936736

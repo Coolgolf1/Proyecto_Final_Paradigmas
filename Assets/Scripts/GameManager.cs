@@ -17,81 +17,85 @@ public class GameManager : MonoBehaviour
     private GameObject earth;
 
     [SerializeField] private AirportUI airportUI;
+    [SerializeField] private FlightUI flightUI;
     [SerializeField] private Camera playerCamera;
+
+    private InfoSingleton info = InfoSingleton.GetInstance();
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Start()
     {
-        Info.airportUI = airportUI;
-        Info.playerCamera = playerCamera;
+        info.airportUI = airportUI;
+        info.flightUI = flightUI;
+        info.playerCamera = playerCamera;
 
         // Save data of airports 
-        foreach (string city in Info.locations.Keys)
+        foreach (string city in info.locations.Keys)
         {
             GameObject airportGO = Instantiate(airportPrefab, earth.transform);
             airportGO.name = city;
 
             Airport airport = airportGO.GetComponent<Airport>();
             airport.Name = city;
-            Info.savedAirports[city] = airport;
-            airport.id = Info.stringCityCodes[city];
+            info.savedAirports[city] = airport;
+            airport.id = info.stringCityCodes[city];
 
             Location location = airportGO.GetComponentInChildren<Location>();
             location.Id = city;
-            location.coords = Info.locations[city];
+            location.coords = info.locations[city];
             location.Name = $"{city}_Loc";
         }
 
         // Save data of airplanes
         Airplane airplane = Instantiate(largeAirplanePrefab, earth.transform).GetComponent<AirplaneLarge>();
-        Info.airplanes.Add(airplane);
+        info.airplanes.Add(airplane);
 
         Airplane airplane2 = Instantiate(largeAirplanePrefab, earth.transform).GetComponent<AirplaneLarge>();
-        Info.airplanes.Add(airplane2);
+        info.airplanes.Add(airplane2);
 
         // Save data of routes
-        foreach (Tuple<string, string> routeTuple in Info.stringCityRoutes)
+        foreach (Tuple<string, string> routeTuple in info.stringCityRoutes)
         {
             GameObject routeGO = Instantiate(routePrefab, earth.transform);
             routeGO.name = $"{routeTuple.Item1}-{routeTuple.Item2}";
             Route route = routeGO.GetComponent<Route>();
-            route.airport1 = Info.savedAirports[routeTuple.Item1];
-            route.airport2 = Info.savedAirports[routeTuple.Item2];
+            route.airport1 = info.savedAirports[routeTuple.Item1];
+            route.airport2 = info.savedAirports[routeTuple.Item2];
             //route.AddPlaneToRoute(airplane);
             //route.airport1.hangar.Add(airplane);
-            Info.savedRoutes[routeGO.name] = route;
-            Info.savedRoutes[$"{routeTuple.Item2}-{routeTuple.Item1}"] = route;
+            info.savedRoutes[routeGO.name] = route;
+            info.savedRoutes[$"{routeTuple.Item2}-{routeTuple.Item1}"] = route;
         }
 
-        Info.savedAirports["Madrid"].hangar.Add(airplane);
-        Info.savedAirports["Madrid"].hangar.Add(airplane2);
+        info.savedAirports["Madrid"].hangar.Add(airplane);
+        info.savedAirports["Madrid"].hangar.Add(airplane2);
 
 
         // Init travellers in each airport
-        foreach (Airport airport in Info.savedAirports.Values)
+        foreach (Airport airport in info.savedAirports.Values)
         {
             airport.InitTravellers();
 
-            Info.airplanesGoingFromEmptyAirport[airport] = new List<Airplane>();
+            info.airplanesGoingFromEmptyAirport[airport] = new List<Airplane>();
         }
 
-        //Info.savedAirports["Madrid"].TravellersToAirport[Info.savedAirports["Paris"]] = 10;
-        Info.savedAirports["Madrid"].TravellersToAirport[Info.savedAirports["Dubai"]] = 80;
-        Info.savedAirports["Madrid"].TravellersToAirport[Info.savedAirports["San Francisco"]] = 10;
-        Info.savedAirports["Dubai"].TravellersToAirport[Info.savedAirports["Paris"]] = 50;
+        //info.savedAirports["Madrid"].TravellersToAirport[info.savedAirports["Paris"]] = 10;
+        info.savedAirports["Madrid"].TravellersToAirport[info.savedAirports["Dubai"]] = 80;
+        info.savedAirports["Madrid"].TravellersToAirport[info.savedAirports["San Francisco"]] = 10;
+        info.savedAirports["Dubai"].TravellersToAirport[info.savedAirports["Paris"]] = 50;
 
-        //Info.savedAirports["Madrid"].TravellersToAirport[Info.savedAirports["Paris"]] = 10;
+        //info.savedAirports["Madrid"].TravellersToAirport[info.savedAirports["Paris"]] = 10;
 
         // Load the real distances from dataset
-        Auxiliary.LoadRouteDistances(Info.savedRoutes);
+        Auxiliary.LoadRouteDistances(info.savedRoutes);
 
         // Calculate initial Dijkstra Graph
-        Info.CalculateDijkstraGraph();
+        info.CalculateDijkstraGraph();
 
         // Create Madrid-Dubai Flight
-        //Flight flight = Auxiliary.CreateFlight(Info.savedAirports["Madrid"], Info.savedAirports["Dubai"], Info.savedRoutes["Madrid-Dubai"], airplane);
+        //Flight flight = Auxiliary.CreateFlight(info.savedAirports["Madrid"], info.savedAirports["Dubai"], info.savedRoutes["Madrid-Dubai"], airplane);
 
-        List<Airport> destinations = Info.savedAirports.Values.ToList();
+        List<Airport> destinations = info.savedAirports.Values.ToList();
 
         Dictionary<Airplane, Flight> madridFlights = new Dictionary<Airplane, Flight>();
 
@@ -103,23 +107,23 @@ public class GameManager : MonoBehaviour
         {
             Airport airport = airportQueue.Dequeue();
 
-            if (airport == Info.savedAirports["Madrid"])
+            if (airport == info.savedAirports["Madrid"])
             {
                 continue;
             }
 
-            if (Info.savedAirports["Madrid"].TravellersToAirport[airport] <= 0)
+            if (info.savedAirports["Madrid"].TravellersToAirport[airport] <= 0)
             {
                 continue;
             }
 
             HashSet<Airplane> usedThisIteration = new HashSet<Airplane>();
 
-            while (Info.savedAirports["Madrid"].TravellersToAirport[airport] > 0)
+            while (info.savedAirports["Madrid"].TravellersToAirport[airport] > 0)
             {
                 Flight flight;
 
-                (Airplane objAirplane, Airport nextHop) = Info.savedAirports["Madrid"].FindAirplaneForTravellersToAirport(airport);
+                (Airplane objAirplane, Airport nextHop) = info.savedAirports["Madrid"].FindAirplaneForTravellersToAirport(airport);
 
                 if (objAirplane is null || nextHop is null)
                 {
@@ -139,14 +143,14 @@ public class GameManager : MonoBehaviour
                 }
                 else
                 {
-                    flight = Auxiliary.CreateFlight(Info.savedAirports["Madrid"], nextHop, Info.savedRoutes[$"Madrid-{nextHop.Name}"], objAirplane);
+                    flight = Auxiliary.CreateFlight(info.savedAirports["Madrid"], nextHop, info.savedRoutes[$"Madrid-{nextHop.Name}"], objAirplane);
                     madridFlights[objAirplane] = flight;
                 }
 
-                Info.savedAirports["Madrid"].AssignTravellersToNextFlightOfAirplane(flight, objAirplane, nextHop, airport);
+                info.savedAirports["Madrid"].AssignTravellersToNextFlightOfAirplane(flight, objAirplane, nextHop, airport);
             }
 
-            //if (Info.savedAirports["Madrid"].TravellersToAirport[airport] > 0)
+            //if (info.savedAirports["Madrid"].TravellersToAirport[airport] > 0)
             //{
             //    airportQueue.Enqueue(airport);
             //}
