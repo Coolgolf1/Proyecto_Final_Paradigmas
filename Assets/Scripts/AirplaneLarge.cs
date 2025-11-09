@@ -3,6 +3,6 @@ public class AirplaneLarge : Airplane
     public override void Awake()
     {
         base.Awake();
-        Speed = 1000;
+        Speed = 300;
     }
 }

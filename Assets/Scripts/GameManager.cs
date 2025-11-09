@@ -78,7 +78,8 @@ public class GameManager : MonoBehaviour
         //Info.savedAirports["Madrid"].TravellersToAirport[Info.savedAirports["Paris"]] = 10;
         Info.savedAirports["Madrid"].TravellersToAirport[Info.savedAirports["Dubai"]] = 80;
         Info.savedAirports["Madrid"].TravellersToAirport[Info.savedAirports["San Francisco"]] = 10;
-        Info.savedAirports["Madrid"].TravellersToAirport[Info.savedAirports["Shanghai"]] = 120;
+        Info.savedAirports["Dubai"].TravellersToAirport[Info.savedAirports["Paris"]] = 50;
+
         //Info.savedAirports["Madrid"].TravellersToAirport[Info.savedAirports["Paris"]] = 10;
 
         // Load the real distances from dataset
