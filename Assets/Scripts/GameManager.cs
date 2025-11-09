@@ -73,7 +73,7 @@ public class GameManager : MonoBehaviour
         }
 
         //Info.savedAirports["Madrid"].TravellersToAirport[Info.savedAirports["Paris"]] = 10;
-        Info.savedAirports["Madrid"].TravellersToAirport[Info.savedAirports["Dubai"]] = 10;
+        Info.savedAirports["Madrid"].TravellersToAirport[Info.savedAirports["Dubai"]] = 80;
         Info.savedAirports["Madrid"].TravellersToAirport[Info.savedAirports["San Francisco"]] = 10;
         Info.savedAirports["Madrid"].TravellersToAirport[Info.savedAirports["Shanghai"]] = 120;
         //Info.savedAirports["Madrid"].TravellersToAirport[Info.savedAirports["Paris"]] = 10;
@@ -119,12 +119,12 @@ public class GameManager : MonoBehaviour
 
                 if (objAirplane is null || nextHop is null)
                 {
-                    continue;
+                    break;
                 }
 
                 if (usedThisIteration.Contains(objAirplane))
                 {
-                    break; // or: try to pick another plane 
+                    break; // no more airplanes left
                 }
                 usedThisIteration.Add(objAirplane);
 

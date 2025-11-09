@@ -135,6 +135,66 @@ public class Airport : MonoBehaviour
         }
     }
 
+    public Airport GetNotEmptyAirport()
+    {
+        foreach (Airport airport in Info.savedAirports.Values)
+        {
+            // Check airport is not the same as origin
+            if (this == airport)
+                continue;
+
+            // Check airport has remaining travellers
+            int travellers = airport.TravellersToAirport.Values.Sum();
+            if (travellers <= 0)
+                continue;
+
+            // Check airport doesn't have any airplanes 
+            if (airport.hangar.Count <= 0)
+                continue;
+
+            // If a plane is already going there and its capacity is enough, no need to take plane
+            bool airplaneGoing = false;
+            foreach (Airplane airplane in Info.airplanes)
+            {
+                Flight flight = Info.GetFlightOfAirplane(airplane);
+
+                // Check if airplane going to airport
+                if (flight.airportDest != airport)
+                    continue;
+
+                // Check if airplane has enough capacity
+                if (airplane.Capacity < travellers)
+                    continue;
+
+                airplaneGoing = true;
+                break;
+            }
+
+            // Check if a plane is not already going
+            if (airplaneGoing)
+                continue;
+
+            return airport;
+        }
+
+        return null;
+    }
+
+    public (Airplane, Airport) GetAirplaneAndAirportToEmptyAirport()
+    {
+        int travellers = TravellersToAirport.Values.Sum();
+
+        if (travellers > 0)
+            return (null, null);
+
+        // ============================================================ FALLA ALGO AQUÍ AL BUSCAR UN AEROPUERTO SI EN SU AEROPUERTO NO HAY MÁS GENTE ====================
+        Airport emptyAirport = GetNotEmptyAirport();
+
+        (Airplane objAirplane, Airport nextHop) = FindAirplaneForTravellersToAirport(emptyAirport);
+
+        return (objAirplane, nextHop);
+    }
+
     public void HandleLanding(object sender, EventArgs e)
     {
         Flight flight = (Flight)sender;
@@ -144,6 +204,16 @@ public class Airport : MonoBehaviour
 
         // UPDATE DIJKSTRA IN AIRPORT FOR NEW TRAVELLERS ======================================
         //Info.CalculateDijkstraGraph();
+
+        // If origin airport has no travellers, take any airplane to another airport with passengers
+        (Airplane emptyAirplane, Airport emptyHop) = GetAirplaneAndAirportToEmptyAirport();
+
+        if (emptyAirplane is not null && emptyHop is not null)
+        {
+            Auxiliary.CreateFlight(this, emptyHop, Info.savedRoutes[$"{Name}-{emptyHop.Name}"], emptyAirplane);
+            return;
+        }
+
 
         Dictionary<Airplane, Flight> createdFlights = new Dictionary<Airplane, Flight>();
 
@@ -157,15 +227,11 @@ public class Airport : MonoBehaviour
             Airport airport = airportQueue.Dequeue();
 
             if (airport == this)
-            {
                 continue;
-            }
 
             // If no travellers to airport, skip airport
             if (TravellersToAirport[airport] <= 0)
-            {
                 continue;
-            }
 
             //Debug.Log($"{this}: {airport}-{TravellersToAirport[airport]}");
 
@@ -178,9 +244,7 @@ public class Airport : MonoBehaviour
                 (Airplane objAirplane, Airport nextHop) = FindAirplaneForTravellersToAirport(airport);
 
                 if (objAirplane is null || nextHop is null)
-                {
                     continue;
-                }
 
                 if (usedThisIteration.Contains(objAirplane))
                 {
@@ -191,13 +255,11 @@ public class Airport : MonoBehaviour
                 if (createdFlights.Keys.Contains(objAirplane))
                 {
                     newFlight = createdFlights[objAirplane];
-
                 }
                 else
                 {
                     newFlight = Auxiliary.CreateFlight(this, nextHop, Info.savedRoutes[$"{Name}-{nextHop.Name}"], objAirplane);
                     createdFlights[objAirplane] = newFlight;
-
                 }
 
                 AssignTravellersToNextFlightOfAirplane(newFlight, objAirplane, nextHop, airport);

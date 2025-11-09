@@ -82,12 +82,6 @@ public static class Info
             Airport airport2 = route.airport2;
             double distance = route.distance;
 
-            // Ensure keys exist (in case a route references an airport not in savedAirports)
-            //if (!DijkstraGraph.ContainsKey(airport1))
-            //    DijkstraGraph.Add(airport1, new List<RouteAssigner.Edge>());
-            //if (!DijkstraGraph.ContainsKey(airport2))
-            //    DijkstraGraph.Add(airport2, new List<RouteAssigner.Edge>());
-
             // Forward: airport1 -> airport2 
             List<RouteAssigner.Edge> edges1 = DijkstraGraph[airport1];
 

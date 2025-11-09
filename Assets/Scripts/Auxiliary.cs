@@ -8,7 +8,7 @@ static class Auxiliary
 
     static double defaultDistance = 10000;
 
-    public static double GetDistanceBeteweenAirports(Airport airport1, Airport airport2)
+    public static double GetDistanceBetweenAirports(Airport airport1, Airport airport2)
     {
         if (airport1 == airport2)
         {
