@@ -74,7 +74,9 @@ public class GameManager : MonoBehaviour
 
         //Info.savedAirports["Madrid"].TravellersToAirport[Info.savedAirports["Paris"]] = 10;
         Info.savedAirports["Madrid"].TravellersToAirport[Info.savedAirports["Dubai"]] = 10;
-        Info.savedAirports["Madrid"].TravellersToAirport[Info.savedAirports["Paris"]] = 10;
+        Info.savedAirports["Madrid"].TravellersToAirport[Info.savedAirports["San Francisco"]] = 10;
+        Info.savedAirports["Madrid"].TravellersToAirport[Info.savedAirports["Shanghai"]] = 120;
+        //Info.savedAirports["Madrid"].TravellersToAirport[Info.savedAirports["Paris"]] = 10;
 
         // Load the real distances from dataset
         Auxiliary.LoadRouteDistances(Info.savedRoutes);
@@ -140,10 +142,10 @@ public class GameManager : MonoBehaviour
                 Info.savedAirports["Madrid"].AssignTravellersToNextFlightOfAirplane(flight, objAirplane, nextHop, airport);
             }
 
-            if (Info.savedAirports["Madrid"].TravellersToAirport[airport] > 0)
-            {
-                airportQueue.Enqueue(airport);
-            }
+            //if (Info.savedAirports["Madrid"].TravellersToAirport[airport] > 0)
+            //{
+            //    airportQueue.Enqueue(airport);
+            //}
         }
 
 

@@ -10,6 +10,11 @@ static class Auxiliary
 
     public static double GetDistanceBeteweenAirports(Airport airport1, Airport airport2)
     {
+        if (airport1 == airport2)
+        {
+            return 0;
+        }
+
         string[] lines = File.ReadAllLines(pathName)[1..];
 
         string a1 = airport1.Name;

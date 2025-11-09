@@ -12,6 +12,8 @@ public class Airport : MonoBehaviour
 
     public List<Airplane> hangar = new List<Airplane>();
 
+    public int receivedTravellers;
+
     public Dictionary<Airport, int> TravellersToAirport { get; private set; }
 
     [SerializeField]
@@ -26,6 +28,7 @@ public class Airport : MonoBehaviour
         TravellersToAirport = new Dictionary<Airport, int>();
         clickAction = InputSystem.actions.FindAction("Click");
         cam = Info.playerCamera;
+        receivedTravellers = 0;
     }
     private void OnEnable()
     {
@@ -127,8 +130,8 @@ public class Airport : MonoBehaviour
         }
         else
         {
-            flight.TravellersToAirport[objAirport] += (travellersInAirport - remainingCapacity);
-            TravellersToAirport[objAirport] -= (travellersInAirport - remainingCapacity);
+            flight.TravellersToAirport[objAirport] += remainingCapacity;
+            TravellersToAirport[objAirport] -= remainingCapacity;
         }
     }
 

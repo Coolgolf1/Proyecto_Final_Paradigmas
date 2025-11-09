@@ -87,6 +87,7 @@ public class Flight : MonoBehaviour
             }
             else
             {
+                airportDest.receivedTravellers += TravellersToAirport[airport];
                 TravellersToAirport[airport] = 0;
                 // GIVE COINS FOR EACH PASSENGER TAKEN TO CORRECT AIRPORT SUCCESSFULLY ======================================
             }

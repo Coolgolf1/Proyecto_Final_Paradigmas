@@ -1,5 +1,5 @@
-using UnityEngine;
 using TMPro;
+using UnityEngine;
 using UnityEngine.UI;
 
 
@@ -21,7 +21,7 @@ public class AirportUI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     void CloseUI()
@@ -38,6 +38,9 @@ public class AirportUI : MonoBehaviour
         {
             passengersText += $"- {destAirport.name}: {airport.TravellersToAirport[destAirport]} pasajeros\n";
         }
+
+        passengersText += $"\n- En Destino Final: {airport.receivedTravellers} pasajeros\n";
+
         passengers.text = passengersText;
     }
 }
