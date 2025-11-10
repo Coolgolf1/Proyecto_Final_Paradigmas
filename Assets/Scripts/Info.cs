@@ -5,7 +5,8 @@ using UnityEngine;
 
 public class InfoSingleton
 {
-    private InfoSingleton() {
+    private InfoSingleton()
+    {
         DijkstraGraph = new Dictionary<Airport, List<RouteAssigner.Edge>>();
 
         foreach (Airport airport in savedAirports.Values.ToList())
@@ -149,7 +150,7 @@ public class InfoSingleton
     {
         foreach (Airport airport in savedAirports.Values)
         {
-            if (airport.hangar.Contains(airplane))
+            if (airport.Hangar.Contains(airplane))
             {
                 return airport;
             }

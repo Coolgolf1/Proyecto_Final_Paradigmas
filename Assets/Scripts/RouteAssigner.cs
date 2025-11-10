@@ -25,7 +25,7 @@ public static class RouteAssigner
         Airplane bestAirplane = null;
         //double flightTime = 0;
 
-        foreach (Airplane airplane in start.hangar)
+        foreach (Airplane airplane in start.Hangar)
         {
             // Check if it is in another hangar different to the ones in route
             Airport airportHangar = info.GetAirportOfAirplane(airplane);

@@ -13,6 +13,7 @@ public class Flight : MonoBehaviour
     public bool started;
 
     public event EventHandler LandedEvent;
+    public event EventHandler TakeOffEvent;
     public bool landed;
 
     public bool finished;
@@ -22,7 +23,7 @@ public class Flight : MonoBehaviour
 
     public Dictionary<Airport, int> TravellersToAirport { get; private set; }
 
-    private InfoSingleton info = InfoSingleton.GetInstance();
+    private InfoSingleton _info = InfoSingleton.GetInstance();
 
     public string flightID;
 
@@ -30,7 +31,7 @@ public class Flight : MonoBehaviour
     {
         TravellersToAirport = new Dictionary<Airport, int>();
 
-        foreach (Airport airport in info.savedAirports.Values)
+        foreach (Airport airport in _info.savedAirports.Values)
         {
             TravellersToAirport.Add(airport, 0);
         }
@@ -40,28 +41,11 @@ public class Flight : MonoBehaviour
         finished = false;
     }
 
-    //public void BoardFlight(Dictionary<Airport, int> passengers)
-    //{
-    //    int numPassengers = 0;
-    //    foreach (Airport airport in info.savedAirports.Values)
-    //    {
-    //        if (airport == airportOrig)
-    //        {
-    //            continue;
-    //        }
-
-    //        TravellersToAirport[airport] += passengers[airport];
-    //        numPassengers += TravellersToAirport[airport];
-    //    }
-
-    //    if (numPassengers > airplane.Capacity)
-    //    {
-    //        throw new Exception("Airplane capacity surpassed.");
-    //    }
-    //}
-
     public void StartFlight()
     {
+        airportOrig.TrackTakeOff(this);
+        airportDest.TrackFlight(this);
+
         started = true;
         FlightProgress = 0;
         ElapsedKM = 0;
@@ -74,28 +58,17 @@ public class Flight : MonoBehaviour
         //    }
         //}
 
-        airportOrig.hangar.Remove(airplane);
-
-        airportDest.TrackFlight(this);
-
+        OnTakeOff();
     }
 
     public void EndFlight()
     {
-        foreach (Airport airport in info.savedAirports.Values)
-        {
-            if (airport != airportDest)
-            {
-                airportDest.TravellersToAirport[airport] += TravellersToAirport[airport];
-                TravellersToAirport[airport] = 0;
-            }
-            else
-            {
-                airportDest.receivedTravellers += TravellersToAirport[airport];
-                TravellersToAirport[airport] = 0;
-                // GIVE COINS FOR EACH PASSENGER TAKEN TO CORRECT AIRPORT SUCCESSFULLY ======================================
-            }
-        }
+        //foreach (Airport airport in _info.savedAirports.Values)
+        //{
+        //    TravellersToAirport[airport] = 0;
+        //}
+
+        _info.flights.Remove(this);
     }
 
 
@@ -116,6 +89,12 @@ public class Flight : MonoBehaviour
     {
 
         LandedEvent?.Invoke(this, EventArgs.Empty);
+
+    }
+    protected virtual void OnTakeOff()
+    {
+
+        TakeOffEvent?.Invoke(this, EventArgs.Empty);
 
     }
 
@@ -151,14 +130,13 @@ public class Flight : MonoBehaviour
             // Remove plane from world simulation
             airplane.gameObject.SetActive(false);
 
-            // Add Passengers to Airport
+            // End flight
             EndFlight();
 
-            finished = true;
             // Notify Airport of Landing
             OnLanded();
 
-
+            finished = true;
         }
 
         if (finished)

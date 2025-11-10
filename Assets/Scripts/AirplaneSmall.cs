@@ -1,7 +1,7 @@
-using Assets.Scripts;
-using UnityEngine;
-
 public class AirplaneSmall : Airplane
 {
-
+    public override void Awake()
+    {
+        base.Awake();
+    }
 }

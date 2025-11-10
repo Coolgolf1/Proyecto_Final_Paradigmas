@@ -32,7 +32,7 @@ public class Route : MonoBehaviour
         line.endWidth = 0.1f;
         line.positionCount = 0;
 
-        var points = GetGreatCirclePoints(airport1.location.coords, airport2.location.coords, nSegments);
+        var points = GetGreatCirclePoints(airport1.Location.coords, airport2.Location.coords, nSegments);
         points = ElevatePoints(points, 0.2f);
         routePoints = points;
         line.positionCount = points.Count;

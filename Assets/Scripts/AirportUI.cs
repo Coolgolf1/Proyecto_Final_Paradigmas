@@ -35,7 +35,7 @@ public class AirportUI : MonoBehaviour
 
     public void ShowAirport(Airport airport)
     {
-        airportID.text = airport.id.ToUpper();
+        airportID.text = airport.Id.ToUpper();
         airportName.text = airport.name;
         string passengersText = "";
         foreach (Airport destAirport in airport.TravellersToAirport.Keys)
@@ -43,7 +43,7 @@ public class AirportUI : MonoBehaviour
             passengersText += $"- {destAirport.name}: {airport.TravellersToAirport[destAirport]}\n";
         }
 
-        passengersText += $"\n- En Destino Final: {airport.receivedTravellers} pasajeros\n";
+        passengersText += $"\n- En Destino Final: {airport.ReceivedTravellers} pasajeros\n";
 
         passengers.text = passengersText;
     }

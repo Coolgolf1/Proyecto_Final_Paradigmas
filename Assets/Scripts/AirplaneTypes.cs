@@ -1,9 +1,6 @@
-﻿namespace Assets.Scripts
+public enum AirplaneTypes
 {
-    public enum AirplaneTypes
-    {
-        Small = 0,
-        Medium = 1,
-        Large = 2
-    }
+    Small,
+    Medium,
+    Large
 }

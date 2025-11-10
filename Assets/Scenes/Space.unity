@@ -1055,6 +1055,53 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 664562302}
   m_CullTransparentMesh: 1
+--- !u!1 &810772351
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 810772353}
+  - component: {fileID: 810772352}
+  m_Layer: 0
+  m_Name: AirplaneSpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &810772352
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 810772351}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39f483fb3d321dc43b4ab870dcea0d1b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AirplaneSpawner
+  SmallAirplanePrefab: {fileID: 8462887653715005264, guid: 7400e145d90b69f4b8c251d7c1adfca8, type: 3}
+  MediumAirplanePrefab: {fileID: 2250861789715658586, guid: 2ff8c8d06f9ed614c9f3b44837944535, type: 3}
+  LargeAirplanePrefab: {fileID: 4092379697025543684, guid: 060c6d6f715feac43923cb94fdb26dc8, type: 3}
+--- !u!4 &810772353
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 810772351}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 11.14251, y: 12.97326, z: -10.31213}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &821699095
 GameObject:
   m_ObjectHideFlags: 0
@@ -2257,12 +2304,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   airportPrefab: {fileID: 4368227543551652601, guid: ca6b7a23a14c0034c9272555040eb22c, type: 3}
-  largeAirplanePrefab: {fileID: 4092379697025543684, guid: 060c6d6f715feac43923cb94fdb26dc8, type: 3}
   routePrefab: {fileID: 1680500001691059765, guid: 936c85bbc2c3233429505a60d1e88755, type: 3}
   earth: {fileID: 2063964382}
   airportUI: {fileID: 209038611}
   flightUI: {fileID: 1003981761}
   playerCamera: {fileID: 1928411723}
+  airplaneSpawner: {fileID: 810772352}
 --- !u!4 &1650489212
 Transform:
   m_ObjectHideFlags: 0
@@ -2789,3 +2836,4 @@ SceneRoots:
   - {fileID: 1837671273}
   - {fileID: 209038610}
   - {fileID: 1003981765}
+  - {fileID: 810772353}
