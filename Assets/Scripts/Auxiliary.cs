@@ -51,8 +51,8 @@ static class Auxiliary
         {
             Route route = routes[routeName];
 
-            string a1 = route.airport1.Name;
-            string a2 = route.airport2.Name;
+            string a1 = route.Airport1.Name;
+            string a2 = route.Airport2.Name;
 
             string codeA1 = info.stringCityCodes[a1];
             string codeA2 = info.stringCityCodes[a2];
@@ -66,7 +66,7 @@ static class Auxiliary
                 if (routeCodes == $"{codeA1}-{codeA2}" || routeCodes == $"{codeA2}-{codeA1}")
                 {
                     double distance = double.Parse(data[1]);
-                    route.distance = distance;
+                    route.SetDistance(distance);
                     found = true;
                     break;
                 }
@@ -74,7 +74,7 @@ static class Auxiliary
 
             if (!found)
             {
-                route.distance = defaultDistance;
+                route.SetDistance(defaultDistance);
 
                 // REMOVE DEBUG AFTER MAKING SURE THIS WORKS 100%!!! =================================
                 Debug.Log($"ERROR LOADING DISTANCE FOR ROUTE: {route.name}.");

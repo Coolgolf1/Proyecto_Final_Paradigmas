@@ -114,16 +114,16 @@ public class Flight : MonoBehaviour
         {
             airplane.gameObject.SetActive(true);
 
-            List<Vector3> airplanePoints = new List<Vector3>(route.routePoints);
+            List<Vector3> airplanePoints = new List<Vector3>(route.RoutePoints);
 
-            if (route.airport1 == airportDest)
+            if (route.Airport1 == airportDest)
             {
                 airplanePoints.Reverse();
             }
 
 
-            (ElapsedKM, FlightProgress) = airplane.UpdatePosition(airplanePoints, route.distance, ElapsedKM);
-            landed = CheckLanded(route.distance);
+            (ElapsedKM, FlightProgress) = airplane.UpdatePosition(airplanePoints, route.Distance, ElapsedKM);
+            landed = CheckLanded(route.Distance);
         }
         else if (landed && !finished)
         {

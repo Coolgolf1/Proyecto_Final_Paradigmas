@@ -4,23 +4,25 @@ using UnityEngine;
 public class Route : MonoBehaviour
 {
 
-    public Airport airport1;
-    public Airport airport2;
-    public double distance;
-
-    public List<Airplane> airplanes;
+    public Airport Airport1 { get; private set; }
+    public Airport Airport2 { get; private set; }
+    public double Distance { get; private set; }
+    public List<Vector3> RoutePoints { get; private set; }
 
     [SerializeField] private int nSegments = 100;
-    public List<Vector3> routePoints;
 
-    public void AddPlaneToRoute(Airplane airplane)
+    public void Initialize(Airport airport1, Airport airport2)
     {
-        airplanes.Add(airplane);
+        Airport1 = airport1;
+        Airport2 = airport2;
     }
 
-    public void RemovePlaneFromRoute(Airplane airplane)
+    public void SetDistance(double distance)
     {
-        airplanes.Remove(airplane);
+        if (Distance is 0)
+        {
+            Distance = distance;
+        }
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -32,9 +34,9 @@ public class Route : MonoBehaviour
         line.endWidth = 0.1f;
         line.positionCount = 0;
 
-        var points = GetGreatCirclePoints(airport1.Location.coords, airport2.Location.coords, nSegments);
+        List<Vector3> points = GetGreatCirclePoints(Airport1.Location.coords, Airport2.Location.coords, nSegments);
         points = ElevatePoints(points, 0.2f);
-        routePoints = points;
+        RoutePoints = points;
         line.positionCount = points.Count;
         line.SetPositions(points.ToArray());
 

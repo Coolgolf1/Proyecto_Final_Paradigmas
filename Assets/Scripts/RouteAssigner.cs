@@ -64,7 +64,7 @@ public static class RouteAssigner
                 }
                 else
                 {
-                    tempDistance = flight.route.distance + Auxiliary.GetDistanceBetweenAirports(airportDest, end);
+                    tempDistance = flight.route.Distance + Auxiliary.GetDistanceBetweenAirports(airportDest, end);
                 }
             }
             // 2. Flight not yet created

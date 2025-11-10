@@ -92,9 +92,9 @@ public class InfoSingleton
         // Save edges information in Dijkstra Graph
         foreach (Route route in savedRoutes.Values)
         {
-            Airport airport1 = route.airport1;
-            Airport airport2 = route.airport2;
-            double distance = route.distance;
+            Airport airport1 = route.Airport1;
+            Airport airport2 = route.Airport2;
+            double distance = route.Distance;
 
             // Forward: airport1 -> airport2 
             List<RouteAssigner.Edge> edges1 = DijkstraGraph[airport1];
@@ -165,15 +165,15 @@ public class InfoSingleton
 
         foreach (Route route in savedRoutes.Values)
         {
-            if (takeoffAirport == route.airport1 || takeoffAirport == route.airport2)
+            if (takeoffAirport == route.Airport1 || takeoffAirport == route.Airport2)
             {
-                if (takeoffAirport == route.airport1)
+                if (takeoffAirport == route.Airport1)
                 {
-                    return route.airport2;
+                    return route.Airport2;
                 }
-                else if (takeoffAirport == route.airport2)
+                else if (takeoffAirport == route.Airport2)
                 {
-                    return route.airport1;
+                    return route.Airport1;
                 }
             }
         }
@@ -188,19 +188,6 @@ public class InfoSingleton
             if (flight.airplane == airplane)
             {
                 return flight;
-            }
-        }
-
-        return null;
-    }
-
-    public Route GetRouteOfAirplane(Airplane airplane)
-    {
-        foreach (Route route in savedRoutes.Values)
-        {
-            if (route.airplanes.Contains(airplane))
-            {
-                return route;
             }
         }
 

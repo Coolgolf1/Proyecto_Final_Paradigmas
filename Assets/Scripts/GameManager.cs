@@ -26,27 +26,29 @@ public class GameManager : MonoBehaviour
         info.flightUI = flightUI;
         info.playerCamera = playerCamera;
 
+        // Initialize Factory
         airplaneFactory.Initialize(airplaneSpawner);
 
         // Save data of airports 
         foreach (string city in info.locations.Keys)
         {
+            // Create Airport GameObject
             GameObject airportGO = Instantiate(airportPrefab, earth.transform);
             airportGO.name = city;
 
+            // Get Components of GameObject
             Airport airport = airportGO.GetComponent<Airport>();
-
             Location location = airportGO.GetComponentInChildren<Location>();
-            location.Id = city;
-            location.coords = info.locations[city];
-            location.Name = $"{city}_Loc";
 
+            // Save location and airport properties
+            location.Initialize(id: city, name: $"{city}_Loc", coords: info.locations[city]);
             airport.Initialize(id: info.stringCityCodes[city], name: city, location: location);
 
+            // Save airport 
             info.savedAirports[city] = airport;
         }
 
-        // Save data of airplanes
+        // Create Airplanes with Factory
         Airplane airplane = airplaneFactory.BuildAirplane(AirplaneTypes.Large, earth.transform);
         info.airplanes.Add(airplane);
 
@@ -59,10 +61,7 @@ public class GameManager : MonoBehaviour
             GameObject routeGO = Instantiate(routePrefab, earth.transform);
             routeGO.name = $"{routeTuple.Item1}-{routeTuple.Item2}";
             Route route = routeGO.GetComponent<Route>();
-            route.airport1 = info.savedAirports[routeTuple.Item1];
-            route.airport2 = info.savedAirports[routeTuple.Item2];
-            //route.AddPlaneToRoute(airplane);
-            //route.airport1.hangar.Add(airplane);
+            route.Initialize(airport1: info.savedAirports[routeTuple.Item1], airport2: info.savedAirports[routeTuple.Item2]);
             info.savedRoutes[routeGO.name] = route;
             info.savedRoutes[$"{routeTuple.Item2}-{routeTuple.Item1}"] = route;
         }
