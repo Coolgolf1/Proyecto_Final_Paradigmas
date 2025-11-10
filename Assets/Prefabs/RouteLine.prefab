@@ -157,4 +157,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Route
   airport1: {fileID: 0}
   airport2: {fileID: 0}
-  nSegments: 20
+  distance: 0
+  airplanes: []
+  nSegments: 100
+  routePoints: []

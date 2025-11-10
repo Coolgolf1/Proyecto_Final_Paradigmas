@@ -10,7 +10,7 @@ public class Route : MonoBehaviour
 
     public List<Airplane> airplanes;
 
-    [SerializeField] private int nSegments = 20;
+    [SerializeField] private int nSegments = 100;
     public List<Vector3> routePoints;
 
     public void AddPlaneToRoute(Airplane airplane)
