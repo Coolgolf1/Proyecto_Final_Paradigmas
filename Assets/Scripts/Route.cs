@@ -8,6 +8,7 @@ public class Route : MonoBehaviour
     public Airport Airport2 { get; private set; }
     public double Distance { get; private set; }
     public List<Vector3> RoutePoints { get; private set; }
+    public int NumberOfFlightsOnRoute { get; private set; }
 
     [SerializeField] private int nSegments = 100;
 
@@ -15,6 +16,7 @@ public class Route : MonoBehaviour
     {
         Airport1 = airport1;
         Airport2 = airport2;
+        NumberOfFlightsOnRoute = 0;
     }
 
     public void SetDistance(double distance)
@@ -23,6 +25,11 @@ public class Route : MonoBehaviour
         {
             Distance = distance;
         }
+    }
+
+    public void AddFlightToRoute()
+    {
+        NumberOfFlightsOnRoute++;
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created

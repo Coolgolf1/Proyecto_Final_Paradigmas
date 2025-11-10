@@ -56,7 +56,7 @@ public static class RouteAssigner
             // 1. Flight assigned but in Hangar
             if (flight is not null)
             {
-                Airport airportDest = flight.airportDest;
+                Airport airportDest = flight.AirportDest;
 
                 if (airportDest == edge.To)
                 {
@@ -64,7 +64,7 @@ public static class RouteAssigner
                 }
                 else
                 {
-                    tempDistance = flight.route.Distance + Auxiliary.GetDistanceBetweenAirports(airportDest, end);
+                    tempDistance = flight.Route.Distance + Auxiliary.GetDistanceBetweenAirports(airportDest, end);
                 }
             }
             // 2. Flight not yet created

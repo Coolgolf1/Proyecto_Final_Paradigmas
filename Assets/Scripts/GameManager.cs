@@ -27,7 +27,7 @@ public class GameManager : MonoBehaviour
         info.playerCamera = playerCamera;
 
         // Initialize Factory
-        airplaneFactory.Initialize(airplaneSpawner);
+        airplaneFactory.Initialise(airplaneSpawner);
 
         // Save data of airports 
         foreach (string city in info.locations.Keys)
@@ -41,8 +41,8 @@ public class GameManager : MonoBehaviour
             Location location = airportGO.GetComponentInChildren<Location>();
 
             // Save location and airport properties
-            location.Initialize(id: city, name: $"{city}_Loc", coords: info.locations[city]);
-            airport.Initialize(id: info.stringCityCodes[city], name: city, location: location);
+            location.Initialise(id: city, name: $"{city}_Loc", coords: info.locations[city]);
+            airport.Initialise(id: info.stringCityCodes[city], name: city, location: location);
 
             // Save airport 
             info.savedAirports[city] = airport;
@@ -142,17 +142,20 @@ public class GameManager : MonoBehaviour
                 }
                 else
                 {
-                    flight = Auxiliary.CreateFlight(info.savedAirports["Madrid"], nextHop, info.savedRoutes[$"Madrid-{nextHop.Name}"], objAirplane);
+                    GameObject flightGO = new GameObject();
+                    flightGO.name = $"{info.savedAirports["Madrid"].Name}-{nextHop.Name}";
+                    flight = flightGO.AddComponent<Flight>();
+
+
+                    flight.Initialise(info.savedAirports["Madrid"], nextHop, info.savedRoutes[$"Madrid-{nextHop.Name}"], objAirplane);
+
+                    info.flights.Add(flight);
                     madridFlights[objAirplane] = flight;
                 }
 
-                info.savedAirports["Madrid"].AssignTravellersToNextFlightOfAirplane(flight, objAirplane, airport);
+                flight.Embark(info.savedAirports["Madrid"].TravellersToAirport[airport], airport);
             }
 
-            //if (info.savedAirports["Madrid"].TravellersToAirport[airport] > 0)
-            //{
-            //    airportQueue.Enqueue(airport);
-            //}
         }
 
 

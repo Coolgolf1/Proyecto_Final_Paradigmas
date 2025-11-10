@@ -20,7 +20,7 @@ public abstract class Airplane : MonoBehaviour
 
     private InfoSingleton info = InfoSingleton.GetInstance();
 
-    public void Initialize(int id)
+    public void Initialise(int id)
     {
         Id = id;
     }

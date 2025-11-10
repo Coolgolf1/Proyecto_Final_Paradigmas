@@ -34,8 +34,8 @@ public class FlightUI : MonoBehaviour
 
     public void ShowFlight(Flight flight)
     {
-        flightNumber.text = flight.flightID;
-        routeText.text = $"{flight.airportOrig.name}-{flight.airportDest.name}";
+        flightNumber.text = flight.FlightID;
+        routeText.text = $"{flight.AirportOrig.name}-{flight.AirportDest.name}";
         string passengersText = "";
         foreach (Airport destAirport in flight.TravellersToAirport.Keys)
         {

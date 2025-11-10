@@ -143,7 +143,7 @@ public class InfoSingleton
             return null;
         }
 
-        return flight.airportOrig;
+        return flight.AirportOrig;
     }
 
     public Airport GetAirportOfAirplane(Airplane airplane)
@@ -185,7 +185,7 @@ public class InfoSingleton
     {
         foreach (Flight flight in flights)
         {
-            if (flight.airplane == airplane)
+            if (flight.Airplane == airplane)
             {
                 return flight;
             }

@@ -17,7 +17,7 @@ public class AirplaneFactory
         return _instance;
     }
 
-    public void Initialize(AirplaneSpawner spawner)
+    public void Initialise(AirplaneSpawner spawner)
     {
         _spawner = spawner;
     }
@@ -26,7 +26,7 @@ public class AirplaneFactory
     {
         Airplane airplane = _spawner.InstantiateAirplane(type, earthTransform);
 
-        airplane.Initialize(_counter);
+        airplane.Initialise(_counter);
         _counter++;
 
         return airplane;

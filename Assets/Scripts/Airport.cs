@@ -25,7 +25,7 @@ public class Airport : MonoBehaviour
     // Serialize Field
     [SerializeField] public GameObject modelPrefab;
 
-    public void Initialize(string id, string name, Location location, int numberOfRunways = 2)
+    public void Initialise(string id, string name, Location location, int numberOfRunways = 2)
     {
         Id = id;
         Name = name;
@@ -124,30 +124,9 @@ public class Airport : MonoBehaviour
         flight.TakeOffEvent += HandleTakeOff;
     }
 
-    public void TrackFlight(Flight flight)
+    public void TrackLanding(Flight flight)
     {
         flight.LandedEvent += HandleLanding;
-    }
-
-
-    public void AssignTravellersToNextFlightOfAirplane(Flight flight, Airplane objAirplane, Airport objAirport)
-    {
-        int occupiedCapacity = flight.TravellersToAirport.Values.ToList().Sum();
-
-        int remainingCapacity = objAirplane.Capacity - occupiedCapacity;
-
-        int travellersInAirport = TravellersToAirport[objAirport];
-
-        if (travellersInAirport <= remainingCapacity)
-        {
-            flight.TravellersToAirport[objAirport] += travellersInAirport;
-            TravellersToAirport[objAirport] -= flight.TravellersToAirport[objAirport];
-        }
-        else
-        {
-            flight.TravellersToAirport[objAirport] += remainingCapacity;
-            TravellersToAirport[objAirport] -= remainingCapacity;
-        }
     }
 
     public Airport GetNotEmptyAirport()
@@ -178,7 +157,7 @@ public class Airport : MonoBehaviour
                     continue;
 
                 // Check if airplane going to airport
-                if (flight.airportDest != airport && !_info.airplanesGoingFromEmptyAirport[airport].Contains(airplane))
+                if (flight.AirportDest != airport && !_info.airplanesGoingFromEmptyAirport[airport].Contains(airplane))
                     continue;
 
                 // Check if airplane has enough capacity
@@ -221,38 +200,45 @@ public class Airport : MonoBehaviour
     public void HandleTakeOff(object sender, EventArgs e)
     {
         Flight flight = (Flight)sender;
-        Hangar.Remove(flight.airplane);
+        Hangar.Remove(flight.Airplane);
+    }
+
+    public void ReceivePassengers(int passengers, Airport objAirport)
+    {
+        if (objAirport != this)
+        {
+            TravellersToAirport[objAirport] += passengers;
+        }
+        else
+        {
+            ReceivedTravellers += passengers;
+            // GIVE COINS FOR EACH PASSENGER TAKEN TO CORRECT AIRPORT SUCCESSFULLY ======================================
+        }
     }
 
     public void HandleLanding(object sender, EventArgs e)
     {
         Flight flight = (Flight)sender;
 
-        ReceivedTravellers += flight.TravellersToAirport[this];
-
-        // GIVE COINS FOR EACH PASSENGER TAKEN TO CORRECT AIRPORT SUCCESSFULLY ======================================
-
-        foreach (Airport airport in _info.savedAirports.Values)
-        {
-            if (airport != this)
-            {
-                TravellersToAirport[airport] += flight.TravellersToAirport[airport];
-                flight.TravellersToAirport[airport] = 0;
-            }
-        }
-
         if (_info.airplanesGoingFromEmptyAirport.Keys.Contains(this))
-            _info.airplanesGoingFromEmptyAirport[this].Remove(flight.airplane);
+            _info.airplanesGoingFromEmptyAirport[this].Remove(flight.Airplane);
 
-        Hangar.Add(flight.airplane);
+        Hangar.Add(flight.Airplane);
 
         // If origin airport has no travellers, take any airplane to another airport with passengers
         (Airplane emptyAirplane, Airport emptyHop, Airport emptyAirport) = GetHopToEmptyAirport();
 
         if (emptyAirplane is not null && emptyHop is not null)
         {
-            Flight emptyFlight = Auxiliary.CreateFlight(this, emptyHop, _info.savedRoutes[$"{Name}-{emptyHop.Name}"], emptyAirplane);
+            Flight emptyFlight;
+
+            GameObject flightGO = new GameObject();
+            flightGO.name = $"{_info.savedAirports["Madrid"].Name}-{emptyHop.Name}";
+            emptyFlight = flightGO.AddComponent<Flight>();
+            emptyFlight.Initialise(this, emptyHop, _info.savedRoutes[$"{Name}-{emptyHop.Name}"], emptyAirplane);
+            _info.flights.Add(emptyFlight);
             emptyFlight.StartFlight();
+
             _info.airplanesGoingFromEmptyAirport[emptyAirport].Add(emptyAirplane);
             return;
         }
@@ -298,11 +284,16 @@ public class Airport : MonoBehaviour
                 }
                 else
                 {
-                    newFlight = Auxiliary.CreateFlight(this, nextHop, _info.savedRoutes[$"{Name}-{nextHop.Name}"], objAirplane);
+                    GameObject flightGO = new GameObject();
+                    flightGO.name = $"{_info.savedAirports["Madrid"].Name}-{nextHop.Name}";
+                    newFlight = flightGO.AddComponent<Flight>();
+
+                    newFlight.Initialise(this, nextHop, _info.savedRoutes[$"{Name}-{nextHop.Name}"], objAirplane);
+                    _info.flights.Add(newFlight);
                     createdFlights[objAirplane] = newFlight;
                 }
 
-                AssignTravellersToNextFlightOfAirplane(newFlight, objAirplane, airport);
+                newFlight.Embark(TravellersToAirport[airport], airport);
             }
 
             if (TravellersToAirport[airport] > 0)

@@ -1,31 +1,43 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Flight : MonoBehaviour
 {
-    public Airport airportOrig;
-    public Airport airportDest;
-
-    public Route route;
-    public Airplane airplane;
-
-    public bool started;
+    public Airport AirportOrig { get; private set; }
+    public Airport AirportDest { get; private set; }
+    public Route Route { get; private set; }
+    public Airplane Airplane { get; private set; }
+    public string FlightID { get; private set; }
+    public bool Started { get; private set; }
+    public bool Landed { get; private set; }
+    public bool Finished { get; private set; }
 
     public event EventHandler LandedEvent;
     public event EventHandler TakeOffEvent;
-    public bool landed;
 
-    public bool finished;
+    private InfoSingleton _info = InfoSingleton.GetInstance();
 
     public double FlightProgress { get; private set; }
     public double ElapsedKM { get; private set; }
 
     public Dictionary<Airport, int> TravellersToAirport { get; private set; }
 
-    private InfoSingleton _info = InfoSingleton.GetInstance();
+    public void Initialise(Airport airportOrig, Airport airportDest, Route route, Airplane airplane)
+    {
+        AirportOrig = airportOrig;
+        AirportDest = airportDest;
+        Route = route;
+        Airplane = airplane;
 
-    public string flightID;
+        string codeOrig = _info.stringCityCodes[route.Airport1.Name].ToUpper();
+        string codeDest = _info.stringCityCodes[route.Airport2.Name].ToUpper();
+
+        FlightID = $"{codeOrig[0]}{codeDest[0]}{route.NumberOfFlightsOnRoute:D4}";
+
+        Route.AddFlightToRoute();
+    }
 
     public void Awake()
     {
@@ -36,42 +48,56 @@ public class Flight : MonoBehaviour
             TravellersToAirport.Add(airport, 0);
         }
 
-        started = false;
-        landed = false;
-        finished = false;
+        Started = false;
+        Landed = false;
+        Finished = false;
     }
 
     public void StartFlight()
     {
-        airportOrig.TrackTakeOff(this);
-        airportDest.TrackFlight(this);
+        AirportOrig.TrackTakeOff(this);
+        AirportDest.TrackLanding(this);
 
-        started = true;
+        Started = true;
         FlightProgress = 0;
         ElapsedKM = 0;
-
-        //foreach (Airport airport in info.savedAirports.Values)
-        //{
-        //    if (airport != airportOrig)
-        //    {
-        //        airportOrig.TravellersToAirport[airport] -= TravellersToAirport[airport];
-        //    }
-        //}
 
         OnTakeOff();
     }
 
-    public void EndFlight()
+    public void Embark(int passengers, Airport objAirport)
     {
-        //foreach (Airport airport in _info.savedAirports.Values)
-        //{
-        //    TravellersToAirport[airport] = 0;
-        //}
+        int occupiedCapacity = TravellersToAirport.Values.ToList().Sum();
 
-        _info.flights.Remove(this);
+        int remainingCapacity = Airplane.Capacity - occupiedCapacity;
+
+        int travellersInAirport = AirportOrig.TravellersToAirport[objAirport];
+
+        if (travellersInAirport <= remainingCapacity)
+        {
+            TravellersToAirport[objAirport] += travellersInAirport;
+            AirportOrig.TravellersToAirport[objAirport] -= TravellersToAirport[objAirport];
+        }
+        else
+        {
+            TravellersToAirport[objAirport] += remainingCapacity;
+            AirportOrig.TravellersToAirport[objAirport] -= remainingCapacity;
+        }
     }
 
+    public void Disembark()
+    {
+        foreach (Airport airport in _info.savedAirports.Values)
+        {
+            AirportDest.ReceivePassengers(TravellersToAirport[airport], airport);
+            TravellersToAirport[airport] = 0;
+        }
+    }
 
+    public void EndFlight()
+    {
+        _info.flights.Remove(this);
+    }
 
     public bool CheckLanded(double totalDistance)
     {
@@ -110,36 +136,37 @@ public class Flight : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
-        if (started && !landed)
+        if (Started && !Landed)
         {
-            airplane.gameObject.SetActive(true);
+            Airplane.gameObject.SetActive(true);
 
-            List<Vector3> airplanePoints = new List<Vector3>(route.RoutePoints);
+            List<Vector3> airplanePoints = new List<Vector3>(Route.RoutePoints);
 
-            if (route.Airport1 == airportDest)
+            if (Route.Airport1 == AirportDest)
             {
                 airplanePoints.Reverse();
             }
 
 
-            (ElapsedKM, FlightProgress) = airplane.UpdatePosition(airplanePoints, route.Distance, ElapsedKM);
-            landed = CheckLanded(route.Distance);
+            (ElapsedKM, FlightProgress) = Airplane.UpdatePosition(airplanePoints, Route.Distance, ElapsedKM);
+            Landed = CheckLanded(Route.Distance);
         }
-        else if (landed && !finished)
+        else if (Landed && !Finished)
         {
             // Remove plane from world simulation
-            airplane.gameObject.SetActive(false);
+            Airplane.gameObject.SetActive(false);
 
-            // End flight
+            // Disembark and end flight
+            Disembark();
             EndFlight();
 
             // Notify Airport of Landing
             OnLanded();
 
-            finished = true;
+            Finished = true;
         }
 
-        if (finished)
+        if (Finished)
         {
             Destroy(this.gameObject);
         }
