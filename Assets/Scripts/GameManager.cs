@@ -61,7 +61,7 @@ public class GameManager : MonoBehaviour
             GameObject routeGO = Instantiate(routePrefab, earth.transform);
             routeGO.name = $"{routeTuple.Item1}-{routeTuple.Item2}";
             Route route = routeGO.GetComponent<Route>();
-            route.Initialize(airport1: info.savedAirports[routeTuple.Item1], airport2: info.savedAirports[routeTuple.Item2]);
+            route.Initialise(airport1: info.savedAirports[routeTuple.Item1], airport2: info.savedAirports[routeTuple.Item2]);
             info.savedRoutes[routeGO.name] = route;
             info.savedRoutes[$"{routeTuple.Item2}-{routeTuple.Item1}"] = route;
         }

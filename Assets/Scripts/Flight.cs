@@ -31,23 +31,24 @@ public class Flight : MonoBehaviour
         Route = route;
         Airplane = airplane;
 
+        // Build flight id
         string codeOrig = _info.stringCityCodes[route.Airport1.Name].ToUpper();
         string codeDest = _info.stringCityCodes[route.Airport2.Name].ToUpper();
+        FlightID = $"{codeOrig[0]}{codeDest[0]}{route.IdOfFlightInRoute:D4}";
 
-        FlightID = $"{codeOrig[0]}{codeDest[0]}{route.NumberOfFlightsOnRoute:D4}";
+        // Add one to flight id counter
+        Route.AddIdOfFlight();
 
-        Route.AddFlightToRoute();
-    }
-
-    public void Awake()
-    {
+        // Initialise travellers to airport
         TravellersToAirport = new Dictionary<Airport, int>();
-
         foreach (Airport airport in _info.savedAirports.Values)
         {
             TravellersToAirport.Add(airport, 0);
         }
+    }
 
+    public void Awake()
+    {
         Started = false;
         Landed = false;
         Finished = false;
@@ -65,23 +66,23 @@ public class Flight : MonoBehaviour
         OnTakeOff();
     }
 
-    public void Embark(int passengers, Airport objAirport)
+    public void Embark(int passengers, Airport passengerFinalAirport)
     {
         int occupiedCapacity = TravellersToAirport.Values.ToList().Sum();
 
         int remainingCapacity = Airplane.Capacity - occupiedCapacity;
 
-        int travellersInAirport = AirportOrig.TravellersToAirport[objAirport];
+        int travellersInAirport = AirportOrig.TravellersToAirport[passengerFinalAirport];
 
         if (travellersInAirport <= remainingCapacity)
         {
-            TravellersToAirport[objAirport] += travellersInAirport;
-            AirportOrig.TravellersToAirport[objAirport] -= TravellersToAirport[objAirport];
+            TravellersToAirport[passengerFinalAirport] += travellersInAirport;
+            AirportOrig.TravellersToAirport[passengerFinalAirport] -= TravellersToAirport[passengerFinalAirport];
         }
         else
         {
-            TravellersToAirport[objAirport] += remainingCapacity;
-            AirportOrig.TravellersToAirport[objAirport] -= remainingCapacity;
+            TravellersToAirport[passengerFinalAirport] += remainingCapacity;
+            AirportOrig.TravellersToAirport[passengerFinalAirport] -= remainingCapacity;
         }
     }
 

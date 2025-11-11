@@ -4,12 +4,11 @@ using UnityEngine;
 
 static class Auxiliary
 {
-    static string pathName = Path.Combine(Application.streamingAssetsPath, "../flight_distance.csv");
+    private static string pathName = Path.Combine(Application.streamingAssetsPath, "../flight_distance.csv");
 
-    static double defaultDistance = 10000;
+    private static double defaultDistance = 10000;
 
-    private static InfoSingleton info = InfoSingleton.GetInstance();
-
+    private static InfoSingleton _info = InfoSingleton.GetInstance();
 
     public static double GetDistanceBetweenAirports(Airport airport1, Airport airport2)
     {
@@ -23,8 +22,8 @@ static class Auxiliary
         string a1 = airport1.Name;
         string a2 = airport2.Name;
 
-        string codeA1 = info.stringCityCodes[a1];
-        string codeA2 = info.stringCityCodes[a2];
+        string codeA1 = _info.stringCityCodes[a1];
+        string codeA2 = _info.stringCityCodes[a2];
 
         foreach (string line in lines)
         {
@@ -54,8 +53,8 @@ static class Auxiliary
             string a1 = route.Airport1.Name;
             string a2 = route.Airport2.Name;
 
-            string codeA1 = info.stringCityCodes[a1];
-            string codeA2 = info.stringCityCodes[a2];
+            string codeA1 = _info.stringCityCodes[a1];
+            string codeA2 = _info.stringCityCodes[a2];
 
             bool found = false;
             foreach (string line in lines)

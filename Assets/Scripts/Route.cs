@@ -3,20 +3,19 @@ using UnityEngine;
 
 public class Route : MonoBehaviour
 {
-
     public Airport Airport1 { get; private set; }
     public Airport Airport2 { get; private set; }
     public double Distance { get; private set; }
     public List<Vector3> RoutePoints { get; private set; }
-    public int NumberOfFlightsOnRoute { get; private set; }
+    public int IdOfFlightInRoute { get; private set; }
 
     [SerializeField] private int nSegments = 100;
 
-    public void Initialize(Airport airport1, Airport airport2)
+    public void Initialise(Airport airport1, Airport airport2)
     {
         Airport1 = airport1;
         Airport2 = airport2;
-        NumberOfFlightsOnRoute = 0;
+        IdOfFlightInRoute = 1;
     }
 
     public void SetDistance(double distance)
@@ -27,9 +26,9 @@ public class Route : MonoBehaviour
         }
     }
 
-    public void AddFlightToRoute()
+    public void AddIdOfFlight()
     {
-        NumberOfFlightsOnRoute++;
+        IdOfFlightInRoute++;
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created

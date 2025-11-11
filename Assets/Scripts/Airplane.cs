@@ -2,18 +2,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public abstract class Airplane : MonoBehaviour
+public abstract class Airplane : MonoBehaviour, IUpgradable
 {
     public int Id { get; private set; }
     public string Name { get; private set; }
     public double Range { get; private set; }
     public int Capacity { get; private set; }
     public double Speed { get; protected set; }
-
-    //[SerializeField]
-    //public GameObject modelPrefab;
-
-    //public Airplane()
+    public Levels Level { get; private set; }
 
     private InputAction clickAction;
     private Camera cam;
@@ -23,6 +19,7 @@ public abstract class Airplane : MonoBehaviour
     public void Initialise(int id)
     {
         Id = id;
+        Level = Levels.Basic;
     }
 
     public virtual void Awake()
@@ -46,6 +43,12 @@ public abstract class Airplane : MonoBehaviour
     {
         clickAction.performed -= OnClickAirplane;
         //clickAction.Disable();
+    }
+
+    public void Upgrade()
+    {
+        if (Level < Levels.Elite)
+            Level++;
     }
 
     private void OnClickAirplane(InputAction.CallbackContext ctx)
