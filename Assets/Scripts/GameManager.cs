@@ -29,6 +29,8 @@ public class GameManager : MonoBehaviour
         // Initialize Factory
         airplaneFactory.Initialise(airplaneSpawner);
 
+        Debug.Log(airplaneFactory);
+
         // Save data of airports 
         foreach (string city in info.locations.Keys)
         {
@@ -49,10 +51,10 @@ public class GameManager : MonoBehaviour
         }
 
         // Create Airplanes with Factory
-        Airplane airplane = airplaneFactory.BuildAirplane(AirplaneTypes.Large, earth.transform);
+        Airplane airplane = (Airplane)airplaneFactory.Build(AirplaneTypes.Large, earth.transform);
         info.airplanes.Add(airplane);
 
-        Airplane airplane2 = airplaneFactory.BuildAirplane(AirplaneTypes.Large, earth.transform);
+        Airplane airplane2 = (Airplane)airplaneFactory.Build(AirplaneTypes.Large, earth.transform);
         info.airplanes.Add(airplane2);
 
         // Save data of routes

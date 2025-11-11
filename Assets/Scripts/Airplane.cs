@@ -2,30 +2,33 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public abstract class Airplane : MonoBehaviour, IUpgradable
+public abstract class Airplane : MonoBehaviour, IUpgradable, IObject
 {
-    public int Id { get; private set; }
+    // Read-only from outside
+    public string Id { get; private set; }
     public string Name { get; private set; }
     public double Range { get; private set; }
     public int Capacity { get; private set; }
     public double Speed { get; protected set; }
     public Levels Level { get; private set; }
 
+    // GameObjects
     private InputAction clickAction;
     private Camera cam;
 
-    private InfoSingleton info = InfoSingleton.GetInstance();
+    // Dependencies
+    private InfoSingleton _info = InfoSingleton.GetInstance();
 
     public void Initialise(int id)
     {
-        Id = id;
+        Id = id.ToString();
         Level = Levels.Basic;
     }
 
     public virtual void Awake()
     {
         clickAction = InputSystem.actions.FindAction("Click");
-        cam = info.playerCamera;
+        cam = _info.playerCamera;
 
         // Define base properties
         Range = 10000;
@@ -62,9 +65,9 @@ public abstract class Airplane : MonoBehaviour, IUpgradable
             // Detecta colisión con este objeto
             if (hit.collider.gameObject == this.gameObject)
             {
-                info.airportUI.gameObject.SetActive(false);
-                info.flightUI.gameObject.SetActive(true);
-                info.flightUI.ShowFlight(info.GetFlightOfAirplane(this));
+                _info.airportUI.gameObject.SetActive(false);
+                _info.flightUI.gameObject.SetActive(true);
+                _info.flightUI.ShowFlight(_info.GetFlightOfAirplane(this));
 
             }
 

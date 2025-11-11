@@ -6,34 +6,28 @@ public class AirplaneSpawner : MonoBehaviour
     [SerializeField] GameObject MediumAirplanePrefab;
     [SerializeField] GameObject LargeAirplanePrefab;
 
-    public void Awake()
+    public GameObject GetPrefab(AirplaneTypes type)
     {
-
-    }
-
-    public Airplane InstantiateAirplane(AirplaneTypes type, Transform earthTransform)
-    {
-        Airplane airplane;
-
         switch (type)
         {
             case AirplaneTypes.Small:
-                airplane = Instantiate(SmallAirplanePrefab, earthTransform).GetComponent<AirplaneSmall>();
-                break;
+                return SmallAirplanePrefab;
 
             case AirplaneTypes.Medium:
-                airplane = Instantiate(MediumAirplanePrefab, earthTransform).GetComponent<AirplaneMedium>();
-                break;
+                return MediumAirplanePrefab;
 
             case AirplaneTypes.Large:
-                airplane = Instantiate(LargeAirplanePrefab, earthTransform).GetComponent<AirplaneLarge>();
-                break;
-
-            default:
-                Debug.Log("ERROR CREATING AIRPLANE (WRONG TYPE), USING DEFAULT.");
-                airplane = null;
-                break;
+                return LargeAirplanePrefab;
         }
+
+        return null;
+    }
+
+    public Airplane InstantiateAirplane<T>(GameObject prefab, Transform earthTransform) where T : Airplane
+    {
+        Airplane airplane;
+
+        airplane = Instantiate(SmallAirplanePrefab, earthTransform).GetComponent<T>();
 
         return airplane;
     }

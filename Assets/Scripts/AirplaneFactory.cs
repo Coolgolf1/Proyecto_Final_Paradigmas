@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class AirplaneFactory
+public class AirplaneFactory : ITypedFactory<IObject, AirplaneTypes>
 {
     private static int _counter = 0;
 
@@ -22,9 +22,28 @@ public class AirplaneFactory
         _spawner = spawner;
     }
 
-    public Airplane BuildAirplane(AirplaneTypes type, Transform earthTransform)
+    public IObject Build(AirplaneTypes type, Transform earthTransform)
     {
-        Airplane airplane = _spawner.InstantiateAirplane(type, earthTransform);
+        GameObject prefab = _spawner.GetPrefab(type);
+        Airplane airplane;
+
+        switch (type)
+        {
+            case AirplaneTypes.Small:
+                airplane = _spawner.InstantiateAirplane<AirplaneSmall>(prefab, earthTransform);
+                break;
+
+            case AirplaneTypes.Medium:
+                airplane = _spawner.InstantiateAirplane<AirplaneLarge>(prefab, earthTransform);
+                break;
+
+            case AirplaneTypes.Large:
+                airplane = _spawner.InstantiateAirplane<AirplaneMedium>(prefab, earthTransform);
+                break;
+
+            default:
+                return null;
+        }
 
         airplane.Initialise(_counter);
         _counter++;

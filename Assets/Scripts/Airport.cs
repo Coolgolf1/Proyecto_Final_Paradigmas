@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class Airport : MonoBehaviour, IUpgradable
+public class Airport : MonoBehaviour, IUpgradable, IObject
 {
     // Read-only from outside
     public string Id { get; private set; }
@@ -12,7 +12,6 @@ public class Airport : MonoBehaviour, IUpgradable
     public int NumberOfRunways { get; private set; }
     public int ReceivedTravellers { get; private set; }
     public Location Location { get; private set; }
-
     public Levels Level { get; private set; }
 
     // Collections
@@ -34,6 +33,8 @@ public class Airport : MonoBehaviour, IUpgradable
         NumberOfRunways = numberOfRunways;
         ReceivedTravellers = 0;
         Location = location;
+
+        Level = Levels.Basic;
     }
 
     public void Upgrade()
