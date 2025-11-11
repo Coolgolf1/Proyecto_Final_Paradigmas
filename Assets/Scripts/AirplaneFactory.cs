@@ -8,6 +8,8 @@ public class AirplaneFactory : ITypedFactory<IObject, AirplaneTypes>
 
     public static AirplaneSpawner _spawner;
 
+    private AirplaneFactory() { }
+
     public static AirplaneFactory GetInstance()
     {
         if (_instance == null)
@@ -34,14 +36,16 @@ public class AirplaneFactory : ITypedFactory<IObject, AirplaneTypes>
                 break;
 
             case AirplaneTypes.Medium:
-                airplane = _spawner.InstantiateAirplane<AirplaneLarge>(prefab, earthTransform);
-                break;
-
-            case AirplaneTypes.Large:
                 airplane = _spawner.InstantiateAirplane<AirplaneMedium>(prefab, earthTransform);
                 break;
 
+            case AirplaneTypes.Large:
+                airplane = _spawner.InstantiateAirplane<AirplaneLarge>(prefab, earthTransform);
+                Debug.Log(airplane);
+                break;
+
             default:
+                Debug.Log("type not set");
                 return null;
         }
 

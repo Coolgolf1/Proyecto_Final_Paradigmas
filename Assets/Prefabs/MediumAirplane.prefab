@@ -277,6 +277,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2008703924599250498}
   - component: {fileID: 1056100909346877674}
+  - component: {fileID: 8535003897581356756}
   m_Layer: 0
   m_Name: MediumAirplane
   m_TagString: Untagged
@@ -315,6 +316,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 102beb0ce93439b4cb2a25e375eb3661, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AirplaneMedium
+--- !u!65 &8535003897581356756
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2250861789715658586}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 34, y: 11.18061, z: 37.484535}
+  m_Center: {x: 0, y: 6.1899056, z: -0.6322737}
 --- !u!1 &4278057140082674699
 GameObject:
   m_ObjectHideFlags: 0

@@ -29,7 +29,6 @@ public class GameManager : MonoBehaviour
         // Initialize Factory
         airplaneFactory.Initialise(airplaneSpawner);
 
-        Debug.Log(airplaneFactory);
 
         // Save data of airports 
         foreach (string city in info.locations.Keys)

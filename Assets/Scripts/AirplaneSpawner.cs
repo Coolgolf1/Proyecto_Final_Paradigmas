@@ -25,9 +25,7 @@ public class AirplaneSpawner : MonoBehaviour
 
     public Airplane InstantiateAirplane<T>(GameObject prefab, Transform earthTransform) where T : Airplane
     {
-        Airplane airplane;
-
-        airplane = Instantiate(SmallAirplanePrefab, earthTransform).GetComponent<T>();
+        Airplane airplane = Instantiate(prefab, earthTransform).GetComponent<T>();
 
         return airplane;
     }
