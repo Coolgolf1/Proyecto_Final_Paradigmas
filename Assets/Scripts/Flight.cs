@@ -13,6 +13,7 @@ public class Flight : MonoBehaviour
     public bool Started { get; private set; }
     public bool Landed { get; private set; }
     public bool Finished { get; private set; }
+    public bool Full { get; private set; }
 
     public event EventHandler LandedEvent;
     public event EventHandler TakeOffEvent;
@@ -52,6 +53,7 @@ public class Flight : MonoBehaviour
         Started = false;
         Landed = false;
         Finished = false;
+        Full = false;
     }
 
     public void StartFlight()
@@ -84,6 +86,9 @@ public class Flight : MonoBehaviour
             TravellersToAirport[passengerFinalAirport] += remainingCapacity;
             AirportOrig.TravellersToAirport[passengerFinalAirport] -= remainingCapacity;
         }
+
+        if (TravellersToAirport.Values.ToList().Sum() >= Airplane.Capacity)
+            Full = true;
     }
 
     public void Disembark()
@@ -148,12 +153,15 @@ public class Flight : MonoBehaviour
                 airplanePoints.Reverse();
             }
 
-
             (ElapsedKM, FlightProgress) = Airplane.UpdatePosition(airplanePoints, Route.Distance, ElapsedKM);
             Landed = CheckLanded(Route.Distance);
+
+            //Debug.Log("GOOOOOOOD");
+            //Debug.Log(Landed);
         }
         else if (Landed && !Finished)
         {
+            Debug.Log("HELLOOOOOOOOOOO C'EST FINI");
             // Remove plane from world simulation
             Airplane.gameObject.SetActive(false);
 

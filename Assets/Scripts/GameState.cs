@@ -1,6 +1,3 @@
-using UnityEngine;
-using UnityEngine.SceneManagement;
-
 public abstract class GameState
 {
     public MainMenuState mainMenu;
@@ -36,7 +33,7 @@ public class PlayState : GameState
     {
         // Catch listener (airport capacity boom)
 
-        
+
     }
 }
 

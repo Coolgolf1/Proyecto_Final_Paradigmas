@@ -80,4 +80,66 @@ static class Auxiliary
             }
         }
     }
+
+    public static void CalculateDijkstraGraph()
+    {
+        // Make sure all airports are included
+        foreach (Airport airport in _info.savedAirports.Values)
+        {
+            if (!_info.DijkstraGraph.ContainsKey(airport))
+            {
+                _info.DijkstraGraph.Add(airport, new List<RouteAssigner.Edge>());
+            }
+        }
+
+        // Clear all airport information
+        foreach (Airport airport in _info.DijkstraGraph.Keys)
+        {
+            _info.DijkstraGraph[airport].Clear();
+        }
+
+        // Save edges information in Dijkstra Graph
+        foreach (Route route in _info.savedRoutes.Values)
+        {
+            Airport airport1 = route.Airport1;
+            Airport airport2 = route.Airport2;
+            double distance = route.Distance;
+
+            // Forward: airport1 -> airport2 
+            List<RouteAssigner.Edge> edges1 = _info.DijkstraGraph[airport1];
+
+            // Check if edge from airport1 to airport2 already exists
+            bool exists1 = false;
+            foreach (RouteAssigner.Edge edge in edges1)
+            {
+                if (edge.To == airport2)
+                {
+                    exists1 = true;
+                }
+            }
+
+            if (!exists1)
+            {
+                edges1.Add(new RouteAssigner.Edge(airport2, distance));
+            }
+
+            // Reverse: airport2 -> airport1
+            List<RouteAssigner.Edge> edges2 = _info.DijkstraGraph[airport2];
+
+            // Check if edge from airport2 to airport1 already exists
+            bool exists2 = false;
+            foreach (RouteAssigner.Edge edge in edges2)
+            {
+                if (edge.To == airport1)
+                {
+                    exists2 = true;
+                }
+            }
+
+            if (!exists2)
+            {
+                edges2.Add(new RouteAssigner.Edge(airport1, distance));
+            }
+        }
+    }
 }

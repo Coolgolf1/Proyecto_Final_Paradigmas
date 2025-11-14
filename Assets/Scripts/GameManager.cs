@@ -18,36 +18,33 @@ public class GameManager : MonoBehaviour
 
     private InfoSingleton _info = InfoSingleton.GetInstance();
     private AirplaneFactory _airplaneFactory = AirplaneFactory.GetInstance();
+    private Init _init;
+    private GameState _currentState = new PlayState();
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Start()
     {
+        new GameObject("Init");
+
+        // Define UI and Camera Objects
         _info.airportUI = airportUI;
         _info.flightUI = flightUI;
         _info.playerCamera = playerCamera;
 
-        // Initialize Factory
+        // Initialise Factory
         _airplaneFactory.Initialise(airplaneSpawner);
 
+        // Initialise initialliser
+        _init = gameObject.AddComponent<Init>();
 
         // Save data of airports 
-        foreach (string city in _info.locations.Keys)
-        {
-            // Create Airport GameObject
-            GameObject airportGO = Instantiate(airportPrefab, earth.transform);
-            airportGO.name = city;
+        _init.SaveDataOfAirports(airportPrefab, earth.transform);
 
-            // Get Components of GameObject
-            Airport airport = airportGO.GetComponent<Airport>();
-            Location location = airportGO.GetComponentInChildren<Location>();
+        // Initialise list of empty airports once airports have loaded
+        _info.InitEmptyAirportList();
 
-            // Save location and airport properties
-            location.Initialise(id: city, name: $"{city}_Loc", coords: _info.locations[city]);
-            airport.Initialise(id: _info.stringCityCodes[city], name: city, location: location);
-
-            // Save airport 
-            _info.savedAirports[city] = airport;
-        }
+        // Save data of routes
+        _init.SaveDataOfRoutes(routePrefab, earth.transform);
 
         // Create Airplanes with Factory
         Airplane airplane = (Airplane)_airplaneFactory.Build(AirplaneTypes.Large, earth.transform);
@@ -56,33 +53,17 @@ public class GameManager : MonoBehaviour
         Airplane airplane2 = (Airplane)_airplaneFactory.Build(AirplaneTypes.Large, earth.transform);
         _info.airplanes.Add(airplane2);
 
-        // Save data of routes
-        foreach (Tuple<string, string> routeTuple in _info.stringCityRoutes)
-        {
-            GameObject routeGO = Instantiate(routePrefab, earth.transform);
-            routeGO.name = $"{routeTuple.Item1}-{routeTuple.Item2}";
-            Route route = routeGO.GetComponent<Route>();
-            route.Initialise(airport1: _info.savedAirports[routeTuple.Item1], airport2: _info.savedAirports[routeTuple.Item2]);
-            _info.savedRoutes[routeGO.name] = route;
-            _info.savedRoutes[$"{routeTuple.Item2}-{routeTuple.Item1}"] = route;
-        }
-
         _info.savedAirports["Madrid"].Hangar.Add(airplane);
         _info.savedAirports["Madrid"].Hangar.Add(airplane2);
 
 
         // Init travellers in each airport
-        foreach (Airport airport in _info.savedAirports.Values)
-        {
-            airport.InitTravellers();
-
-            _info.airplanesGoingFromEmptyAirport[airport] = new List<Airplane>();
-        }
+        _init.InitTravellersInAirports();
 
         //info.savedAirports["Madrid"].TravellersToAirport[info.savedAirports["Paris"]] = 10;
-        _info.savedAirports["Madrid"].TravellersToAirport[_info.savedAirports["Dubai"]] = 80;
-        _info.savedAirports["Madrid"].TravellersToAirport[_info.savedAirports["San Francisco"]] = 10;
-        _info.savedAirports["Dubai"].TravellersToAirport[_info.savedAirports["Paris"]] = 50;
+        //_info.savedAirports["Madrid"].TravellersToAirport[_info.savedAirports["Dubai"]] = 80;
+        //_info.savedAirports["Madrid"].TravellersToAirport[_info.savedAirports["San Francisco"]] = 10;
+        //_info.savedAirports["Dubai"].TravellersToAirport[_info.savedAirports["Paris"]] = 50;
 
         //info.savedAirports["Madrid"].TravellersToAirport[info.savedAirports["Paris"]] = 10;
 
@@ -90,7 +71,7 @@ public class GameManager : MonoBehaviour
         Auxiliary.LoadRouteDistances(_info.savedRoutes);
 
         // Calculate initial Dijkstra Graph
-        _info.CalculateDijkstraGraph();
+        Auxiliary.CalculateDijkstraGraph();
 
         // Create Madrid-Dubai Flight
         //Flight flight = Auxiliary.CreateFlight(info.savedAirports["Madrid"], info.savedAirports["Dubai"], info.savedRoutes["Madrid-Dubai"], airplane);
@@ -165,7 +146,7 @@ public class GameManager : MonoBehaviour
             flight.StartFlight();
         }
 
-
+        Debug.Log("FINISH INIT");
     }
 
     // Update is called once per frame

@@ -88,14 +88,18 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
                 TravellersToAirport.Add(airportDest, 0);
             }
         }
-        //foreach (Airport airport in _info.savedAirports.Values)
-        //{
-        //    if (airport != this)
-        //    {
-        //        // TODO: CHANGE LATER TO RANDOM OR SOMETHING DIFFERENT ======================================
-        //        TravellersToAirport[airport] = 10;
-        //    }
-        //}
+
+        System.Random rand = new System.Random();
+
+        foreach (Airport airport in _info.savedAirports.Values)
+        {
+            if (airport != this)
+            {
+                // TODO: CHANGE LATER TO RANDOM OR SOMETHING DIFFERENT ======================================
+                //TravellersToAirport[airport] = rand.Next(GameConstants.minTravellersCreatedInAirport, GameConstants.maxTravellersCreatedInAirport);
+                TravellersToAirport[airport] = 100;
+            }
+        }
     }
 
     public (Airplane, Airport) FindHopForTravellersToAirport(Airport objectiveAirport)
@@ -227,12 +231,16 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
 
     public void HandleLanding(object sender, EventArgs e)
     {
+        Debug.Log("HANDLE LANDING");
+
         Flight flight = (Flight)sender;
 
         if (_info.airplanesGoingFromEmptyAirport.Keys.Contains(this))
             _info.airplanesGoingFromEmptyAirport[this].Remove(flight.Airplane);
 
         Hangar.Add(flight.Airplane);
+
+        Debug.Log("PLANE IN HANGAR");
 
         // If origin airport has no travellers, take any airplane to another airport with passengers
         (Airplane emptyAirplane, Airport emptyHop, Airport emptyAirport) = GetHopToEmptyAirport();
@@ -242,7 +250,7 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
             Flight emptyFlight;
 
             GameObject flightGO = new GameObject();
-            flightGO.name = $"{_info.savedAirports["Madrid"].Name}-{emptyHop.Name}";
+            flightGO.name = $"{Name}-{emptyHop.Name}";
             emptyFlight = flightGO.AddComponent<Flight>();
             emptyFlight.Initialise(this, emptyHop, _info.savedRoutes[$"{Name}-{emptyHop.Name}"], emptyAirplane);
             _info.flights.Add(emptyFlight);
@@ -252,15 +260,21 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
             return;
         }
 
+        Debug.Log("NO EMPTY AIRPORTS");
+
         Dictionary<Airplane, Flight> createdFlights = new Dictionary<Airplane, Flight>();
 
-        // For all travellers in origin airport, assign each of the travellers an airplane
-        var origKeys = new List<Airport>(TravellersToAirport.Keys);
+        // For all travellers in origin airport, assign each group of travellers an airplane
+        List<Airport> origKeys = new List<Airport>(TravellersToAirport.Keys);
 
         Queue<Airport> airportQueue = new Queue<Airport>(_info.savedAirports.Values.ToList());
 
+        Debug.Log("BEFORE FIRST LOOP");
+
         while (airportQueue.Count > 0)
         {
+            Debug.Log("FIRST LOOOOP");
+
             Airport airport = airportQueue.Dequeue();
 
             if (airport == this)
@@ -294,7 +308,7 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
                 else
                 {
                     GameObject flightGO = new GameObject();
-                    flightGO.name = $"{_info.savedAirports["Madrid"].Name}-{nextHop.Name}";
+                    flightGO.name = $"{Name}-{nextHop.Name}";
                     newFlight = flightGO.AddComponent<Flight>();
 
                     newFlight.Initialise(this, nextHop, _info.savedRoutes[$"{Name}-{nextHop.Name}"], objAirplane);
@@ -303,12 +317,20 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
                 }
 
                 newFlight.Embark(TravellersToAirport[airport], airport);
+
+                if (newFlight.Full)
+                {
+                    Debug.Log("FULL PLANE");
+                    break;
+                }
+
+                Debug.Log("HELLO IM IN SECOND LOOP");
             }
 
-            if (TravellersToAirport[airport] > 0)
-            {
-                airportQueue.Enqueue(airport);
-            }
+            //if (TravellersToAirport[airport] > 0)
+            //{
+            //    airportQueue.Enqueue(airport);
+            //}
         }
 
         foreach (Flight tempFlight in createdFlights.Values)

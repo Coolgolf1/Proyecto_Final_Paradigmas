@@ -5,27 +5,6 @@ using UnityEngine;
 
 public class InfoSingleton
 {
-    private InfoSingleton()
-    {
-        DijkstraGraph = new Dictionary<Airport, List<RouteAssigner.Edge>>();
-
-        foreach (Airport airport in savedAirports.Values.ToList())
-        {
-            DijkstraGraph.Add(airport, new List<RouteAssigner.Edge>());
-        }
-    }
-
-    private static InfoSingleton _instance;
-
-    public static InfoSingleton GetInstance()
-    {
-        if (_instance == null)
-        {
-            _instance = new InfoSingleton();
-        }
-        return _instance;
-    }
-
     public Dictionary<string, Vector3> locations = new Dictionary<string, Vector3>()
     {
         { "Madrid", new Vector3(11.2700005f, 14.1899996f, -8.56000042f) },
@@ -54,83 +33,51 @@ public class InfoSingleton
         { "Dubai", "dxb" }
     };
 
+    // Saved data
     public Dictionary<string, Airport> savedAirports = new Dictionary<string, Airport>();
     public Dictionary<string, Route> savedRoutes = new Dictionary<string, Route>();
     public List<Flight> flights = new List<Flight>();
     public List<Airplane> airplanes = new List<Airplane>();
-
-    public List<Route> userRoutes = new List<Route>();
-
     public Dictionary<Airport, List<Airplane>> airplanesGoingFromEmptyAirport = new Dictionary<Airport, List<Airplane>>();
 
+    // Game information
+    public int totalTravellersReceived { get; private set; } = 0;
+
+    // Dijkstra graph
     public Dictionary<Airport, List<RouteAssigner.Edge>> DijkstraGraph { get; private set; }
 
+    // GameObjects set in GameManager
     public AirportUI airportUI;
     public FlightUI flightUI;
-
-
     public Camera playerCamera;
 
+    // Singleton
+    private static InfoSingleton _instance;
 
-    public void CalculateDijkstraGraph()
+    private InfoSingleton()
     {
-        // Make sure all airports are included
+        DijkstraGraph = new Dictionary<Airport, List<RouteAssigner.Edge>>();
+
+        foreach (Airport airport in savedAirports.Values.ToList())
+        {
+            DijkstraGraph.Add(airport, new List<RouteAssigner.Edge>());
+        }
+    }
+
+    public static InfoSingleton GetInstance()
+    {
+        if (_instance == null)
+        {
+            _instance = new InfoSingleton();
+        }
+        return _instance;
+    }
+
+    public void InitEmptyAirportList()
+    {
         foreach (Airport airport in savedAirports.Values)
         {
-            if (!DijkstraGraph.ContainsKey(airport))
-            {
-                DijkstraGraph.Add(airport, new List<RouteAssigner.Edge>());
-            }
-        }
-
-        // Clear all airport information
-        foreach (Airport airport in DijkstraGraph.Keys)
-        {
-            DijkstraGraph[airport].Clear();
-        }
-
-        // Save edges information in Dijkstra Graph
-        foreach (Route route in savedRoutes.Values)
-        {
-            Airport airport1 = route.Airport1;
-            Airport airport2 = route.Airport2;
-            double distance = route.Distance;
-
-            // Forward: airport1 -> airport2 
-            List<RouteAssigner.Edge> edges1 = DijkstraGraph[airport1];
-
-            // Check if edge from airport1 to airport2 already exists
-            bool exists1 = false;
-            foreach (RouteAssigner.Edge edge in edges1)
-            {
-                if (edge.To == airport2)
-                {
-                    exists1 = true;
-                }
-            }
-
-            if (!exists1)
-            {
-                edges1.Add(new RouteAssigner.Edge(airport2, distance));
-            }
-
-            // Reverse: airport2 -> airport1
-            List<RouteAssigner.Edge> edges2 = DijkstraGraph[airport2];
-
-            // Check if edge from airport2 to airport1 already exists
-            bool exists2 = false;
-            foreach (RouteAssigner.Edge edge in edges2)
-            {
-                if (edge.To == airport1)
-                {
-                    exists2 = true;
-                }
-            }
-
-            if (!exists2)
-            {
-                edges2.Add(new RouteAssigner.Edge(airport1, distance));
-            }
+            airplanesGoingFromEmptyAirport[airport] = new List<Airplane>();
         }
     }
 
