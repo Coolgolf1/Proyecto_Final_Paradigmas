@@ -2,11 +2,11 @@ using UnityEngine;
 
 public class AirplaneFactory : ITypedFactory<IObject, AirplaneTypes>
 {
-    private static int _counter = 0;
+    private int _counter = 0;
 
     private static AirplaneFactory _instance;
 
-    public static AirplaneSpawner _spawner;
+    private AirplaneSpawner _spawner;
 
     private AirplaneFactory() { }
 

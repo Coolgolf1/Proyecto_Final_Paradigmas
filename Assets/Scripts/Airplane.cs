@@ -7,10 +7,10 @@ public abstract class Airplane : MonoBehaviour, IUpgradable, IObject
     // Read-only from outside
     public string Id { get; private set; }
     public string Name { get; private set; }
-    public double Range { get; private set; }
-    public int Capacity { get; private set; }
+    public double Range { get; protected set; }
+    public int Capacity { get; protected set; }
     public double Speed { get; protected set; }
-    public Levels Level { get; private set; }
+    public Levels Level { get; protected set; }
 
     // GameObjects
     private InputAction clickAction;
@@ -29,23 +29,17 @@ public abstract class Airplane : MonoBehaviour, IUpgradable, IObject
     {
         clickAction = InputSystem.actions.FindAction("Click");
         cam = _info.playerCamera;
-
-        // Define base properties
-        Range = 10000;
-        Capacity = 100;
-        Speed = 300;
     }
 
     private void OnEnable()
     {
         clickAction.performed += OnClickAirplane;
-        //clickAction.Enable();
+        clickAction.Enable();
     }
 
     private void OnDisable()
     {
         clickAction.performed -= OnClickAirplane;
-        //clickAction.Disable();
     }
 
     public void Upgrade()

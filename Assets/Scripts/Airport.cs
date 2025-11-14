@@ -53,13 +53,12 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
     private void OnEnable()
     {
         clickAction.performed += OnClickAirport;
-        //clickAction.Enable();
+        clickAction.Enable();
     }
 
     private void OnDisable()
     {
         clickAction.performed -= OnClickAirport;
-        //clickAction.Disable();
     }
 
     private void OnClickAirport(InputAction.CallbackContext ctx)

@@ -3,22 +3,22 @@ using UnityEngine;
 public class AirplaneLights : MonoBehaviour
 {
 
-    private double elapsedTime = 0;
-    private Light airplaneLight;
+    private double _elapsedTime = 0;
+    private Light _airplaneLight;
 
     void Start()
     {
-        airplaneLight = GetComponent<Light>();
+        _airplaneLight = GetComponent<Light>();
     }
 
     void Update()
     {
-        if (elapsedTime > 1)
+        if (_elapsedTime > 1)
         {
-            airplaneLight.enabled = !airplaneLight.enabled;
-            elapsedTime = 0;
+            _airplaneLight.enabled = !_airplaneLight.enabled;
+            _elapsedTime = 0;
         }
 
-        elapsedTime += Time.deltaTime;
+        _elapsedTime += Time.deltaTime;
     }
 }

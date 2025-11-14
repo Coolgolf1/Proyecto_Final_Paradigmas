@@ -4,9 +4,9 @@ using UnityEngine;
 
 static class Auxiliary
 {
-    private static string pathName = Path.Combine(Application.streamingAssetsPath, "../flight_distance.csv");
+    private static string _pathName = Path.Combine(Application.streamingAssetsPath, "../flight_distance.csv");
 
-    private static double defaultDistance = 10000;
+    private static double _defaultDistance = 10000;
 
     private static InfoSingleton _info = InfoSingleton.GetInstance();
 
@@ -17,7 +17,7 @@ static class Auxiliary
             return 0;
         }
 
-        string[] lines = File.ReadAllLines(pathName)[1..];
+        string[] lines = File.ReadAllLines(_pathName)[1..];
 
         string a1 = airport1.Name;
         string a2 = airport2.Name;
@@ -39,12 +39,12 @@ static class Auxiliary
 
         // If search fails
         Debug.Log($"DISTANCE FAIL SEARCH {airport1}-{airport2}.");
-        return defaultDistance;
+        return _defaultDistance;
     }
 
     public static void LoadRouteDistances(Dictionary<string, Route> routes)
     {
-        string[] lines = File.ReadAllLines(pathName)[1..];
+        string[] lines = File.ReadAllLines(_pathName)[1..];
 
         foreach (string routeName in routes.Keys)
         {
@@ -73,7 +73,7 @@ static class Auxiliary
 
             if (!found)
             {
-                route.SetDistance(defaultDistance);
+                route.SetDistance(_defaultDistance);
 
                 // REMOVE DEBUG AFTER MAKING SURE THIS WORKS 100%!!! =================================
                 Debug.Log($"ERROR LOADING DISTANCE FOR ROUTE: {route.name}.");
