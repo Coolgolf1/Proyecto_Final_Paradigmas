@@ -60,7 +60,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         
-        actualZoom = Mathf.Lerp(actualZoom, targetZoom, Time.deltaTime * zoomDecay);
+        actualZoom = Mathf.Lerp(actualZoom, targetZoom, Time.fixedDeltaTime * zoomDecay);
 
         transform.position += transform.forward * (actualZoom - previousZoom);
 
@@ -76,7 +76,7 @@ public class PlayerMovement : MonoBehaviour
         }
         else
         {
-            velocity -= velocity * decay * Time.deltaTime;
+            velocity -= velocity * decay * Time.fixedDeltaTime;
         }
     }
 }
