@@ -1,9 +1,7 @@
 using System.Collections.Generic;
-using System.Linq;
 
 public static class RouteAssigner
 {
-
     private static InfoSingleton _info = InfoSingleton.GetInstance();
 
     public class Edge
@@ -23,23 +21,9 @@ public static class RouteAssigner
         // Compute the shortest possible time (in hours) among all airplanes
         double bestDistance = double.PositiveInfinity;
         Airplane bestAirplane = null;
-        //double flightTime = 0;
 
         foreach (Airplane airplane in start.Hangar)
         {
-            // Check if it is in another hangar different to the ones in route
-            Airport airportHangar = _info.GetAirportOfAirplane(airplane);
-
-            //if (airportHangar != start && airportHangar != edge.To)
-            //{
-            //    continue;
-            //}
-
-            //if (airportHangar != start)
-            //{
-            //    continue;
-            //}
-
             double tempDistance;
 
             Flight flight = _info.GetFlightOfAirplane(airplane);
@@ -47,7 +31,7 @@ public static class RouteAssigner
             // Do not check full planes
             if (flight is not null)
             {
-                if (airplane.Capacity <= flight.TravellersToAirport.Values.ToList().Sum())
+                if (airplane.Capacity <= flight.GetNumberOfPassengers())
                 {
                     continue;
                 }
@@ -99,7 +83,7 @@ public static class RouteAssigner
         PriorityQueue<Airport> queue = new PriorityQueue<Airport>();
         Dictionary<Airport, Airplane> airplaneUsed = new Dictionary<Airport, Airplane>();
 
-        // Initialize 
+        // Initialize
         foreach (Airport node in graph.Keys)
         {
             distanceFromStart[node] = double.PositiveInfinity;
@@ -126,7 +110,6 @@ public static class RouteAssigner
 
             processed.Add(current);
 
-            //Debug.Log("===============");
             foreach (Edge edge in graph[current])
             {
                 (Airplane airplane, double cost) = GetFastestAirplaneAndTime(current, edge, start, end);
@@ -137,14 +120,8 @@ public static class RouteAssigner
                 Airport neighbor = edge.To;
                 double newDistance = currentDistance + cost;
 
-                //Debug.Log(newDistance);
-                //Debug.Log(distanceFromStart[neighbor]);
-
-                //Debug.Log(edge.To);
-                //Debug.Log(distanceFromStart[neighbor]);
                 if (newDistance <= distanceFromStart[neighbor])
                 {
-                    //Debug.Log(neighbor);
                     distanceFromStart[neighbor] = newDistance;
                     previous[neighbor] = current;
                     airplaneUsed[neighbor] = airplane;
@@ -156,7 +133,6 @@ public static class RouteAssigner
         // If nothing found
         if (!previous.ContainsKey(end) && start != end)
         {
-            //Debug.Log("HEEEEEELPPPPPPPPPPPPPP");
             return (null, null);
         }
 
@@ -175,7 +151,6 @@ public static class RouteAssigner
         Airplane nextAirplane = null;
         if (nextHop != null)
             airplaneUsed.TryGetValue(nextHop, out nextAirplane);
-
 
         return (nextAirplane, path);
     }

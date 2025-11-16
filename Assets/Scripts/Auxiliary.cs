@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
-static class Auxiliary
+internal static class Auxiliary
 {
     private static string _pathName = Path.Combine(Application.streamingAssetsPath, "../flight_distance.csv");
 
@@ -105,7 +105,7 @@ static class Auxiliary
             Airport airport2 = route.Airport2;
             double distance = route.Distance;
 
-            // Forward: airport1 -> airport2 
+            // Forward: airport1 -> airport2
             List<RouteAssigner.Edge> edges1 = _info.DijkstraGraph[airport1];
 
             // Check if edge from airport1 to airport2 already exists

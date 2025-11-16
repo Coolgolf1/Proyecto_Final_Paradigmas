@@ -10,7 +10,7 @@ namespace AE
         private float _timer = 0;
         private float _dequeueInterval = 2.0f;
 
-        void Start()
+        private void Start()
         {
             _queue = new PriorityQueue<Cube>();
 
@@ -22,7 +22,7 @@ namespace AE
             }
         }
 
-        void Update()
+        private void Update()
         {
             _timer += Time.deltaTime;
 

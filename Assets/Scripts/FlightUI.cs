@@ -2,15 +2,15 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-
 public class FlightUI : MonoBehaviour
 {
     [SerializeField] private TMP_Text flightNumber;
     [SerializeField] private TMP_Text routeText;
     [SerializeField] private TMP_Text passengers;
     [SerializeField] private Button closeButton;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private void Start()
     {
         flightNumber = GameObject.Find("FlightNumber").GetComponent<TMP_Text>();
         routeText = GameObject.Find("RouteText").GetComponent<TMP_Text>();
@@ -21,16 +21,14 @@ public class FlightUI : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
-
     }
 
-    void CloseUI()
+    private void CloseUI()
     {
         gameObject.SetActive(false);
     }
-
 
     public void ShowFlight(Flight flight)
     {

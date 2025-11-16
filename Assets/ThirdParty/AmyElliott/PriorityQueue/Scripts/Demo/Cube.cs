@@ -1,6 +1,5 @@
 namespace AE
 {
-    using System.Collections.Generic;
     using UnityEngine;
 
     public class Cube : MonoBehaviour

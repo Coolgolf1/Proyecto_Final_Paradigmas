@@ -2,9 +2,9 @@ using UnityEngine;
 
 public class AirplaneSpawner : MonoBehaviour
 {
-    [SerializeField] GameObject SmallAirplanePrefab;
-    [SerializeField] GameObject MediumAirplanePrefab;
-    [SerializeField] GameObject LargeAirplanePrefab;
+    [SerializeField] private GameObject SmallAirplanePrefab;
+    [SerializeField] private GameObject MediumAirplanePrefab;
+    [SerializeField] private GameObject LargeAirplanePrefab;
 
     public GameObject GetPrefab(AirplaneTypes type)
     {

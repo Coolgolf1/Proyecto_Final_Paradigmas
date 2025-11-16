@@ -21,14 +21,13 @@ public class Init : MonoBehaviour
             location.Initialise(id: city, name: $"{city}_Loc", coords: _info.locations[city]);
             airport.Initialise(id: _info.stringCityCodes[city], name: city, location: location);
 
-            // Save airport 
+            // Save airport
             _info.savedAirports[city] = airport;
         }
     }
 
     public void SaveDataOfRoutes(GameObject routePrefab, Transform earthTransform)
     {
-
         foreach (Tuple<string, string> routeTuple in _info.stringCityRoutes)
         {
             // Create Route GameObject
@@ -38,7 +37,7 @@ public class Init : MonoBehaviour
             // Get route component of GameObject
             Route route = routeGO.GetComponent<Route>();
 
-            // Initialise route 
+            // Initialise route
             route.Initialise(airport1: _info.savedAirports[routeTuple.Item1], airport2: _info.savedAirports[routeTuple.Item2]);
 
             // Save route in both ways

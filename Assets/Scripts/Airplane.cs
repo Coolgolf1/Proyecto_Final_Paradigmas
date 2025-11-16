@@ -6,6 +6,7 @@ public abstract class Airplane : MonoBehaviour, IUpgradable, IObject
 {
     // Read-only from outside
     public string Id { get; private set; }
+
     public string Name { get; private set; }
     public double Range { get; protected set; }
     public int Capacity { get; protected set; }
@@ -14,6 +15,7 @@ public abstract class Airplane : MonoBehaviour, IUpgradable, IObject
 
     // GameObjects
     private InputAction clickAction;
+
     private Camera cam;
 
     // Dependencies
@@ -55,16 +57,13 @@ public abstract class Airplane : MonoBehaviour, IUpgradable, IObject
 
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
-
             // Detecta colisión con este objeto
             if (hit.collider.gameObject == this.gameObject)
             {
                 _info.airportUI.gameObject.SetActive(false);
                 _info.flightUI.gameObject.SetActive(true);
                 _info.flightUI.ShowFlight(_info.GetFlightOfAirplane(this));
-
             }
-
         }
     }
 

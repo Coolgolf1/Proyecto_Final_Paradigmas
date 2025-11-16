@@ -2,16 +2,15 @@ using UnityEngine;
 
 public class AirplaneLights : MonoBehaviour
 {
-
     private double _elapsedTime = 0;
     private Light _airplaneLight;
 
-    void Start()
+    private void Start()
     {
         _airplaneLight = GetComponent<Light>();
     }
 
-    void Update()
+    private void Update()
     {
         if (_elapsedTime > 1)
         {

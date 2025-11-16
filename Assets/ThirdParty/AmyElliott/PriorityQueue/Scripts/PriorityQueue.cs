@@ -57,10 +57,12 @@ namespace System.Collections.Generic
         private const int Log2Arity = 2;
 
 #if DEBUG
+
         static PriorityQueue()
         {
             Debug.Assert(Log2Arity > 0 && Math.Pow(2, Log2Arity) == Arity);
         }
+
 #endif
 
         /// <summary>
@@ -111,11 +113,10 @@ namespace System.Collections.Generic
         ///  The specified <paramref name="initialCapacity"/> was negative.
         /// </exception>
         public PriorityQueue(int initialCapacity, IComparer<int>? comparer)
-        {            
+        {
             _nodes = new (TElement, int)[initialCapacity];
             _comparer = InitializeComparer(comparer);
         }
-
 
         /// <summary>
         ///  Gets the number of elements contained in the <see cref="PriorityQueue{TElement, int}"/>.
@@ -478,7 +479,8 @@ namespace System.Collections.Generic
                 /// <summary>
                 /// Releases all resources used by the <see cref="Enumerator"/>.
                 /// </summary>
-                public void Dispose() { }
+                public void Dispose()
+                { }
 
                 /// <summary>
                 /// Advances the enumerator to the next element of the <see cref="UnorderedItems"/>.
@@ -514,6 +516,7 @@ namespace System.Collections.Generic
                 /// Gets the element at the current position of the enumerator.
                 /// </summary>
                 public (TElement Element, int Priority) Current => _current;
+
                 object IEnumerator.Current => _current;
 
                 void IEnumerator.Reset()
@@ -535,9 +538,11 @@ namespace System.Collections.Generic
             public Enumerator GetEnumerator() => new Enumerator(_queue);
 
 #pragma warning disable 8603
+
             IEnumerator<(TElement Element, int Priority)> IEnumerable<(TElement Element, int Priority)>.GetEnumerator() =>
                 _queue.Count == 0 ? null :
                 GetEnumerator();
+
 #pragma warning restore 8603
 
             IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable<(TElement Element, int Priority)>)this).GetEnumerator();

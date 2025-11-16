@@ -2,7 +2,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-
 public class AirportUI : MonoBehaviour
 {
     [SerializeField] private TMP_Text airportID;
@@ -10,8 +9,9 @@ public class AirportUI : MonoBehaviour
     [SerializeField] private TMP_Text airportName;
     [SerializeField] private TMP_Text passengers;
     [SerializeField] private Button closeButton;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private void Start()
     {
         airportID = GameObject.Find("AirportID").GetComponent<TMP_Text>();
         airportName = GameObject.Find("CityName").GetComponent<TMP_Text>();
@@ -22,16 +22,14 @@ public class AirportUI : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
-
     }
 
-    void CloseUI()
+    private void CloseUI()
     {
         gameObject.SetActive(false);
     }
-
 
     public void ShowAirport(Airport airport)
     {

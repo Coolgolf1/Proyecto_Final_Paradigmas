@@ -32,7 +32,7 @@ public class Route : MonoBehaviour
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private void Start()
     {
         LineRenderer line = gameObject.GetComponent<LineRenderer>();
         line.useWorldSpace = true;
@@ -45,13 +45,11 @@ public class Route : MonoBehaviour
         RoutePoints = points;
         line.positionCount = points.Count;
         line.SetPositions(points.ToArray());
-
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
-
     }
 
     public List<Vector3> GetGreatCirclePoints(Vector3 A, Vector3 B, int segments)
@@ -79,6 +77,4 @@ public class Route : MonoBehaviour
         }
         return elevated;
     }
-
-
 }

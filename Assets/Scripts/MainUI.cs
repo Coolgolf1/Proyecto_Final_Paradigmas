@@ -4,14 +4,14 @@ using UnityEngine.UI;
 
 public class MainUI : MonoBehaviour
 {
-
     private float _elapsedTime;
     [SerializeField] private TMP_Text timeCounter;
     [SerializeField] private Button play;
     [SerializeField] private Button pause;
     [SerializeField] private Button fastForward;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private void Start()
     {
         _elapsedTime = 0;
         play.onClick.AddListener(Play);
@@ -19,29 +19,28 @@ public class MainUI : MonoBehaviour
         fastForward.onClick.AddListener(FastForward);
     }
 
-    void Play()
+    private void Play()
     {
         Time.timeScale = 1;
     }
 
-    void Pause()
+    private void Pause()
     {
         Time.timeScale = 0;
     }
 
-    void FastForward()
+    private void FastForward()
     {
         Time.timeScale = 2;
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         _elapsedTime += Time.deltaTime;
 
         string minutes = Mathf.Floor(_elapsedTime / 60).ToString("00");
         string seconds = Mathf.Floor(_elapsedTime % 60).ToString("00");
         timeCounter.text = $"{minutes}:{seconds}";
-
     }
 }

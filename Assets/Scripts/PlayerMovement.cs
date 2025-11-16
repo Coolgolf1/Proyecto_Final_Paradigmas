@@ -1,10 +1,8 @@
-using Mono.Cecil;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
-
     public GameObject earth;
     public InputAction drag;
     public InputAction look;
@@ -15,8 +13,10 @@ public class PlayerMovement : MonoBehaviour
     private float modulo;
     [SerializeField] private float zoomFactor;
     private float distance;
+
     [SerializeField]
     private float decay = 8f;
+
     [SerializeField] private float zoomDecay = 8f;
 
     [SerializeField] private float zoomSensitivity = 2500f;
@@ -27,19 +27,16 @@ public class PlayerMovement : MonoBehaviour
     private float previousZoom = 0;
     private float actualZoom = 0;
 
-
-
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private void Start()
     {
         drag = InputSystem.actions.FindAction("IsDragging");
         look = InputSystem.actions.FindAction("Look");
         zoom = InputSystem.actions.FindAction("Zoom");
-        
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         InertiaDrag();
 
@@ -52,14 +49,12 @@ public class PlayerMovement : MonoBehaviour
         transform.RotateAround(earth.transform.position, -Vector3.up, -moveValue[0] * sensitivity * zoomFactor);
         transform.RotateAround(Vector3.zero, transform.right, -moveValue[1] * sensitivity * zoomFactor);
 
-
         //Debug.Log(zoomValue.ToString());
         if ((modulo > 30 || zoomValue[1] < 0) && (modulo < 75 || zoomValue[1] > 0))
         {
             targetZoom += zoomValue[1];
         }
 
-        
         actualZoom = Mathf.Lerp(actualZoom, targetZoom, Time.fixedDeltaTime * zoomDecay);
 
         transform.position += transform.forward * (actualZoom - previousZoom);

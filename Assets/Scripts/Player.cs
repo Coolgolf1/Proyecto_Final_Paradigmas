@@ -1,9 +1,10 @@
 using System.Collections.Generic;
-using UnityEngine;
 
-public class Player : MonoBehaviour
+public static class Player
 {
-    public int Score { get; private set; }
-    public int Money { get; private set; }
-    public List<Airplane> Airplanes { get; private set; }
+    public static int Score { get; set; }
+    public static int Money { get; set; }
+    public static List<Airplane> Airplanes { get; private set; }
+
+
 }

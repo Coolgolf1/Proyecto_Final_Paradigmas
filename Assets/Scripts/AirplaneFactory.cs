@@ -8,7 +8,8 @@ public class AirplaneFactory : ITypedFactory<IObject, AirplaneTypes>
 
     private AirplaneSpawner _spawner;
 
-    private AirplaneFactory() { }
+    private AirplaneFactory()
+    { }
 
     public static AirplaneFactory GetInstance()
     {
@@ -41,7 +42,6 @@ public class AirplaneFactory : ITypedFactory<IObject, AirplaneTypes>
 
             case AirplaneTypes.Large:
                 airplane = _spawner.InstantiateAirplane<AirplaneLarge>(prefab, earthTransform);
-                Debug.Log(airplane);
                 break;
 
             default:

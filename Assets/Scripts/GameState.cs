@@ -6,6 +6,7 @@ public abstract class GameState
     public EndState end;
 
     public abstract void OnStateEnter();
+
     public abstract void OnStateExit();
 }
 
@@ -32,8 +33,6 @@ public class PlayState : GameState
     public override void OnStateExit()
     {
         // Catch listener (airport capacity boom)
-
-
     }
 }
 
@@ -65,5 +64,3 @@ public class EndState : GameState
         // Restart game
     }
 }
-
-

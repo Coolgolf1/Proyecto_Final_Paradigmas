@@ -35,19 +35,21 @@ public class InfoSingleton
 
     // Saved data
     public Dictionary<string, Airport> savedAirports = new Dictionary<string, Airport>();
+
     public Dictionary<string, Route> savedRoutes = new Dictionary<string, Route>();
     public List<Flight> flights = new List<Flight>();
     public List<Airplane> airplanes = new List<Airplane>();
     public Dictionary<Airport, List<Airplane>> airplanesGoingFromEmptyAirport = new Dictionary<Airport, List<Airplane>>();
 
     // Game information
-    public int totalTravellersReceived { get; private set; } = 0;
+    public int totalTravellersReceived { get; set; } = 0;
 
     // Dijkstra graph
     public Dictionary<Airport, List<RouteAssigner.Edge>> DijkstraGraph { get; private set; }
 
     // GameObjects set in GameManager
     public AirportUI airportUI;
+
     public FlightUI flightUI;
     public Camera playerCamera;
 

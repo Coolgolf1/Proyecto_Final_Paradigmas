@@ -16,6 +16,7 @@ public class Flight : MonoBehaviour
     public bool Full { get; private set; }
 
     public event EventHandler LandedEvent;
+
     public event EventHandler TakeOffEvent;
 
     private InfoSingleton _info = InfoSingleton.GetInstance();
@@ -56,6 +57,11 @@ public class Flight : MonoBehaviour
         Full = false;
     }
 
+    public int GetNumberOfPassengers()
+    {
+        return TravellersToAirport.Values.ToList().Sum();
+    }
+
     public void StartFlight()
     {
         AirportOrig.TrackTakeOff(this);
@@ -70,7 +76,7 @@ public class Flight : MonoBehaviour
 
     public void Embark(int passengers, Airport passengerFinalAirport)
     {
-        int occupiedCapacity = TravellersToAirport.Values.ToList().Sum();
+        int occupiedCapacity = GetNumberOfPassengers();
 
         int remainingCapacity = Airplane.Capacity - occupiedCapacity;
 
@@ -87,7 +93,7 @@ public class Flight : MonoBehaviour
             AirportOrig.TravellersToAirport[passengerFinalAirport] -= remainingCapacity;
         }
 
-        if (TravellersToAirport.Values.ToList().Sum() >= Airplane.Capacity)
+        if (GetNumberOfPassengers() >= Airplane.Capacity)
             Full = true;
     }
 
@@ -119,22 +125,17 @@ public class Flight : MonoBehaviour
 
     protected virtual void OnLanded()
     {
-
         LandedEvent?.Invoke(this, EventArgs.Empty);
-
     }
+
     protected virtual void OnTakeOff()
     {
-
         TakeOffEvent?.Invoke(this, EventArgs.Empty);
-
     }
-
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     //private void Start()
     //{
-
     //    started = false;
     //    landed = false;
     //}
@@ -155,13 +156,9 @@ public class Flight : MonoBehaviour
 
             (ElapsedKM, FlightProgress) = Airplane.UpdatePosition(airplanePoints, Route.Distance, ElapsedKM);
             Landed = CheckLanded(Route.Distance);
-
-            //Debug.Log("GOOOOOOOD");
-            //Debug.Log(Landed);
         }
         else if (Landed && !Finished)
         {
-            Debug.Log("HELLOOOOOOOOOOO C'EST FINI");
             // Remove plane from world simulation
             Airplane.gameObject.SetActive(false);
 
