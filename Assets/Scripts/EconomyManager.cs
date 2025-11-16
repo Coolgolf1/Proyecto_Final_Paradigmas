@@ -1,7 +1,11 @@
 
+using System;
+
 public class EconomyManager
 {
     private static EconomyManager _instance;
+
+    public event EventHandler MoneyChange;
 
     public EconomyManager() { }
 
@@ -17,6 +21,10 @@ public class EconomyManager
 
     public void SaveCoins(int passengers)
     {
-        Player.Money += passengers;
+        if (passengers > 0)
+        {
+            Player.Money += passengers;
+            MoneyChange?.Invoke(this, EventArgs.Empty);
+        }
     }
 }

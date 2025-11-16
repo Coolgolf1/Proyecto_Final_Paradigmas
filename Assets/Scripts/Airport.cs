@@ -8,7 +8,6 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
 {
     // Read-only from outside
     public string Id { get; private set; }
-
     public string Name { get; private set; }
     public int NumberOfRunways { get; private set; }
     public int ReceivedTravellers { get; private set; }
@@ -227,10 +226,9 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
         {
             ReceivedTravellers += passengers;
             _info.totalTravellersReceived += passengers;
-            // GIVE COINS FOR EACH PASSENGER TAKEN TO CORRECT AIRPORT SUCCESSFULLY ======================================
-            _economy.SaveCoins(passengers);
-            Debug.Log(Player.Money);
 
+            // Give coins to user
+            _economy.SaveCoins(passengers);
         }
     }
 
