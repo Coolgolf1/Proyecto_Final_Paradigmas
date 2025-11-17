@@ -12,7 +12,6 @@ public class PlayerMovement : MonoBehaviour
     private Vector2 zoomValue;
     private float modulo;
     [SerializeField] private float zoomFactor;
-    private float distance;
 
     [SerializeField]
     private float decay = 8f;

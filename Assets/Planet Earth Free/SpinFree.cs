@@ -37,14 +37,14 @@ public class SpinFree : MonoBehaviour
                 if (spinParent)
                     transform.parent.transform.Rotate(Vector3.up, (speed * direction) * Time.deltaTime);
                 else
-                    transform.Rotate(Vector3.up, (speed * direction) * Time.deltaTime);
+                    transform.Rotate(Vector3.up, (speed * direction) * Time.deltaTime, Space.Self);
             }
             else
             {
                 if (spinParent)
                     transform.parent.transform.Rotate(-Vector3.up, (speed * direction) * Time.deltaTime);
                 else
-                    transform.Rotate(-Vector3.up, (speed * direction) * Time.deltaTime);
+                    transform.Rotate(-Vector3.up, (speed * direction) * Time.deltaTime, Space.Self);
             }
         }
     }
