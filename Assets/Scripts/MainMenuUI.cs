@@ -8,7 +8,7 @@ public class MainMenuUI : MonoBehaviour
     [SerializeField] private Button options;
     [SerializeField] private Button exitButton;
     [SerializeField] private GameObject player;
-    [SerializeField] private GameObject earth;
+    //[SerializeField] private GameObject earth;
 
     private bool _startAnimation;
     
@@ -16,7 +16,7 @@ public class MainMenuUI : MonoBehaviour
     void Start()
     {
         startGame.onClick.AddListener(StartGame);
-        earth.GetComponent<SpinFree>().enabled = true;
+        //earth.GetComponent<SpinFree>().enabled = true;
     }
 
     // Update is called once per frame
@@ -33,7 +33,7 @@ public class MainMenuUI : MonoBehaviour
                 player.transform.position = GameConstants.initCameraPosition;
                 _startAnimation = false;
                 gameObject.SetActive(false);
-                earth.GetComponent<SpinFree>().enabled = false;
+                //earth.GetComponent<SpinFree>().enabled = false;
             }
         }
 
