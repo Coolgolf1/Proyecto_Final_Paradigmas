@@ -33,7 +33,7 @@ public class FlightUI : MonoBehaviour
     public void ShowFlight(Flight flight)
     {
         flightNumber.text = flight.FlightID;
-        routeText.text = $"{flight.AirportOrig.name}-{flight.AirportDest.name}";
+        routeText.text = $"{flight.AirportOrig.Id.ToUpper()} - {flight.AirportDest.Id.ToUpper()}";
         string passengersText = "";
         foreach (Airport destAirport in flight.TravellersToAirport.Keys)
         {
