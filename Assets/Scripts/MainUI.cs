@@ -55,8 +55,8 @@ public class MainUI : MonoBehaviour
 
         string hours = ((Mathf.Floor(_elapsedTime / 3600) + refTime.Item1) % 24).ToString("00");
         string minutes = ((Mathf.Floor(_elapsedTime / 60) + refTime.Item2) % 60).ToString("00");
-        string seconds = ((Mathf.Floor(_elapsedTime % 60) + refTime.Item3) % 60).ToString("00");
-        timeCounter.text = $"{hours}:{minutes}:{seconds}";
+        //string seconds = ((Mathf.Floor(_elapsedTime % 60) + refTime.Item3) % 60).ToString("00");
+        timeCounter.text = $"{hours}:{minutes}";
         money.text = $"Monedas: {_currentMoney}";
     }
 }
