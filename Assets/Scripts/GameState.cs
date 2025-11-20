@@ -1,9 +1,11 @@
 public abstract class GameState
 {
-    public MainMenuState mainMenu;
-    public PlayState play;
-    public InHangarState inHangar;
-    public EndState end;
+    protected GameMaster _gm;
+
+    protected GameState(GameMaster gm)
+    {
+        _gm = gm;
+    }
 
     public abstract void OnStateEnter();
 
@@ -12,45 +14,56 @@ public abstract class GameState
 
 public class MainMenuState : GameState
 {
+    public MainMenuState(GameMaster gm) : base(gm) { }
+
     public override void OnStateEnter()
     {
-        // Transitioned by another state
+        UIEvents.OnMainMenuEnter?.Invoke();
     }
 
     public override void OnStateExit()
     {
-        // Catch listener (start button)
+        UIEvents.OnMainMenuExit?.Invoke();
     }
 }
+
 
 public class PlayState : GameState
 {
+    public PlayState(GameMaster gm) : base(gm) { }
+
     public override void OnStateEnter()
     {
-        // Transitioned by another state
+        // Load level, spawn player, etc.
     }
 
     public override void OnStateExit()
     {
-        // Catch listener (airport capacity boom)
+
     }
 }
+
 
 public class InHangarState : GameState
 {
+    public InHangarState(GameMaster gm) : base(gm) { }
+
     public override void OnStateEnter()
     {
-        // Transitioned by another state
+
     }
 
     public override void OnStateExit()
     {
-        // Catch listener
+
     }
 }
 
+
 public class EndState : GameState
 {
+    public EndState(GameMaster gm) : base(gm) { }
+
     public override void OnStateEnter()
     {
         // Transitioned by another state

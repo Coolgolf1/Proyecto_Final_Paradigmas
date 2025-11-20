@@ -3,6 +3,7 @@ using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
+    private PlayerInput playerInput;
     public GameObject earth;
     public InputAction drag;
     public InputAction look;
@@ -26,12 +27,36 @@ public class PlayerMovement : MonoBehaviour
     private float previousZoom = 0;
     private float actualZoom = 0;
 
+    private void Awake()
+    {
+        playerInput = GetComponent<PlayerInput>();
+
+        UIEvents.OnMainMenuEnter += DisableActions;
+        UIEvents.OnPlayEnter += EnableActions;
+    }
+
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Start()
     {
         drag = InputSystem.actions.FindAction("IsDragging");
         look = InputSystem.actions.FindAction("Look");
         zoom = InputSystem.actions.FindAction("Zoom");
+    }
+
+    public void DisableActions()
+    {
+        Debug.Log("DISABLED");
+
+        playerInput.currentActionMap.Disable();
+
+    }
+
+    public void EnableActions()
+    {
+        Debug.Log("ENABLED");
+        playerInput.currentActionMap.Enable();
+
     }
 
     // Update is called once per frame

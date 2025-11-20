@@ -19,7 +19,6 @@ public class GameManager : MonoBehaviour
     private InfoSingleton _info = InfoSingleton.GetInstance();
     private AirplaneFactory _airplaneFactory = AirplaneFactory.GetInstance();
     private Init _init;
-    private GameState _currentState = new PlayState();
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Start()
@@ -60,9 +59,9 @@ public class GameManager : MonoBehaviour
         _info.airplanes.Add(airplane4);
 
         _info.savedAirports["Madrid"].Hangar.Add(airplane);
-        _info.savedAirports["Madrid"].Hangar.Add(airplane2);
+        _info.savedAirports["Dubai"].Hangar.Add(airplane2);
         _info.savedAirports["Madrid"].Hangar.Add(airplane3);
-        _info.savedAirports["Madrid"].Hangar.Add(airplane4);
+        _info.savedAirports["Shanghai"].Hangar.Add(airplane4);
 
         // Init travellers in each airport
         _init.InitTravellersInAirports();
@@ -75,68 +74,79 @@ public class GameManager : MonoBehaviour
 
         List<Airport> destinations = _info.savedAirports.Values.ToList();
 
-        Dictionary<Airplane, Flight> madridFlights = new Dictionary<Airplane, Flight>();
+        Dictionary<Airport, Dictionary<Airplane, Flight>> airportFlights = new Dictionary<Airport, Dictionary<Airplane, Flight>>();
+        foreach (Airport airport in destinations)
+        {
+            airportFlights[airport] = new Dictionary<Airplane, Flight>();
+        }
 
         // For all travellers in origin airport, assign each of the travellers an airplane
         Queue<Airport> airportQueue = new Queue<Airport>(destinations);
 
         while (airportQueue.Count > 0)
         {
-            Airport airport = airportQueue.Dequeue();
+            Airport origAirport = airportQueue.Dequeue();
 
-            if (airport == _info.savedAirports["Madrid"])
+            foreach (Airport objAirport in destinations)
             {
-                continue;
-            }
-
-            if (_info.savedAirports["Madrid"].TravellersToAirport[airport] <= 0)
-            {
-                continue;
-            }
-
-            HashSet<Airplane> usedThisIteration = new HashSet<Airplane>();
-
-            while (_info.savedAirports["Madrid"].TravellersToAirport[airport] > 0)
-            {
-                Flight flight;
-
-                (Airplane objAirplane, Airport nextHop) = _info.savedAirports["Madrid"].FindHopForTravellersToAirport(airport);
-
-                if (objAirplane is null || nextHop is null)
+                if (origAirport == objAirport)
                 {
-                    break;
+                    continue;
                 }
 
-                if (usedThisIteration.Contains(objAirplane))
+                if (_info.savedAirports[origAirport.Name].TravellersToAirport[objAirport] <= 0)
                 {
-                    break; // no more airplanes left
-                }
-                usedThisIteration.Add(objAirplane);
-
-                if (madridFlights.Keys.Contains(objAirplane))
-                {
-                    flight = madridFlights[objAirplane];
-                }
-                else
-                {
-                    GameObject flightGO = new GameObject();
-                    flightGO.name = $"{_info.savedAirports["Madrid"].Name}-{nextHop.Name}";
-                    flight = flightGO.AddComponent<Flight>();
-
-                    flight.Initialise(_info.savedAirports["Madrid"], nextHop, _info.savedRoutes[$"Madrid-{nextHop.Name}"], objAirplane);
-
-                    _info.flights.Add(flight);
-                    madridFlights[objAirplane] = flight;
+                    continue;
                 }
 
-                flight.Embark(_info.savedAirports["Madrid"].TravellersToAirport[airport], airport);
+                HashSet<Airplane> usedThisIteration = new HashSet<Airplane>();
+
+                while (_info.savedAirports[origAirport.Name].TravellersToAirport[objAirport] > 0)
+                {
+                    Flight flight;
+
+                    (Airplane objAirplane, Airport nextHop) = _info.savedAirports[origAirport.Name].FindHopForTravellersToAirport(objAirport);
+
+                    if (objAirplane is null || nextHop is null)
+                    {
+                        break;
+                    }
+
+                    if (usedThisIteration.Contains(objAirplane))
+                    {
+                        break; // no more airplanes left
+                    }
+                    usedThisIteration.Add(objAirplane);
+
+                    if (airportFlights[objAirport].Keys.Contains(objAirplane))
+                    {
+                        flight = airportFlights[objAirport][objAirplane];
+                    }
+                    else
+                    {
+                        GameObject flightGO = new GameObject();
+                        flightGO.name = $"{_info.savedAirports[origAirport.Name].Name}-{nextHop.Name}";
+                        flight = flightGO.AddComponent<Flight>();
+
+                        flight.Initialise(_info.savedAirports[origAirport.Name], nextHop, _info.savedRoutes[$"{origAirport.Name}-{nextHop.Name}"], objAirplane);
+
+                        _info.flights.Add(flight);
+                        airportFlights[origAirport][objAirplane] = flight;
+                    }
+
+                    flight.Embark(_info.savedAirports[origAirport.Name].TravellersToAirport[objAirport], objAirport);
+                }
             }
         }
 
-        foreach (Flight flight in madridFlights.Values)
+        foreach (Airport airport in destinations)
         {
-            flight.StartFlight();
+            foreach (Flight flight in airportFlights[airport].Values)
+            {
+                flight.StartFlight();
+            }
         }
+
     }
 
     // Update is called once per frame
