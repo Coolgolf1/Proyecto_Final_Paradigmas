@@ -2407,6 +2407,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 592abc94ea8425244923f0e844be7e6c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  title: {fileID: 1424562325}
   startGame: {fileID: 1220839244}
   options: {fileID: 1073116262}
   exitButton: {fileID: 1404029936}

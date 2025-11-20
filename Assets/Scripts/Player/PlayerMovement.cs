@@ -3,7 +3,6 @@ using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
-    private PlayerInput playerInput;
     public GameObject earth;
     public InputAction drag;
     public InputAction look;
@@ -29,8 +28,6 @@ public class PlayerMovement : MonoBehaviour
 
     private void Awake()
     {
-        playerInput = GetComponent<PlayerInput>();
-
         UIEvents.OnMainMenuEnter += DisableActions;
         UIEvents.OnPlayEnter += EnableActions;
     }
@@ -48,14 +45,18 @@ public class PlayerMovement : MonoBehaviour
     {
         Debug.Log("DISABLED");
 
-        playerInput.currentActionMap.Disable();
+        drag.Disable();
+        look.Disable();
+        zoom.Disable();
 
     }
 
     public void EnableActions()
     {
         Debug.Log("ENABLED");
-        playerInput.currentActionMap.Enable();
+        drag.Enable();
+        look.Enable();
+        zoom.Enable();
 
     }
 
@@ -90,6 +91,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (drag.IsPressed())
         {
+            Debug.Log("DRAG PRESSED");
             moveValue = look.ReadValue<Vector2>();
             velocity = moveValue;
         }

@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class MainMenuUI : MonoBehaviour
 {
-
+    [SerializeField] private TMP_Text title;
     [SerializeField] private Button startGame;
     [SerializeField] private Button options;
     [SerializeField] private Button exitButton;
@@ -26,6 +26,8 @@ public class MainMenuUI : MonoBehaviour
 
     public void HideButtons()
     {
+        title.gameObject.SetActive(false);
+
         startGame.interactable = false;
         startGame.gameObject.GetComponent<Image>().enabled = false;
         startGame.gameObject.GetComponentInChildren<TMP_Text>().enabled = false;
@@ -41,6 +43,8 @@ public class MainMenuUI : MonoBehaviour
 
     public void ShowButtons()
     {
+        title.gameObject.SetActive(true);
+
         startGame.interactable = true;
         startGame.gameObject.GetComponent<Image>().enabled = true;
         startGame.gameObject.GetComponentInChildren<TMP_Text>().enabled = true;
