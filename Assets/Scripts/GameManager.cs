@@ -21,7 +21,7 @@ public class GameManager : MonoBehaviour
     private Init _init;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    private void Start()
+    public void Start()
     {
         new GameObject("Init");
 
@@ -30,11 +30,26 @@ public class GameManager : MonoBehaviour
         _info.flightUI = flightUI;
         _info.playerCamera = playerCamera;
 
-        // Initialise Factory
-        _airplaneFactory.Initialise(airplaneSpawner);
-
         // Initialise initialliser
         _init = gameObject.AddComponent<Init>();
+
+        // Add listeners
+        GameEvents.OnPlayEnter.AddListener(StartGame);
+        GameEvents.OnPlayExit.AddListener(ResetGame);
+    }
+
+    public void ResetGame()
+    {
+        _info.ResetAirplanes();
+        _info.ResetAirports();
+        _info.ResetFlights();
+        _info.ResetRoutes();
+    }
+
+    public void StartGame()
+    {
+        // Initialise Factory
+        _airplaneFactory.Initialise(airplaneSpawner);
 
         // Save data of airports
         _init.SaveDataOfAirports(airportPrefab, earth.transform);

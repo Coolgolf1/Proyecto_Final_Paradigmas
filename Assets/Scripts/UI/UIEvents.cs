@@ -1,9 +1,11 @@
-using System;
+using UnityEngine.Events;
 
 public static class UIEvents
 {
-    public static Action OnMainMenuEnter;
-    public static Action OnMainMenuExit;
+    public static UnityEvent OnMainMenuEnter = new UnityEvent();
+    public static UnityEvent OnMainMenuExit = new UnityEvent();
 
-    public static Action OnPlayEnter;
+    public static UnityEvent OnPlayEnter = new UnityEvent();
+
+    public static UnityEvent LoadedListeners = new UnityEvent();
 }

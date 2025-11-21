@@ -12,6 +12,8 @@ public class MainUI : MonoBehaviour
     [SerializeField] private Button fastForward;
     [SerializeField] private TMP_Text money;
 
+    private bool _enabled = false;
+
     private int _currentMoney = 0;
 
     private EconomyManager _economy = EconomyManager.GetInstance();
@@ -26,6 +28,12 @@ public class MainUI : MonoBehaviour
         pause.onClick.AddListener(Pause);
         fastForward.onClick.AddListener(FastForward);
         _economy.MoneyChange += HandleMoneyChange;
+
+        UIEvents.OnPlayEnter.AddListener(StartGame);
+        UIEvents.OnMainMenuEnter.AddListener(HideUI);
+
+        // Finished loading listeners
+        UIEvents.LoadedListeners?.Invoke();
     }
 
     private void Play()
@@ -51,12 +59,33 @@ public class MainUI : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
-        _elapsedTime += Time.deltaTime * 1000;
+        if (_enabled)
+        {
+            _elapsedTime += Time.deltaTime * 1000;
 
-        string hours = ((Mathf.Floor(_elapsedTime / 3600) + refTime.Item1) % 24).ToString("00");
-        string minutes = ((Mathf.Floor(_elapsedTime / 60) + refTime.Item2) % 60).ToString("00");
-        //string seconds = ((Mathf.Floor(_elapsedTime % 60) + refTime.Item3) % 60).ToString("00");
-        timeCounter.text = $"{hours}:{minutes}";
-        money.text = $"Monedas: {_currentMoney}";
+            string hours = ((Mathf.Floor(_elapsedTime / 3600) + refTime.Item1) % 24).ToString("00");
+            string minutes = ((Mathf.Floor(_elapsedTime / 60) + refTime.Item2) % 60).ToString("00");
+            //string seconds = ((Mathf.Floor(_elapsedTime % 60) + refTime.Item3) % 60).ToString("00");
+            timeCounter.text = $"{hours}:{minutes}";
+            money.text = $"Monedas: {_currentMoney}";
+        }
+    }
+
+    public void StartGame()
+    {
+        gameObject.SetActive(true);
+
+        // Call deltaTime to restart delta
+        _ = Time.deltaTime;
+        _elapsedTime = 0;
+
+        _enabled = true;
+        gameObject.GetComponent<CanvasGroup>().alpha = 1.0f;
+    }
+
+    public void HideUI()
+    {
+        Debug.Log("HIDE UI");
+        gameObject.SetActive(false);
     }
 }

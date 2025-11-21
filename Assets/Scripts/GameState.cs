@@ -34,13 +34,15 @@ public class PlayState : GameState
 
     public override void OnStateEnter()
     {
-        // Load level, spawn player, etc.
         UIEvents.OnPlayEnter?.Invoke();
+
+        // Load level
+        GameEvents.OnPlayEnter?.Invoke();
     }
 
     public override void OnStateExit()
     {
-
+        GameEvents.OnPlayExit?.Invoke();
     }
 }
 

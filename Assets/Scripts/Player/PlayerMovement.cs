@@ -31,8 +31,8 @@ public class PlayerMovement : MonoBehaviour
 
     public void Awake()
     {
-        UIEvents.OnMainMenuEnter += DisableActions;
-        UIEvents.OnPlayEnter += EnableActions;
+        UIEvents.OnMainMenuEnter.AddListener(DisableActions);
+        UIEvents.OnPlayEnter.AddListener(EnableActions);
     }
 
 

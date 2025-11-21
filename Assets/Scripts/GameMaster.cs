@@ -1,31 +1,44 @@
-using UnityEngine;
 
-public class GameMaster : MonoBehaviour
+public class GameMaster
 {
-    private GameState _currentState;
+    private static GameMaster _instance = GetInstance();
+
+    public GameState currentState;
 
     public MainMenuState MainMenu { get; private set; }
     public PlayState Play { get; private set; }
     public InHangarState InHangar { get; private set; }
     public EndState End { get; private set; }
 
-    void Awake()
+    private GameMaster()
     {
         MainMenu = new MainMenuState(this);
         Play = new PlayState(this);
         InHangar = new InHangarState(this);
         End = new EndState(this);
+
+        UIEvents.LoadedListeners.AddListener(InitState);
     }
 
-    void Start()
+    public void InitState()
     {
         ChangeState(MainMenu);
     }
 
+    public static GameMaster GetInstance()
+    {
+        if (_instance is null)
+        {
+            _instance = new GameMaster();
+        }
+
+        return _instance;
+    }
+
     public void ChangeState(GameState nextState)
     {
-        _currentState?.OnStateExit();
-        _currentState = nextState;
-        _currentState?.OnStateEnter();
+        currentState?.OnStateExit();
+        currentState = nextState;
+        currentState?.OnStateEnter();
     }
 }

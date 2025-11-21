@@ -34,12 +34,11 @@ public class InfoSingleton
     };
 
     // Saved data
-    public Dictionary<string, Airport> savedAirports = new Dictionary<string, Airport>();
-
-    public Dictionary<string, Route> savedRoutes = new Dictionary<string, Route>();
-    public List<Flight> flights = new List<Flight>();
-    public List<Airplane> airplanes = new List<Airplane>();
-    public Dictionary<Airport, List<Airplane>> airplanesGoingFromEmptyAirport = new Dictionary<Airport, List<Airplane>>();
+    public Dictionary<string, Airport> savedAirports { get; private set; } = new Dictionary<string, Airport>();
+    public Dictionary<string, Route> savedRoutes { get; private set; } = new Dictionary<string, Route>();
+    public List<Flight> flights { get; private set; } = new List<Flight>();
+    public List<Airplane> airplanes { get; private set; } = new List<Airplane>();
+    public Dictionary<Airport, List<Airplane>> airplanesGoingFromEmptyAirport { get; private set; } = new Dictionary<Airport, List<Airplane>>();
 
     // Game information
     public int totalTravellersReceived { get; set; } = 0;
@@ -49,7 +48,6 @@ public class InfoSingleton
 
     // GameObjects set in GameManager
     public AirportUI airportUI;
-
     public FlightUI flightUI;
     public Camera playerCamera;
 
@@ -73,6 +71,47 @@ public class InfoSingleton
             _instance = new InfoSingleton();
         }
         return _instance;
+    }
+
+    public void ResetAirports()
+    {
+        foreach (Airport airport in savedAirports.Values)
+        {
+            GameObject.Destroy(airport.gameObject);
+        }
+
+        savedAirports.Clear();
+    }
+
+    public void ResetRoutes()
+    {
+        foreach (Route route in savedRoutes.Values)
+        {
+            GameObject.Destroy(route.gameObject);
+        }
+
+        savedRoutes.Clear();
+    }
+
+    public void ResetFlights()
+    {
+        foreach (Flight flight in flights)
+        {
+            GameObject.Destroy(flight.gameObject);
+        }
+
+        flights.Clear();
+    }
+
+    public void ResetAirplanes()
+    {
+        foreach (Airplane airplane in airplanes)
+        {
+            GameObject.Destroy(airplane.gameObject);
+        }
+
+        airplanes.Clear();
+        airplanesGoingFromEmptyAirport.Clear();
     }
 
     public void InitEmptyAirportList()

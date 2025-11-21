@@ -12,20 +12,23 @@ public class MainMenuUI : MonoBehaviour
 
     private bool _startAnimation;
 
+    private GameMaster _gameMaster = GameMaster.GetInstance();
+
     private void OnEnable()
     {
-        UIEvents.OnMainMenuEnter += ShowButtons;
-        UIEvents.OnMainMenuExit += HideButtons;
+        UIEvents.OnMainMenuEnter.AddListener(ShowButtons);
+        UIEvents.OnMainMenuExit.AddListener(HideButtons);
     }
 
     private void OnDisable()
     {
-        UIEvents.OnMainMenuEnter -= ShowButtons;
-        UIEvents.OnMainMenuExit -= HideButtons;
+        UIEvents.OnMainMenuEnter.RemoveListener(ShowButtons);
+        UIEvents.OnMainMenuExit.RemoveListener(HideButtons);
     }
 
     public void HideButtons()
     {
+        Debug.Log("DISABLE BUTTONS");
         title.gameObject.SetActive(false);
 
         startGame.interactable = false;
@@ -43,6 +46,7 @@ public class MainMenuUI : MonoBehaviour
 
     public void ShowButtons()
     {
+        Debug.Log("ENABLE BUTTONS");
         title.gameObject.SetActive(true);
 
         startGame.interactable = true;
@@ -83,13 +87,12 @@ public class MainMenuUI : MonoBehaviour
             gameObject.SetActive(false);
 
             // Change state to play
-            FindFirstObjectByType<GameMaster>().ChangeState(FindFirstObjectByType<GameMaster>().Play);
+            _gameMaster.ChangeState(_gameMaster.Play);
         }
     }
 
     void StartLoad()
     {
         _startAnimation = true;
-        
     }
 }
