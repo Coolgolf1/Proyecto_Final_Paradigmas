@@ -3872,7 +3872,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Mini Flights
+  m_text: 'Mini Airways
+
 
 '
   m_isRightToLeft: 0
