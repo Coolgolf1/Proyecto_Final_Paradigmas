@@ -31,7 +31,10 @@ public abstract class Airplane : MonoBehaviour, IUpgradable, IObject
     {
         clickAction = InputSystem.actions.FindAction("Click");
         cam = _info.playerCamera;
+        UIEvents.OnMainMenuEnter += clickAction.Disable;
+        UIEvents.OnPlayEnter += clickAction.Enable;
     }
+
 
     private void OnEnable()
     {

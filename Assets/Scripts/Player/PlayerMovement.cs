@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -26,7 +27,9 @@ public class PlayerMovement : MonoBehaviour
     private float previousZoom = 0;
     private float actualZoom = 0;
 
-    private void Awake()
+    private bool _enabled = false;
+
+    public void Awake()
     {
         UIEvents.OnMainMenuEnter += DisableActions;
         UIEvents.OnPlayEnter += EnableActions;
@@ -43,55 +46,68 @@ public class PlayerMovement : MonoBehaviour
 
     public void DisableActions()
     {
-        Debug.Log("DISABLED");
-
         drag.Disable();
         look.Disable();
         zoom.Disable();
+        _enabled = false;
 
     }
 
     public void EnableActions()
     {
-        Debug.Log("ENABLED");
+        Debug.Log("Enabled");
         drag.Enable();
         look.Enable();
         zoom.Enable();
-
+        _enabled = true;
     }
 
     // Update is called once per frame
     private void Update()
     {
-        InertiaDrag();
-
-        zoomValue = zoom.ReadValue<Vector2>();
-        modulo = transform.position.magnitude;
-
-        zoomFactor = (Mathf.Pow(modulo, moduloPower) / zoomSensitivity);
-
-        moveValue = velocity;
-        transform.RotateAround(earth.transform.position, -Vector3.up, -moveValue[0] * sensitivity * zoomFactor);
-        transform.RotateAround(Vector3.zero, transform.right, -moveValue[1] * sensitivity * zoomFactor);
-
-        //Debug.Log(zoomValue.ToString());
-        if ((modulo > 30 || zoomValue[1] < 0) && (modulo < 75 || zoomValue[1] > 0))
+        if (_enabled)
         {
-            targetZoom += zoomValue[1];
+            if (!drag.enabled)
+            {
+                EnableActions();
+            }
+            InertiaDrag();
+
+            zoomValue = zoom.ReadValue<Vector2>();
+            modulo = transform.position.magnitude;
+
+            zoomFactor = (Mathf.Pow(modulo, moduloPower) / zoomSensitivity);
+
+            moveValue = velocity;
+            transform.RotateAround(earth.transform.position, -Vector3.up, -moveValue[0] * sensitivity * zoomFactor);
+            transform.RotateAround(Vector3.zero, transform.right, -moveValue[1] * sensitivity * zoomFactor);
+
+            //Debug.Log(zoomValue.ToString());
+            if ((modulo > 30 || zoomValue[1] < 0) && (modulo < 75 || zoomValue[1] > 0))
+            {
+                targetZoom += zoomValue[1];
+            }
+
+            actualZoom = Mathf.Lerp(actualZoom, targetZoom, Time.fixedDeltaTime * zoomDecay);
+
+            transform.position += transform.forward * (actualZoom - previousZoom);
+
+            previousZoom = actualZoom;
         }
-
-        actualZoom = Mathf.Lerp(actualZoom, targetZoom, Time.fixedDeltaTime * zoomDecay);
-
-        transform.position += transform.forward * (actualZoom - previousZoom);
-
-        previousZoom = actualZoom;
+        else
+        {
+            if (drag.enabled)
+            {
+                DisableActions();
+            }
+        }
     }
 
     private void InertiaDrag()
     {
         if (drag.IsPressed())
         {
-            Debug.Log("DRAG PRESSED");
+           
             moveValue = look.ReadValue<Vector2>();
             velocity = moveValue;
         }

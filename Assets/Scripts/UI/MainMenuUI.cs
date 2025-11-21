@@ -90,5 +90,6 @@ public class MainMenuUI : MonoBehaviour
 
         // Change state to play
         FindFirstObjectByType<GameMaster>().ChangeState(FindFirstObjectByType<GameMaster>().Play);
+        
     }
 }
