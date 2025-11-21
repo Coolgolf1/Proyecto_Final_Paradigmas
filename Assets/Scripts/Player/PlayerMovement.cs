@@ -55,7 +55,6 @@ public class PlayerMovement : MonoBehaviour
 
     public void EnableActions()
     {
-        Debug.Log("Enabled");
         drag.Enable();
         look.Enable();
         zoom.Enable();
@@ -67,10 +66,6 @@ public class PlayerMovement : MonoBehaviour
     {
         if (_enabled)
         {
-            if (!drag.enabled)
-            {
-                EnableActions();
-            }
             InertiaDrag();
 
             zoomValue = zoom.ReadValue<Vector2>();
@@ -82,7 +77,6 @@ public class PlayerMovement : MonoBehaviour
             transform.RotateAround(earth.transform.position, -Vector3.up, -moveValue[0] * sensitivity * zoomFactor);
             transform.RotateAround(Vector3.zero, transform.right, -moveValue[1] * sensitivity * zoomFactor);
 
-            //Debug.Log(zoomValue.ToString());
             if ((modulo > 30 || zoomValue[1] < 0) && (modulo < 75 || zoomValue[1] > 0))
             {
                 targetZoom += zoomValue[1];
@@ -94,20 +88,12 @@ public class PlayerMovement : MonoBehaviour
 
             previousZoom = actualZoom;
         }
-        else
-        {
-            if (drag.enabled)
-            {
-                DisableActions();
-            }
-        }
     }
 
     private void InertiaDrag()
     {
         if (drag.IsPressed())
         {
-           
             moveValue = look.ReadValue<Vector2>();
             velocity = moveValue;
         }

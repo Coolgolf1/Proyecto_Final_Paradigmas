@@ -81,15 +81,15 @@ public class MainMenuUI : MonoBehaviour
             player.transform.position = GameConstants.initCameraPosition;
             _startAnimation = false;
             gameObject.SetActive(false);
+
+            // Change state to play
+            FindFirstObjectByType<GameMaster>().ChangeState(FindFirstObjectByType<GameMaster>().Play);
         }
     }
 
     void StartLoad()
     {
         _startAnimation = true;
-
-        // Change state to play
-        FindFirstObjectByType<GameMaster>().ChangeState(FindFirstObjectByType<GameMaster>().Play);
         
     }
 }
