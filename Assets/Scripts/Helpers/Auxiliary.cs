@@ -49,10 +49,10 @@ internal static class Auxiliary
 
     public static Dictionary<string, double> GetDistancesFromCSV()
     {
-        Debug.Log("test");
+        
         
         string[] lines = File.ReadAllLines(_pathName)[1..];
-        Debug.Log("test3");
+        
         Dictionary<string, double> dictDistances = new Dictionary<string, double>();
 
         foreach (string line in lines)
@@ -65,7 +65,7 @@ internal static class Auxiliary
 
             dictDistances[codes] = distance;
         }
-        Debug.Log("test2");
+        
         return dictDistances;
     }
 

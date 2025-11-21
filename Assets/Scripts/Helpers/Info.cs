@@ -95,7 +95,7 @@ public class InfoSingleton
 
     private InfoSingleton()
     {
-        Debug.Log("Constructor 1");
+        
         DijkstraGraph = new Dictionary<Airport, List<RouteAssigner.Edge>>();
 
         foreach (Airport airport in savedAirports.Values.ToList())
