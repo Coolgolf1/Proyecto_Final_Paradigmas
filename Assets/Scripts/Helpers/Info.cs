@@ -11,17 +11,44 @@ public class InfoSingleton
         { "San Francisco", new Vector3(-14.2299995f,14.0200005f,-2.3499999f) },
         { "Shanghai", new Vector3(3.6400001f,7.21999979f,18.3999996f) },
         { "Paris", new Vector3(11.1300001f,15.6400003f,-5.75f ) },
-        { "Dubai", new Vector3(18.3099995f,6.26000023f,5.48000002f) }
+        { "Dubai", new Vector3(18.3099995f,6.26000023f,5.48000002f) },
+        { "S�o Paulo", new Vector3(-0.600000024f,-4.26000023f,-19.7099991f) },
+        { "Sydney", new Vector3(-5.73000002f,-12.9899998f,14.3000002f)},
+        { "New York", new Vector3(-6.86000013f,15.25f,-11.3559999f) },
+        { "Cape Town", new Vector3(15.2600002f,-10.5799999f,-8.17000008f) },
+        { "Honolulu", new Vector3(-16.9699993f,6.92999983f,8.11999989f) },
+        { "Mumbai", new Vector3(16.3600006f,3.73000002f,11.1999998f) },
+        { "Moscow", new Vector3(12.3699999f,15.8000002f,1.87f) },
+        { "Oslo", new Vector3(9.23999977f,17.7600002f,-2.05999994f) },
+        { "Cairo", new Vector3(17.9599991f,9.22999954f,-1.21000004f) },
+        { "Lima",  new Vector3(-9.59000015f,0.0700000003f,-17.8500004f)}
     };
 
     public List<Tuple<string, string>> stringCityRoutes = new List<Tuple<string, string>>()
     {
         new Tuple<string, string>("Madrid", "Dubai"),
         new Tuple<string, string>("Madrid", "Paris"),
-        new Tuple<string, string>("Paris", "San Francisco"),
         new Tuple<string, string>("Dubai", "Shanghai"),
-        new Tuple<string, string>("Paris", "Shanghai"),
-        new Tuple<string, string>("San Francisco", "Shanghai")
+        new Tuple<string, string>("San Francisco", "Shanghai"),
+        new Tuple<string, string>("Madrid", "New York"),
+        new Tuple<string, string>("New York", "San Francisco"),
+        new Tuple<string, string>("New York", "S�o Paulo"),
+        new Tuple<string, string>("San Francisco", "Honolulu"),
+        new Tuple<string, string>("Lima", "S�o Paulo"),
+        new Tuple<string, string>("Lima", "Honolulu"),
+        new Tuple<string, string>("Mumbai", "Dubai"),
+        new Tuple<string, string>("Oslo", "Moscow"),
+        new Tuple<string, string>("Moscow", "Dubai"),
+        new Tuple<string, string>("Sydney", "Mumbai"),
+        new Tuple<string, string>("Sydney", "Shanghai"),
+        new Tuple<string, string>("Shanghai", "Honolulu"),
+        new Tuple<string, string>("Cape Town", "Cairo"),
+        new Tuple<string, string>("Cape Town", "S�o Paulo"),
+        new Tuple<string, string>("Dubai", "Cairo"),
+        new Tuple<string, string>("Oslo", "Cairo"),
+        new Tuple<string, string>("Oslo", "New York"),
+        new Tuple<string, string>("Madrid", "S�o Paulo"),
+        new Tuple<string, string>("Paris", "Oslo")
     };
 
     public Dictionary<string, string> stringCityCodes = new Dictionary<string, string>()
@@ -30,15 +57,27 @@ public class InfoSingleton
         { "San Francisco", "sfo" },
         { "Shanghai", "pvg" },
         { "Paris", "cdg" },
-        { "Dubai", "dxb" }
+        { "Dubai", "dxb" },
+        { "S�o Paulo", "gru" },
+        { "Sydney", "syd" },
+        { "New York", "jfk" },
+        { "Cape Town", "cpt" },
+        { "Honolulu", "hnl" },
+        { "Mumbai", "bom" },
+        { "Moscow", "svo" },
+        { "Oslo", "osl" },
+        { "Cairo", "cai" },
+        { "Lima", "lim" }
     };
 
     // Saved data
-    public Dictionary<string, Airport> savedAirports { get; private set; } = new Dictionary<string, Airport>();
-    public Dictionary<string, Route> savedRoutes { get; private set; } = new Dictionary<string, Route>();
-    public List<Flight> flights { get; private set; } = new List<Flight>();
-    public List<Airplane> airplanes { get; private set; } = new List<Airplane>();
-    public Dictionary<Airport, List<Airplane>> airplanesGoingFromEmptyAirport { get; private set; } = new Dictionary<Airport, List<Airplane>>();
+    public Dictionary<string, Airport> savedAirports = new Dictionary<string, Airport>();
+    public Dictionary<string, double> DistanceAirports;
+
+    public Dictionary<string, Route> savedRoutes = new Dictionary<string, Route>();
+    public List<Flight> flights = new List<Flight>();
+    public List<Airplane> airplanes = new List<Airplane>();
+    public Dictionary<Airport, List<Airplane>> airplanesGoingFromEmptyAirport = new Dictionary<Airport, List<Airplane>>();
 
     // Game information
     public int totalTravellersReceived { get; set; } = 0;
@@ -56,12 +95,15 @@ public class InfoSingleton
 
     private InfoSingleton()
     {
+        Debug.Log("Constructor 1");
         DijkstraGraph = new Dictionary<Airport, List<RouteAssigner.Edge>>();
 
         foreach (Airport airport in savedAirports.Values.ToList())
         {
             DijkstraGraph.Add(airport, new List<RouteAssigner.Edge>());
         }
+
+        
     }
 
     public static InfoSingleton GetInstance()

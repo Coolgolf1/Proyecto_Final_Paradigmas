@@ -24,6 +24,8 @@ public class GameManager : MonoBehaviour
     public void Start()
     {
         new GameObject("Init");
+        _info.DistanceAirports = Auxiliary.GetDistancesFromCSV();
+
 
         // Define UI and Camera Objects
         _info.airportUI = airportUI;
@@ -77,6 +79,7 @@ public class GameManager : MonoBehaviour
         _info.savedAirports["Dubai"].Hangar.Add(airplane2);
         _info.savedAirports["Madrid"].Hangar.Add(airplane3);
         _info.savedAirports["Shanghai"].Hangar.Add(airplane4);
+
 
         // Init travellers in each airport
         _init.InitTravellersInAirports();
