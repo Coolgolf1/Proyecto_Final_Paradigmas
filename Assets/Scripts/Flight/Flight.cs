@@ -9,7 +9,7 @@ public class Flight : MonoBehaviour
     public Airport AirportDest { get; private set; }
     public Route Route { get; private set; }
     public Airplane Airplane { get; private set; }
-    public string FlightID { get; private set; }
+    [SerializeField] public string FlightID { get; private set; }
     public bool Started { get; private set; }
     public bool Landed { get; private set; }
     public bool Finished { get; private set; }
@@ -37,7 +37,7 @@ public class Flight : MonoBehaviour
         string codeOrig = _info.stringCityCodes[route.Airport1.Name].ToUpper();
         string codeDest = _info.stringCityCodes[route.Airport2.Name].ToUpper();
         FlightID = $"{codeOrig[0]}{codeDest[0]}{route.IdOfFlightInRoute:D4}";
-
+        this.gameObject.name = FlightID;
         // Add one to flight id counter
         Route.AddIdOfFlight();
 
