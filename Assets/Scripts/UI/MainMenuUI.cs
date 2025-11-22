@@ -17,18 +17,17 @@ public class MainMenuUI : MonoBehaviour
     private void OnEnable()
     {
         UIEvents.OnMainMenuEnter.AddListener(ShowButtons);
-        UIEvents.OnMainMenuExit.AddListener(HideButtons);
+        UIEvents.OnTransitionExit.AddListener(HideButtons);
     }
 
     private void OnDisable()
     {
         UIEvents.OnMainMenuEnter.RemoveListener(ShowButtons);
-        UIEvents.OnMainMenuExit.RemoveListener(HideButtons);
+        UIEvents.OnTransitionExit.RemoveListener(HideButtons);
     }
 
     public void HideButtons()
     {
-        Debug.Log("DISABLE BUTTONS");
         title.gameObject.SetActive(false);
 
         startGame.interactable = false;
@@ -46,7 +45,6 @@ public class MainMenuUI : MonoBehaviour
 
     public void ShowButtons()
     {
-        Debug.Log("ENABLE BUTTONS");
         title.gameObject.SetActive(true);
 
         startGame.interactable = true;
@@ -87,12 +85,19 @@ public class MainMenuUI : MonoBehaviour
             gameObject.SetActive(false);
 
             // Change state to play
-            _gameMaster.ChangeState(_gameMaster.Play);
+            StartPlay();
         }
     }
 
-    void StartLoad()
+    public void StartLoad()
     {
         _startAnimation = true;
+        _gameMaster.ChangeState(_gameMaster.Transition);
     }
+
+    public void StartPlay()
+    {
+        _gameMaster.ChangeState(_gameMaster.Play);
+    }
+
 }

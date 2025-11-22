@@ -6,5 +6,4 @@ public static class Player
     public static int Money { get; set; }
     public static List<Airplane> Airplanes { get; private set; }
 
-
 }

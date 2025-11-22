@@ -7,11 +7,17 @@ public class Sun : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Start()
     {
+        GameEvents.OnMainMenuExit.AddListener(ResetSun);
     }
 
     // Update is called once per frame
     private void Update()
     {
         transform.Rotate(-Vector3.right * Time.deltaTime * speed, Space.Self);
+    }
+
+    private void ResetSun()
+    {
+        transform.localEulerAngles = new Vector3(18.14f, -795.728f, -102.207f);
     }
 }

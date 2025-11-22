@@ -10,8 +10,10 @@ public abstract class Airplane : MonoBehaviour, IUpgradable, IObject
     public string Name { get; private set; }
     public double Range { get; protected set; }
     public int Capacity { get; protected set; }
+    public int RefuelTime { get; protected set; } = 0;
     public double Speed { get; protected set; } = GameConstants.relativeSpeed * 1000;
     public Levels Level { get; protected set; }
+
 
     // GameObjects
     private InputAction clickAction;

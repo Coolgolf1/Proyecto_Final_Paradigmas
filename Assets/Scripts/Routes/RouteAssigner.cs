@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using UnityEngine;
 
 public static class RouteAssigner
 {
@@ -22,7 +21,7 @@ public static class RouteAssigner
         // Compute the shortest possible time (in hours) among all airplanes
         double bestDistance = double.PositiveInfinity;
         Airplane bestAirplane = null;
-        
+
         foreach (Airplane airplane in start.Hangar)
         {
             double tempDistance;

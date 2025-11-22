@@ -19,13 +19,13 @@ public class GameManager : MonoBehaviour
     private InfoSingleton _info = InfoSingleton.GetInstance();
     private AirplaneFactory _airplaneFactory = AirplaneFactory.GetInstance();
     private Init _init;
+    private bool _mainMenuGame = false;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     public void Start()
     {
         new GameObject("Init");
         _info.DistanceAirports = Auxiliary.GetDistancesFromCSV();
-
 
         // Define UI and Camera Objects
         _info.airportUI = airportUI;
@@ -35,9 +35,27 @@ public class GameManager : MonoBehaviour
         // Initialise initialliser
         _init = gameObject.AddComponent<Init>();
 
-        // Add listeners
+        // Start game or main menu game
+        GameEvents.OnMainMenuEnter.AddListener(StartMainMenuGame);
+        GameEvents.OnMainMenuExit.AddListener(StopMainMenuGame);
+
+        // Start game if game or main menu game
         GameEvents.OnPlayEnter.AddListener(StartGame);
+        GameEvents.OnMainMenuEnter.AddListener(StartGame);
+
+        // Reset game if end or exit main menu game
         GameEvents.OnPlayExit.AddListener(ResetGame);
+        GameEvents.OnMainMenuExit.AddListener(ResetGame);
+    }
+
+    public void StartMainMenuGame()
+    {
+        _mainMenuGame = true;
+    }
+
+    public void StopMainMenuGame()
+    {
+        _mainMenuGame = false;
     }
 
     public void ResetGame()
@@ -46,6 +64,23 @@ public class GameManager : MonoBehaviour
         _info.ResetAirports();
         _info.ResetFlights();
         _info.ResetRoutes();
+        Player.Money = 0;
+    }
+
+    public void InitMainMenuAirplanes(AirplaneFactory airplaneFactory, Transform earthTransform)
+    {
+        System.Random rand = new System.Random();
+
+        for (int i = 0; i < 20; i++)
+        {
+            int r = rand.Next(3);
+            Airplane airplane = (Airplane)airplaneFactory.Build(AirplaneTypes.Small + r, earthTransform);
+
+            int a = rand.Next(_info.savedAirports.Count);
+            string key = _info.savedAirports.Keys.ToList()[a];
+            _info.savedAirports[key].Hangar.Add(airplane);
+            _info.airplanes.Add(airplane);
+        }
     }
 
     public void StartGame()
@@ -62,24 +97,31 @@ public class GameManager : MonoBehaviour
         // Save data of routes
         _init.SaveDataOfRoutes(routePrefab, earth.transform);
 
-        // Create Airplanes with Factory
-        Airplane airplane = (Airplane)_airplaneFactory.Build(AirplaneTypes.Large, earth.transform);
-        _info.airplanes.Add(airplane);
+        if (_mainMenuGame)
+        {
+            InitMainMenuAirplanes(_airplaneFactory, earth.transform);
+        }
+        else
+        {
+            // Create Airplanes with Factory
+            Airplane airplane = (Airplane)_airplaneFactory.Build(AirplaneTypes.Large, earth.transform);
+            _info.airplanes.Add(airplane);
 
-        Airplane airplane2 = (Airplane)_airplaneFactory.Build(AirplaneTypes.Large, earth.transform);
-        _info.airplanes.Add(airplane2);
+            Airplane airplane2 = (Airplane)_airplaneFactory.Build(AirplaneTypes.Large, earth.transform);
+            _info.airplanes.Add(airplane2);
 
-        Airplane airplane3 = (Airplane)_airplaneFactory.Build(AirplaneTypes.Large, earth.transform);
-        _info.airplanes.Add(airplane3);
+            Airplane airplane3 = (Airplane)_airplaneFactory.Build(AirplaneTypes.Large, earth.transform);
+            _info.airplanes.Add(airplane3);
 
-        Airplane airplane4 = (Airplane)_airplaneFactory.Build(AirplaneTypes.Large, earth.transform);
-        _info.airplanes.Add(airplane4);
+            Airplane airplane4 = (Airplane)_airplaneFactory.Build(AirplaneTypes.Large, earth.transform);
+            _info.airplanes.Add(airplane4);
 
-        _info.savedAirports["Madrid"].Hangar.Add(airplane);
-        _info.savedAirports["Dubai"].Hangar.Add(airplane2);
-        _info.savedAirports["Madrid"].Hangar.Add(airplane3);
-        _info.savedAirports["Shanghai"].Hangar.Add(airplane4);
+            _info.savedAirports["Madrid"].Hangar.Add(airplane);
+            _info.savedAirports["Dubai"].Hangar.Add(airplane2);
+            _info.savedAirports["Madrid"].Hangar.Add(airplane3);
+            _info.savedAirports["Shanghai"].Hangar.Add(airplane4);
 
+        }
 
         // Init travellers in each airport
         _init.InitTravellersInAirports();

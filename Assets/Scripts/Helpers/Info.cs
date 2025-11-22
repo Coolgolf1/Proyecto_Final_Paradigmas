@@ -95,7 +95,7 @@ public class InfoSingleton
 
     private InfoSingleton()
     {
-        
+
         DijkstraGraph = new Dictionary<Airport, List<RouteAssigner.Edge>>();
 
         foreach (Airport airport in savedAirports.Values.ToList())
@@ -103,7 +103,7 @@ public class InfoSingleton
             DijkstraGraph.Add(airport, new List<RouteAssigner.Edge>());
         }
 
-        
+
     }
 
     public static InfoSingleton GetInstance()

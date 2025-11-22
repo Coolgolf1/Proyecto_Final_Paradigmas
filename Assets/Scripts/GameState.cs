@@ -19,11 +19,28 @@ public class MainMenuState : GameState
     public override void OnStateEnter()
     {
         UIEvents.OnMainMenuEnter?.Invoke();
+        GameEvents.OnMainMenuEnter?.Invoke();
     }
 
     public override void OnStateExit()
     {
         UIEvents.OnMainMenuExit?.Invoke();
+        GameEvents.OnMainMenuExit?.Invoke();
+    }
+}
+
+public class MainTransitionGameState : GameState
+{
+    public MainTransitionGameState(GameMaster gm) : base(gm) { }
+
+    public override void OnStateEnter()
+    {
+    }
+
+    public override void OnStateExit()
+    {
+        UIEvents.OnTransitionExit?.Invoke();
+        GameEvents.OnTransitionExit?.Invoke();
     }
 }
 

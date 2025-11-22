@@ -7,6 +7,7 @@ public class GameMaster
 
     public MainMenuState MainMenu { get; private set; }
     public PlayState Play { get; private set; }
+    public MainTransitionGameState Transition { get; private set; }
     public InHangarState InHangar { get; private set; }
     public EndState End { get; private set; }
 
@@ -14,6 +15,7 @@ public class GameMaster
     {
         MainMenu = new MainMenuState(this);
         Play = new PlayState(this);
+        Transition = new MainTransitionGameState(this);
         InHangar = new InHangarState(this);
         End = new EndState(this);
 
