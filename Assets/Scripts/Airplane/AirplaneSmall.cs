@@ -5,7 +5,7 @@ public class AirplaneSmall : Airplane
         base.Awake();
 
         Range = 5000;
-        Speed = 100; // 500
+        Speed *= 3; // 500
         Capacity = 100;
     }
 

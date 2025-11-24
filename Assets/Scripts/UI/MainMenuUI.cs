@@ -74,6 +74,7 @@ public class MainMenuUI : MonoBehaviour
         if (_startAnimation)
         {
             player.transform.position = Vector3.Lerp(player.transform.position, GameConstants.initCameraPosition, 3 * Time.deltaTime);
+            player.transform.rotation = Quaternion.Lerp(player.transform.rotation, GameConstants.initCameraRotation, 3 * Time.deltaTime);
 
             // If not close enough to initial view
             if ((GameConstants.initCameraPosition - player.transform.position).magnitude >= 0.1)
@@ -81,6 +82,7 @@ public class MainMenuUI : MonoBehaviour
 
             // Animation finished
             player.transform.position = GameConstants.initCameraPosition;
+            player.transform.rotation = GameConstants.initCameraRotation;
             _startAnimation = false;
             gameObject.SetActive(false);
 

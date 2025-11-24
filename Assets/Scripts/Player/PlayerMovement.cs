@@ -88,6 +88,7 @@ public class PlayerMovement : MonoBehaviour
 
             previousZoom = actualZoom;
         }
+        
     }
 
     private void InertiaDrag()
