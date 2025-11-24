@@ -143,4 +143,12 @@ internal static class Auxiliary
             }
         }
     }
+
+    public static void InitTravellersInAirports()
+    {
+        foreach (Airport airport in _info.savedAirports.Values)
+        {
+            airport.InitTravellers();
+        }
+    }
 }

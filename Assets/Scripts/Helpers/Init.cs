@@ -45,12 +45,4 @@ public class Init : MonoBehaviour
             _info.savedRoutes[$"{routeTuple.Item2}-{routeTuple.Item1}"] = route;
         }
     }
-
-    public void InitTravellersInAirports()
-    {
-        foreach (Airport airport in _info.savedAirports.Values)
-        {
-            airport.InitTravellers();
-        }
-    }
 }

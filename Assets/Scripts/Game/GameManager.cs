@@ -124,7 +124,7 @@ public class GameManager : MonoBehaviour
         }
 
         // Init travellers in each airport
-        _init.InitTravellersInAirports();
+        Auxiliary.InitTravellersInAirports();
 
         // Load the real distances from dataset
         Auxiliary.LoadRouteDistances(_info.savedRoutes);
