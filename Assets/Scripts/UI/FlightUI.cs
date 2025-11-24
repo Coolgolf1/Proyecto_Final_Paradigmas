@@ -8,6 +8,7 @@ public class FlightUI : MonoBehaviour
     [SerializeField] private TMP_Text routeText;
     [SerializeField] private TMP_Text passengers;
     [SerializeField] private Button closeButton;
+    private InfoSingleton _info = InfoSingleton.GetInstance();
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Start()
@@ -28,10 +29,24 @@ public class FlightUI : MonoBehaviour
     private void CloseUI()
     {
         gameObject.SetActive(false);
+        foreach (Route route in _info.savedRoutes.Values)
+        {
+            if (route.lit)
+            {
+                route.UnlitRoute();
+            }
+        }
     }
 
     public void ShowFlight(Flight flight)
     {
+        foreach (Route route in _info.savedRoutes.Values)
+        {
+            if (route.lit)
+            {
+                route.UnlitRoute();
+            }
+        }
         flightNumber.text = flight.FlightID;
         routeText.text = $"{flight.AirportOrig.Id.ToUpper()} - {flight.AirportDest.Id.ToUpper()}";
         string passengersText = "";

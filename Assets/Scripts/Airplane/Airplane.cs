@@ -76,6 +76,7 @@ public abstract class Airplane : MonoBehaviour, IUpgradable, IObject
                 _info.airportUI.gameObject.SetActive(false);
                 _info.flightUI.gameObject.SetActive(true);
                 _info.flightUI.ShowFlight(_info.GetFlightOfAirplane(this));
+                _info.GetRouteOfAirplane(this).LitRoute();
             }
         }
     }

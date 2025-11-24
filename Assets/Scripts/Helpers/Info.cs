@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 
 public class InfoSingleton
@@ -12,7 +13,7 @@ public class InfoSingleton
         { "Shanghai", new Vector3(3.6400001f,7.21999979f,18.3999996f) },
         { "Paris", new Vector3(11.1300001f,15.6400003f,-5.75f ) },
         { "Dubai", new Vector3(18.3099995f,6.26000023f,5.48000002f) },
-        { "S�o Paulo", new Vector3(-0.600000024f,-4.26000023f,-19.7099991f) },
+        { "Sao Paulo", new Vector3(-0.600000024f,-4.26000023f,-19.7099991f) },
         { "Sydney", new Vector3(-5.73000002f,-12.9899998f,14.3000002f)},
         { "New York", new Vector3(-6.86000013f,15.25f,-11.3559999f) },
         { "Cape Town", new Vector3(15.2600002f,-10.5799999f,-8.17000008f) },
@@ -32,9 +33,9 @@ public class InfoSingleton
         new Tuple<string, string>("San Francisco", "Shanghai"),
         new Tuple<string, string>("Madrid", "New York"),
         new Tuple<string, string>("New York", "San Francisco"),
-        new Tuple<string, string>("New York", "S�o Paulo"),
+        new Tuple<string, string>("New York", "Sao Paulo"),
         new Tuple<string, string>("San Francisco", "Honolulu"),
-        new Tuple<string, string>("Lima", "S�o Paulo"),
+        new Tuple<string, string>("Lima", "Sao Paulo"),
         new Tuple<string, string>("Lima", "Honolulu"),
         new Tuple<string, string>("Mumbai", "Dubai"),
         new Tuple<string, string>("Oslo", "Moscow"),
@@ -43,11 +44,11 @@ public class InfoSingleton
         new Tuple<string, string>("Sydney", "Shanghai"),
         new Tuple<string, string>("Shanghai", "Honolulu"),
         new Tuple<string, string>("Cape Town", "Cairo"),
-        new Tuple<string, string>("Cape Town", "S�o Paulo"),
+        new Tuple<string, string>("Cape Town", "Sao Paulo"),
         new Tuple<string, string>("Dubai", "Cairo"),
         new Tuple<string, string>("Oslo", "Cairo"),
         new Tuple<string, string>("Oslo", "New York"),
-        new Tuple<string, string>("Madrid", "S�o Paulo"),
+        new Tuple<string, string>("Madrid", "Sao Paulo"),
         new Tuple<string, string>("Paris", "Oslo")
     };
 
@@ -58,7 +59,7 @@ public class InfoSingleton
         { "Shanghai", "pvg" },
         { "Paris", "cdg" },
         { "Dubai", "dxb" },
-        { "S�o Paulo", "gru" },
+        { "Sao Paulo", "gru" },
         { "Sydney", "syd" },
         { "New York", "jfk" },
         { "Cape Town", "cpt" },
@@ -221,6 +222,30 @@ public class InfoSingleton
             }
         }
 
+        return null;
+    }
+
+    public List<Route> GetRoutesOfAirport(Airport airport)
+    {
+        List<Route> routes = new List<Route>();
+        foreach (Route route in savedRoutes.Values)
+        {
+            if (airport == route.Airport1 || airport == route.Airport2)
+            {
+                routes.Add(route);
+            }
+        }
+
+        return routes;
+    }
+
+    public Route GetRouteOfAirplane(Airplane airplane)
+    {
+        Flight flight = GetFlightOfAirplane(airplane);
+        if (flight is not null)
+        {
+            return flight.Route;
+        }
         return null;
     }
 }

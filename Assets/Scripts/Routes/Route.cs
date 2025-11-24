@@ -8,14 +8,16 @@ public class Route : MonoBehaviour
     public double Distance { get; private set; }
     public List<Vector3> RoutePoints { get; private set; }
     public int IdOfFlightInRoute { get; private set; }
-
+    private LineRenderer line;
     [SerializeField] private int nSegments = 100;
+    public bool lit;
 
     public void Initialise(Airport airport1, Airport airport2)
     {
         Airport1 = airport1;
         Airport2 = airport2;
         IdOfFlightInRoute = 1;
+        lit = false;
     }
 
     public void SetDistance(double distance)
@@ -34,7 +36,7 @@ public class Route : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Start()
     {
-        LineRenderer line = gameObject.GetComponent<LineRenderer>();
+        line = gameObject.GetComponent<LineRenderer>();
         line.useWorldSpace = true;
         line.startWidth = 0.1f;
         line.endWidth = 0.1f;
@@ -76,5 +78,17 @@ public class Route : MonoBehaviour
             elevated.Add(elevatedPoint);
         }
         return elevated;
+    }
+
+    public void LitRoute()
+    {
+        lit = true;
+        line.material = Resources.Load("RojoNormal", typeof(Material)) as Material;
+    }
+
+    public void UnlitRoute()
+    {
+        lit = false;
+        line.material = Resources.Load("RojoAlpha", typeof(Material)) as Material;
     }
 }

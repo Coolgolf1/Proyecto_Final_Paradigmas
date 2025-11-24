@@ -77,6 +77,11 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
                 _info.flightUI.gameObject.SetActive(false);
                 _info.airportUI.gameObject.SetActive(true);
                 _info.airportUI.ShowAirport(this);
+                List<Route> routes = _info.GetRoutesOfAirport(this);
+                foreach(Route route in routes)
+                {
+                    route.LitRoute();
+                }
             }
         }
     }

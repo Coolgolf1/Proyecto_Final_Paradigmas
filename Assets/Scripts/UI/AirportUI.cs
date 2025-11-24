@@ -10,6 +10,8 @@ public class AirportUI : MonoBehaviour
     [SerializeField] private TMP_Text passengers;
     [SerializeField] private Button closeButton;
 
+    private InfoSingleton _info = InfoSingleton.GetInstance();
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Start()
     {
@@ -29,10 +31,26 @@ public class AirportUI : MonoBehaviour
     private void CloseUI()
     {
         gameObject.SetActive(false);
+        foreach (Route route in _info.savedRoutes.Values)
+        {
+            if (route.lit)
+            {
+                route.UnlitRoute();
+            }
+        }
     }
 
     public void ShowAirport(Airport airport)
     {
+        foreach (Route route in _info.savedRoutes.Values)
+        {
+            if (route.lit)
+            {
+                route.UnlitRoute();
+            }
+        }
+
+
         airportID.text = airport.Id.ToUpper();
         airportName.text = airport.name;
         string passengersText = "";
