@@ -23,6 +23,7 @@ public class AirplaneFactory : ITypedFactory<IObject, AirplaneTypes>
     public void Initialise(AirplaneSpawner spawner)
     {
         _spawner = spawner;
+        GameEvents.OnTransitionExit.AddListener(ResetCounter);
     }
 
     public IObject Build(AirplaneTypes type, Transform earthTransform)
@@ -53,5 +54,10 @@ public class AirplaneFactory : ITypedFactory<IObject, AirplaneTypes>
         _counter++;
 
         return airplane;
+    }
+
+    public void ResetCounter()
+    {
+        _counter = 0;
     }
 }
