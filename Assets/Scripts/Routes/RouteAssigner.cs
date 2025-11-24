@@ -57,6 +57,9 @@ public static class RouteAssigner
                 tempDistance = Auxiliary.GetDistanceBetweenAirports(origin, end);
             }
 
+            if (tempDistance > Auxiliary.GetDistanceBetweenAirports(origin, end))
+                continue;
+
             // Choose best airplane with distance
             if (tempDistance <= bestDistance)
             {
