@@ -145,8 +145,6 @@ public class GameManager : MonoBehaviour
 
         List<Airplane> airplaneInFlight = new List<Airplane>();
 
-        int created = 0;
-
         while (airportQueue.Count > 0)
         {
             Airport origAirport = airportQueue.Dequeue();
@@ -190,7 +188,6 @@ public class GameManager : MonoBehaviour
                         continue;
                     else
                     {
-                        Debug.Log(created);
                         GameObject flightGO = new GameObject();
                         flightGO.name = $"{_info.savedAirports[origAirport.Name].Name}-{nextHop.Name}";
                         flight = flightGO.AddComponent<Flight>();
@@ -199,8 +196,6 @@ public class GameManager : MonoBehaviour
 
                         _info.flights.Add(flight);
                         airportFlights[origAirport][objAirplane] = flight;
-
-                        created++;
 
                         airplaneInFlight.Add(objAirplane);
                     }
