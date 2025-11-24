@@ -8,4 +8,9 @@ public class AirplaneSmall : Airplane
         Speed = 100; // 500
         Capacity = 100;
     }
+
+    public override void SetTailNumber()
+    {
+        tailNumber.text = $"SM{Id}";
+    }
 }

@@ -1,6 +1,8 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering.Universal;
 
 public abstract class Airplane : MonoBehaviour, IUpgradable, IObject
 {
@@ -14,6 +16,8 @@ public abstract class Airplane : MonoBehaviour, IUpgradable, IObject
     public double Speed { get; protected set; } = GameConstants.relativeSpeed * 1000;
     public Levels Level { get; protected set; }
 
+    [SerializeField] protected TMP_Text tailNumber;
+
 
     // GameObjects
     private InputAction clickAction;
@@ -23,10 +27,14 @@ public abstract class Airplane : MonoBehaviour, IUpgradable, IObject
     // Dependencies
     private InfoSingleton _info = InfoSingleton.GetInstance();
 
+    public abstract void SetTailNumber();
+
     public void Initialise(int id)
     {
-        Id = id.ToString();
+        Id = $"{id:D4}";
+        
         Level = Levels.Basic;
+        SetTailNumber();
     }
 
     public virtual void Awake()

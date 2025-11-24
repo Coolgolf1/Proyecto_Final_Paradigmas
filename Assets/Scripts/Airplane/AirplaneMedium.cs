@@ -8,4 +8,9 @@ public class AirplaneMedium : Airplane
         Speed = 300; // 700
         Capacity = 200;
     }
+
+    public override void SetTailNumber()
+    {
+        tailNumber.text = $"ME{Id}";
+    }
 }
