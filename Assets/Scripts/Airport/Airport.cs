@@ -266,6 +266,8 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
 
         Queue<Airport> airportQueue = new Queue<Airport>(_info.savedAirports.Values.ToList());
 
+        List<Airplane> airplaneInFlight = new List<Airplane>();
+
         while (airportQueue.Count > 0)
         {
             Airport airport = airportQueue.Dequeue();
@@ -298,6 +300,8 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
                 {
                     newFlight = createdFlights[objAirplane];
                 }
+                else if (airplaneInFlight.Contains(objAirplane))
+                    continue;
                 else
                 {
                     GameObject flightGO = new GameObject();
@@ -307,6 +311,8 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
                     newFlight.Initialise(this, nextHop, _info.savedRoutes[$"{Name}-{nextHop.Name}"], objAirplane);
                     _info.flights.Add(newFlight);
                     createdFlights[objAirplane] = newFlight;
+
+                    airplaneInFlight.Add(objAirplane);
                 }
 
                 newFlight.Embark(TravellersToAirport[airport], airport);

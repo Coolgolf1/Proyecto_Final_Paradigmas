@@ -143,6 +143,10 @@ public class GameManager : MonoBehaviour
         // For all travellers in origin airport, assign each of the travellers an airplane
         Queue<Airport> airportQueue = new Queue<Airport>(destinations);
 
+        List<Airplane> airplaneInFlight = new List<Airplane>();
+
+        int created = 0;
+
         while (airportQueue.Count > 0)
         {
             Airport origAirport = airportQueue.Dequeue();
@@ -182,8 +186,11 @@ public class GameManager : MonoBehaviour
                     {
                         flight = airportFlights[objAirport][objAirplane];
                     }
+                    else if (airplaneInFlight.Contains(objAirplane))
+                        continue;
                     else
                     {
+                        Debug.Log(created);
                         GameObject flightGO = new GameObject();
                         flightGO.name = $"{_info.savedAirports[origAirport.Name].Name}-{nextHop.Name}";
                         flight = flightGO.AddComponent<Flight>();
@@ -192,6 +199,10 @@ public class GameManager : MonoBehaviour
 
                         _info.flights.Add(flight);
                         airportFlights[origAirport][objAirplane] = flight;
+
+                        created++;
+
+                        airplaneInFlight.Add(objAirplane);
                     }
 
                     flight.Embark(_info.savedAirports[origAirport.Name].TravellersToAirport[objAirport], objAirport);
