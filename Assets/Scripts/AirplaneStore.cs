@@ -1,17 +1,18 @@
 using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
-public class AirplaneStore
+public class AirplaneStore : MonoBehaviour
 {
     public Dictionary<AirplaneTypes, List<Airplane>> AvailableAirplanes { get; private set; }
     public GameObject Earth { get; private set; }
 
     private AirplaneFactory _airplaneFactory = AirplaneFactory.GetInstance();
 
-    private int smallAirplanes = 0;
-    private int mediumAirplanes = 0;
-    private int largeAirplanes = 0;
+    private int smallAirplanes = 9;
+    private int mediumAirplanes = 7;
+    private int largeAirplanes = 5;
 
 
     public AirplaneStore(GameObject earth, int numberOfSmallAirplanes, int numberOfMediumAirplanes, int numberOfLargeAirplanes)
@@ -48,5 +49,12 @@ public class AirplaneStore
             Airplane largeAirplane = (Airplane)_airplaneFactory.Build(AirplaneTypes.Large, Earth.transform);
             AvailableAirplanes[AirplaneTypes.Large].Add(largeAirplane);
         }
+    }
+
+    public void Start()
+    {
+        Transform smallAirplane = GameObject.Find("SmallAirplane").transform;
+        Transform child = smallAirplane.GetChild(0);
+        Debug.Log(child.name);
     }
 }
