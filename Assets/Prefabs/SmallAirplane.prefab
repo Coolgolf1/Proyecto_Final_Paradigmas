@@ -1129,7 +1129,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae020d78b2b587d47b4ab5ec4e1dab11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AirplaneSmall
-  tailNumber: {fileID: 6284688329685062601}
+  tailNumberUI: {fileID: 6284688329685062601}
 --- !u!65 &8327058121004210932
 BoxCollider:
   m_ObjectHideFlags: 0

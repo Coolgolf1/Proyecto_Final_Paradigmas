@@ -8,6 +8,8 @@ public abstract class Airplane : MonoBehaviour, IUpgradable, IObject
 {
     // Read-only from outside
     public string Id { get; private set; }
+    public string TailNumber { get; protected set; }
+
     public string Name { get; private set; }
     public double Range { get; protected set; }
     public int Capacity { get; protected set; }
@@ -15,7 +17,7 @@ public abstract class Airplane : MonoBehaviour, IUpgradable, IObject
     public Levels Level { get; protected set; }
     public int Price { get; protected set; }
 
-    [SerializeField] protected TMP_Text tailNumber;
+    [SerializeField] protected TMP_Text tailNumberUI;
 
 
     // GameObjects
@@ -69,12 +71,13 @@ public abstract class Airplane : MonoBehaviour, IUpgradable, IObject
 
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
-            // Detecta colisión con este objeto
+            // Detecta colisiï¿½n con este objeto
             if (hit.collider.gameObject == this.gameObject)
             {
                 _info.airportUI.gameObject.SetActive(false);
                 _info.flightUI.gameObject.SetActive(true);
-                _info.flightUI.ShowFlight(_info.GetFlightOfAirplane(this));
+                Flight flight = _info.GetFlightOfAirplane(this);
+                _info.flightUI.ShowFlight(flight);
                 _info.GetRouteOfAirplane(this).LitRoute();
             }
         }

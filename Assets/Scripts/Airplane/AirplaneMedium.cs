@@ -12,6 +12,7 @@ public class AirplaneMedium : Airplane
 
     public override void SetTailNumber()
     {
-        tailNumber.text = $"ME{Id}";
+        tailNumberUI.text = $"ME{Id}";
+        TailNumber = $"ME{Id}";
     }
 }

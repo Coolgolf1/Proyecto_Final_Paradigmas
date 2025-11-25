@@ -338,7 +338,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c06fa72f57f1d7479383df686138406, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AirplaneLarge
-  tailNumber: {fileID: 3443395548845303455}
+  tailNumberUI: {fileID: 3443395548845303455}
 --- !u!1 &2667926898998716134
 GameObject:
   m_ObjectHideFlags: 0

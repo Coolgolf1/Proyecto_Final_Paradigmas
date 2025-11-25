@@ -8,22 +8,33 @@ public class FlightUI : MonoBehaviour
     [SerializeField] private TMP_Text routeText;
     [SerializeField] private TMP_Text passengers;
     [SerializeField] private Button closeButton;
+    [SerializeField] private Button upgradePlane;
+    private Airplane _linkedAirplane;
     private InfoSingleton _info = InfoSingleton.GetInstance();
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Start()
     {
-        flightNumber = GameObject.Find("FlightNumber").GetComponent<TMP_Text>();
-        routeText = GameObject.Find("RouteText").GetComponent<TMP_Text>();
-        passengers = GameObject.Find("FlightClientList").GetComponent<TMP_Text>();
-        closeButton = GameObject.Find("CloseFlightUI").GetComponent<Button>();
+        //flightNumber = GameObject.Find("FlightNumber").GetComponent<TMP_Text>();
+        //routeText = GameObject.Find("RouteText").GetComponent<TMP_Text>();
+        //passengers = GameObject.Find("FlightClientList").GetComponent<TMP_Text>();
+        //closeButton = GameObject.Find("CloseFlightUI").GetComponent<Button>();
         closeButton.onClick.AddListener(CloseUI);
+        upgradePlane.onClick.AddListener(OnUpgrade);
         gameObject.SetActive(false);
     }
 
     // Update is called once per frame
     private void Update()
     {
+    }
+
+    private void OnUpgrade()
+    {
+        if (_linkedAirplane != null)
+        {
+            _info.GoToHangar(_linkedAirplane);
+        }
     }
 
     private void CloseUI()
@@ -40,6 +51,7 @@ public class FlightUI : MonoBehaviour
 
     public void ShowFlight(Flight flight)
     {
+        _linkedAirplane = flight.Airplane;
         foreach (Route route in _info.savedRoutes.Values)
         {
             if (route.lit)
@@ -47,6 +59,7 @@ public class FlightUI : MonoBehaviour
                 route.UnlitRoute();
             }
         }
+        
         flightNumber.text = flight.FlightID;
         routeText.text = $"{flight.AirportOrig.Id.ToUpper()} - {flight.AirportDest.Id.ToUpper()}";
         string passengersText = "";

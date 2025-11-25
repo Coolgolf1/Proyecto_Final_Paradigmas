@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class InfoSingleton
 {
@@ -90,6 +91,8 @@ public class InfoSingleton
     public AirportUI airportUI;
     public FlightUI flightUI;
     public Camera playerCamera;
+
+    public Airplane airplaneToHangar;
 
     // Singleton
     private static InfoSingleton _instance;
@@ -247,5 +250,18 @@ public class InfoSingleton
             return flight.Route;
         }
         return null;
+    }
+
+    public void GoToHangar(Airplane airplane)
+    {
+        Time.timeScale = 0;
+        airplaneToHangar = airplane;
+        SceneManager.LoadScene("Hangar", LoadSceneMode.Additive);
+    }
+
+    public void GoToSpace()
+    {
+        Time.timeScale = 1;
+        SceneManager.UnloadSceneAsync("Hangar");
     }
 }

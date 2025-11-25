@@ -12,6 +12,7 @@ public class AirplaneLarge : Airplane
 
     public override void SetTailNumber()
     {
-        tailNumber.text = $"LA{Id}";
+        tailNumberUI.text = $"LA{Id}";
+        TailNumber = $"LA{Id}";
     }
 }
