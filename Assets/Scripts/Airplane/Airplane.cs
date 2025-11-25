@@ -8,13 +8,12 @@ public abstract class Airplane : MonoBehaviour, IUpgradable, IObject
 {
     // Read-only from outside
     public string Id { get; private set; }
-
     public string Name { get; private set; }
     public double Range { get; protected set; }
     public int Capacity { get; protected set; }
-    public int RefuelTime { get; protected set; } = 0;
-    public double Speed { get; protected set; } = GameConstants.relativeSpeed * 1000;
+    public double Speed { get; protected set; } = GameConstants.relativeSpeed * GameConstants.speedMultiplier;
     public Levels Level { get; protected set; }
+    public int Price { get; protected set; }
 
     [SerializeField] protected TMP_Text tailNumber;
 

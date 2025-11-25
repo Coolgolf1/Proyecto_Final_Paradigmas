@@ -276,7 +276,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2008703924599250498}
-  - component: {fileID: 1056100909346877674}
   - component: {fileID: 8535003897581356756}
   - component: {fileID: 3611030672895458090}
   m_Layer: 0
@@ -306,19 +305,6 @@ Transform:
   - {fileID: 6850748717777242635}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1056100909346877674
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2250861789715658586}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 102beb0ce93439b4cb2a25e375eb3661, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::AirplaneMedium
-  tailNumber: {fileID: 3443395548845303455}
 --- !u!65 &8535003897581356756
 BoxCollider:
   m_ObjectHideFlags: 0

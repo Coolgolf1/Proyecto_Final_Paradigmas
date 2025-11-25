@@ -8,8 +8,7 @@ public class AirplaneFactory : ITypedFactory<IObject, AirplaneTypes>
 
     private AirplaneSpawner _spawner;
 
-    private AirplaneFactory()
-    { }
+    private AirplaneFactory() { }
 
     public static AirplaneFactory GetInstance()
     {

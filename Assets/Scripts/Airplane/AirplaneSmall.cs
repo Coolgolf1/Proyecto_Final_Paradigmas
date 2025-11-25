@@ -7,6 +7,7 @@ public class AirplaneSmall : Airplane
         Range = 5000;
         Speed *= 3; // 500
         Capacity = 100;
+        Price = 10000;
     }
 
     public override void SetTailNumber()

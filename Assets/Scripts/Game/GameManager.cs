@@ -97,6 +97,7 @@ public class GameManager : MonoBehaviour
         // Save data of routes
         _init.SaveDataOfRoutes(routePrefab, earth.transform);
 
+
         if (_mainMenuGame)
         {
             InitMainMenuAirplanes(_airplaneFactory, earth.transform);
