@@ -23,8 +23,8 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
     private InfoSingleton _info = InfoSingleton.GetInstance();
     private EconomyManager _economy = EconomyManager.GetInstance();
 
-    private InputAction clickAction;
-    private Camera cam;
+    private InputAction _clickAction;
+    private Camera _cam;
 
     // Serialize Field
     [SerializeField] public GameObject modelPrefab;
@@ -48,26 +48,26 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
 
     public void Awake()
     {
-        clickAction = InputSystem.actions.FindAction("Click");
-        cam = _info.playerCamera;
+        _clickAction = InputSystem.actions.FindAction("Click");
+        _cam = _info.playerCamera;
         ReceivedTravellers = 0;
     }
 
     private void OnEnable()
     {
-        clickAction.performed += OnClickAirport;
-        clickAction.Enable();
+        _clickAction.performed += OnClickAirport;
+        _clickAction.Enable();
     }
 
     private void OnDisable()
     {
-        clickAction.performed -= OnClickAirport;
+        _clickAction.performed -= OnClickAirport;
     }
 
     private void OnClickAirport(InputAction.CallbackContext ctx)
     {
         Vector2 screenPos = Mouse.current.position.ReadValue();
-        Ray ray = cam.ScreenPointToRay(screenPos);
+        Ray ray = _cam.ScreenPointToRay(screenPos);
 
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
@@ -78,7 +78,7 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
                 _info.airportUI.gameObject.SetActive(true);
                 _info.airportUI.ShowAirport(this);
                 List<Route> routes = _info.GetRoutesOfAirport(this);
-                foreach(Route route in routes)
+                foreach (Route route in routes)
                 {
                     route.LitRoute();
                 }

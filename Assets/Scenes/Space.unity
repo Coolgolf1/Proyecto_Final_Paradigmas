@@ -4770,8 +4770,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AirplaneSpawner
   SmallAirplanePrefab: {fileID: 8462887653715005264, guid: 7400e145d90b69f4b8c251d7c1adfca8, type: 3}
-  MediumAirplanePrefab: {fileID: 4092379697025543684, guid: 060c6d6f715feac43923cb94fdb26dc8, type: 3}
-  LargeAirplanePrefab: {fileID: 2250861789715658586, guid: 2ff8c8d06f9ed614c9f3b44837944535, type: 3}
+  MediumAirplanePrefab: {fileID: 4092379697025543684, guid: 2ff8c8d06f9ed614c9f3b44837944535, type: 3}
+  LargeAirplanePrefab: {fileID: 2250861789715658586, guid: 060c6d6f715feac43923cb94fdb26dc8, type: 3}
 --- !u!4 &810772353
 Transform:
   m_ObjectHideFlags: 0

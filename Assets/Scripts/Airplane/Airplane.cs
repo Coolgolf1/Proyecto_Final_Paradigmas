@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.Rendering.Universal;
 
 public abstract class Airplane : MonoBehaviour, IUpgradable, IObject
 {
@@ -10,7 +9,6 @@ public abstract class Airplane : MonoBehaviour, IUpgradable, IObject
     public string Id { get; private set; }
     public string TailNumber { get; protected set; }
 
-    public string Name { get; private set; }
     public double Range { get; protected set; }
     public int Capacity { get; protected set; }
     public double Speed { get; protected set; } = GameConstants.relativeSpeed * GameConstants.speedMultiplier;
@@ -21,9 +19,9 @@ public abstract class Airplane : MonoBehaviour, IUpgradable, IObject
 
 
     // GameObjects
-    private InputAction clickAction;
+    private InputAction _clickAction;
 
-    private Camera cam;
+    private Camera _camera;
 
     // Dependencies
     private InfoSingleton _info = InfoSingleton.GetInstance();
@@ -33,29 +31,29 @@ public abstract class Airplane : MonoBehaviour, IUpgradable, IObject
     public void Initialise(int id)
     {
         Id = $"{id:D4}";
-        
+
         Level = Levels.Basic;
         SetTailNumber();
     }
 
     public virtual void Awake()
     {
-        clickAction = InputSystem.actions.FindAction("Click");
-        cam = _info.playerCamera;
-        UIEvents.OnMainMenuEnter.AddListener(clickAction.Disable);
-        UIEvents.OnPlayEnter.AddListener(clickAction.Enable);
+        _clickAction = InputSystem.actions.FindAction("Click");
+        _camera = _info.playerCamera;
+        UIEvents.OnMainMenuEnter.AddListener(_clickAction.Disable);
+        UIEvents.OnPlayEnter.AddListener(_clickAction.Enable);
     }
 
 
     private void OnEnable()
     {
-        clickAction.performed += OnClickAirplane;
-        clickAction.Enable();
+        _clickAction.performed += OnClickAirplane;
+        _clickAction.Enable();
     }
 
     private void OnDisable()
     {
-        clickAction.performed -= OnClickAirplane;
+        _clickAction.performed -= OnClickAirplane;
     }
 
     public void Upgrade()
@@ -67,11 +65,11 @@ public abstract class Airplane : MonoBehaviour, IUpgradable, IObject
     private void OnClickAirplane(InputAction.CallbackContext ctx)
     {
         Vector2 screenPos = Mouse.current.position.ReadValue();
-        Ray ray = cam.ScreenPointToRay(screenPos);
+        Ray ray = _camera.ScreenPointToRay(screenPos);
 
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
-            // Detecta colisi�n con este objeto
+            // Detecta colisión con este objeto
             if (hit.collider.gameObject == this.gameObject)
             {
                 _info.airportUI.gameObject.SetActive(false);
