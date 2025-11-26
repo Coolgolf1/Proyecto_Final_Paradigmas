@@ -931,6 +931,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 132870, guid: 27fe6d2a15a377f4587f716a2d37ca8a, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 160422, guid: 27fe6d2a15a377f4587f716a2d37ca8a, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 197866, guid: 27fe6d2a15a377f4587f716a2d37ca8a, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 426654, guid: 27fe6d2a15a377f4587f716a2d37ca8a, type: 3}
       propertyPath: m_RootOrder
       value: 2
@@ -7266,7 +7278,7 @@ Canvas:
   m_Enabled: 1
   serializedVersion: 3
   m_RenderMode: 1
-  m_Camera: {fileID: 0}
+  m_Camera: {fileID: 1928411723}
   m_PlaneDistance: 1.51
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
@@ -11009,8 +11021,8 @@ GameObject:
   - component: {fileID: 1928411721}
   - component: {fileID: 1928411720}
   - component: {fileID: 1928411725}
-  - component: {fileID: 1928411726}
   - component: {fileID: 1928411727}
+  - component: {fileID: 1928411728}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -11144,52 +11156,6 @@ MonoBehaviour:
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
   m_Version: 2
---- !u!114 &1928411726
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1928411719}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4d2b7af6dd213aa43b8aed374876ca07, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: '::'
-  earth: {fileID: 2063964382}
-  drag:
-    m_Name: Drag
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: 9dde88ac-5183-4ebd-bca9-7dd336a3a055
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings: []
-    m_Flags: 0
-  look:
-    m_Name: Look
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: 2c9b9ba3-923e-448e-a71a-c7b3c2bed08a
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings: []
-    m_Flags: 0
-  zoom:
-    m_Name: Zoom
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: 5ef449b4-2405-46d8-96c2-536b5aa58c62
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings: []
-    m_Flags: 0
-  zoomFactor: 0
-  decay: 8
-  zoomDecay: 8
-  zoomSensitivity: 4500
-  sensitivity: 0.5
-  moduloPower: 1.8
 --- !u!114 &1928411727
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11220,6 +11186,25 @@ MonoBehaviour:
   m_DefaultActionMap: 
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
+--- !u!114 &1928411728
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1928411719}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 661e4965bded9f0448ab315b5f784858, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpaceCamera
+  reference: {fileID: 2063964382}
+  decay: 8
+  sensitivity: 0.5
+  zoomFactor: 0
+  moduloPower: 1.8
+  zoomDecay: 8
+  zoomSensitivity: 4500
 --- !u!1 &1932933019
 GameObject:
   m_ObjectHideFlags: 0
@@ -12432,8 +12417,8 @@ SceneRoots:
   - {fileID: 1650489212}
   - {fileID: 1837671273}
   - {fileID: 209038610}
+  - {fileID: 1207505713}
   - {fileID: 810772353}
   - {fileID: 1678035676}
   - {fileID: 897920818}
   - {fileID: 246972754}
-  - {fileID: 1207505713}

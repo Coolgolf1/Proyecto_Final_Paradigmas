@@ -2,46 +2,32 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerMovement : MonoBehaviour
+public abstract class PlayerMovement : MonoBehaviour
 {
-    public GameObject earth;
-    public InputAction drag;
-    public InputAction look;
-    public InputAction zoom;
+    [SerializeField] private GameObject reference;
+    protected InputAction drag;
+    protected InputAction look;
+    protected InputAction zoom;
     private Vector2 velocity;
     private Vector2 moveValue;
-    private Vector2 zoomValue;
-    private float modulo;
-    [SerializeField] private float zoomFactor;
+    
+    
+    [SerializeField] private float decay = 8f;
 
-    [SerializeField]
-    private float decay = 8f;
+    [SerializeField] private float sensitivity = 1f;
+    [SerializeField] protected float zoomFactor;
 
-    [SerializeField] private float zoomDecay = 8f;
 
-    [SerializeField] private float zoomSensitivity = 2500f;
-    public float sensitivity = 1f;
-    [SerializeField] private float moduloPower = 1.8f;
-
-    private float targetZoom = 0;
-    private float previousZoom = 0;
-    private float actualZoom = 0;
-
-    private bool _enabled = false;
-
-    public void Awake()
-    {
-        UIEvents.OnMainMenuEnter.AddListener(DisableActions);
-        UIEvents.OnPlayEnter.AddListener(EnableActions);
-    }
-
+    protected bool _enabled = false;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    private void Start()
+    public void Awake()
     {
         drag = InputSystem.actions.FindAction("IsDragging");
         look = InputSystem.actions.FindAction("Look");
         zoom = InputSystem.actions.FindAction("Zoom");
+        UIEvents.OnMainMenuEnter.AddListener(DisableActions);
+        UIEvents.OnPlayEnter.AddListener(EnableActions);
     }
 
     public void DisableActions()
@@ -62,31 +48,16 @@ public class PlayerMovement : MonoBehaviour
     }
 
     // Update is called once per frame
-    private void Update()
+    public virtual void Update()
     {
         if (_enabled)
         {
             InertiaDrag();
 
-            zoomValue = zoom.ReadValue<Vector2>();
-            modulo = transform.position.magnitude;
-
-            zoomFactor = (Mathf.Pow(modulo, moduloPower) / zoomSensitivity);
-
             moveValue = velocity;
-            transform.RotateAround(earth.transform.position, -Vector3.up, -moveValue[0] * sensitivity * zoomFactor);
+            transform.RotateAround(reference.transform.position, -Vector3.up, -moveValue[0] * sensitivity * zoomFactor);
             transform.RotateAround(Vector3.zero, transform.right, -moveValue[1] * sensitivity * zoomFactor);
 
-            if ((modulo > 30 || zoomValue[1] < 0) && (modulo < 75 || zoomValue[1] > 0))
-            {
-                targetZoom += zoomValue[1];
-            }
-
-            actualZoom = Mathf.Lerp(actualZoom, targetZoom, Time.fixedDeltaTime * zoomDecay);
-
-            transform.position += transform.forward * (actualZoom - previousZoom);
-
-            previousZoom = actualZoom;
         }
         
     }

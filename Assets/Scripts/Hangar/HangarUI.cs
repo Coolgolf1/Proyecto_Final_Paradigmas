@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 
@@ -21,11 +22,24 @@ public class HangarUI : MonoBehaviour
         buttonBack.onClick.AddListener(_info.GoToSpace);
         GameObject airplaneGO = Instantiate(_info.airplaneToHangar.gameObject, new Vector3(0,0,0), new Quaternion(0, 0.306609124f, 0, 0.951835513f));
         airplaneGO.GetComponentInChildren<TrailRenderer>().enabled = false;
+        SetLayerRecursively(airplaneGO, "HangarObjects");
+        var escena = SceneManager.GetSceneByName("Hangar");
+        SceneManager.MoveGameObjectToScene(airplaneGO, escena);
     }
 
     // Update is called once per frame
     void Update()
     {
         
+    }
+
+    void SetLayerRecursively(GameObject obj, string layerName)
+    {
+        int layer = LayerMask.NameToLayer(layerName);
+        obj.layer = layer;
+        foreach (Transform child in obj.transform)
+        {
+            SetLayerRecursively(child.gameObject, layerName);
+        }
     }
 }
