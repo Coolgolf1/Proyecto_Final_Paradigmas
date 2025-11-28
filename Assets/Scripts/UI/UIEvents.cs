@@ -10,4 +10,7 @@ public static class UIEvents
     public static UnityEvent LoadedListeners = new UnityEvent();
 
     public static UnityEvent OnTransitionExit = new UnityEvent();
+
+    public static UnityEvent OnStoreEnter = new UnityEvent();
+    public static UnityEvent OnStoreExit = new UnityEvent();
 }

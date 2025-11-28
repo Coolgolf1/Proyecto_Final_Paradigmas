@@ -28,6 +28,8 @@ public abstract class PlayerMovement : MonoBehaviour
         zoom = InputSystem.actions.FindAction("Zoom");
         UIEvents.OnMainMenuEnter.AddListener(DisableActions);
         UIEvents.OnPlayEnter.AddListener(EnableActions);
+        UIEvents.OnStoreEnter.AddListener(DisableActions);
+        UIEvents.OnStoreExit.AddListener(EnableActions);
     }
 
     public void DisableActions()

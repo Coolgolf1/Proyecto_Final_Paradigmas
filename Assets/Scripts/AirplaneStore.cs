@@ -35,6 +35,10 @@ public class AirplaneStore : MonoBehaviour
 
     [SerializeField] private GameObject earth;
 
+    [SerializeField] private Button openStore;
+
+    [SerializeField] private Button closeStore;
+
     public Dictionary<AirplaneTypes, List<Airplane>> AvailableAirplanes { get; private set; }
 
     private int smallAirplanes = 9;
@@ -42,6 +46,7 @@ public class AirplaneStore : MonoBehaviour
     private int largeAirplanes = 5;
 
     private InfoSingleton _info = InfoSingleton.GetInstance();
+    private AirplaneFactory _airplaneFactory = AirplaneFactory.GetInstance();
 
     public void smallAirplaneBought()
     {
@@ -54,6 +59,13 @@ public class AirplaneStore : MonoBehaviour
         if (!_info.savedAirports.ContainsKey(airportName))
             return;
 
+        // Create airplane
+        Airplane airplane = (Airplane)_airplaneFactory.Build(AirplaneTypes.Small, earth.transform);
+        _info.airplanes.Add(airplane);
+
+        // Add airplane to hangar
+
+        // Remove airplane from remaining
         if (smallAirplanes > 0)
         {
             smallAirplanes--;
@@ -148,5 +160,19 @@ public class AirplaneStore : MonoBehaviour
     {
         UIEvents.LoadedListeners.AddListener(LoadStore);
         gameObject.SetActive(false);
+        openStore.onClick.AddListener(ShowStoreUI);
+        closeStore.onClick.AddListener(CloseStoreUI);
+    }
+
+    public void ShowStoreUI()
+    {
+        gameObject.SetActive(true);
+        UIEvents.OnStoreEnter.Invoke();
+    }
+
+    public void CloseStoreUI()
+    {
+        gameObject.SetActive(false);
+        UIEvents.OnStoreExit.Invoke();
     }
 }
