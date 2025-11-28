@@ -7,10 +7,13 @@ public class MainUI : MonoBehaviour
 {
     private float _elapsedTime;
     [SerializeField] private TMP_Text timeCounter;
+    [SerializeField] private TMP_Text dayCounter;
     [SerializeField] private Button play;
     [SerializeField] private Button pause;
     [SerializeField] private Button fastForward;
     [SerializeField] private TMP_Text money;
+
+    private int _days = 0;
 
     private bool _enabled = false;
 
@@ -63,11 +66,13 @@ public class MainUI : MonoBehaviour
         {
             _elapsedTime += Time.deltaTime * 1000;
 
+            _days = (int)Mathf.Floor((_elapsedTime + refTime.Item1*3600) / 86400);
             string hours = ((Mathf.Floor(_elapsedTime / 3600) + refTime.Item1) % 24).ToString("00");
             string minutes = ((Mathf.Floor(_elapsedTime / 60) + refTime.Item2) % 60).ToString("00");
             //string seconds = ((Mathf.Floor(_elapsedTime % 60) + refTime.Item3) % 60).ToString("00");
             timeCounter.text = $"{hours}:{minutes}";
-            money.text = $"Monedas: {_currentMoney}";
+            money.text = $"Coins: {_currentMoney}";
+            dayCounter.text = $"Day: {_days}";
         }
     }
 
@@ -85,7 +90,6 @@ public class MainUI : MonoBehaviour
 
     public void HideUI()
     {
-        Debug.Log("HIDE UI");
         gameObject.SetActive(false);
     }
 }

@@ -147,5 +147,6 @@ public class AirplaneStore : MonoBehaviour
     public void Awake()
     {
         UIEvents.LoadedListeners.AddListener(LoadStore);
+        gameObject.SetActive(false);
     }
 }
