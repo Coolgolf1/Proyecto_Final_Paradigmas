@@ -24,6 +24,11 @@ public static class RouteAssigner
 
         foreach (Airplane airplane in start.Hangar)
         {
+            double distance = Auxiliary.GetDistanceBetweenAirports(origin, edge.To);
+
+            if (distance > airplane.Range)
+                continue;
+
             double tempDistance;
 
             Flight flight = _info.GetFlightOfAirplane(airplane);

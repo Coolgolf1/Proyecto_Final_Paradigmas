@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using TMPro;
-using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class AirplaneStore : MonoBehaviour 
+public class AirplaneStore : MonoBehaviour
 {
+    private double _smallAirplanePriceMultiplier = 1;
     [SerializeField] private TMP_Text smallAirplaneTitle;
     [SerializeField] private Image smallAirplaneImage;
     [SerializeField] private TMP_Text smallAirplanePrice;
@@ -15,6 +15,7 @@ public class AirplaneStore : MonoBehaviour
     [SerializeField] private TMP_Dropdown smallAirplaneSelector;
     [SerializeField] private Button smallAirplaneBuy;
 
+    private double _mediumAirplanePriceMultiplier = 1;
     [SerializeField] private TMP_Text mediumAirplaneTitle;
     [SerializeField] private Image mediumAirplaneImage;
     [SerializeField] private TMP_Text mediumAirplanePrice;
@@ -24,6 +25,7 @@ public class AirplaneStore : MonoBehaviour
     [SerializeField] private TMP_Dropdown mediumAirplaneSelector;
     [SerializeField] private Button mediumAirplaneBuy;
 
+    private double _largeAirplanePriceMultiplier = 1;
     [SerializeField] private TMP_Text largeAirplaneTitle;
     [SerializeField] private Image largeAirplaneImage;
     [SerializeField] private TMP_Text largeAirplanePrice;
@@ -36,8 +38,11 @@ public class AirplaneStore : MonoBehaviour
     [SerializeField] private GameObject earth;
 
     [SerializeField] private Button openStore;
-
     [SerializeField] private Button closeStore;
+
+    [SerializeField] private GameObject buyMessagePanel;
+    [SerializeField] private TMP_Text buyMessage;
+    [SerializeField] private Button closeBuyMessage;
 
     public Dictionary<AirplaneTypes, List<Airplane>> AvailableAirplanes { get; private set; }
 
@@ -47,23 +52,43 @@ public class AirplaneStore : MonoBehaviour
 
     private InfoSingleton _info = InfoSingleton.GetInstance();
     private AirplaneFactory _airplaneFactory = AirplaneFactory.GetInstance();
+    private EconomyManager _economy = EconomyManager.GetInstance();
 
     public void smallAirplaneBought()
     {
+        // If no more remaining cannot buy
+        if (smallAirplanes == 0)
+        {
+            BuyMessageFailureNoStock("small");
+            return;
+        }
+
+        if (GameConstants.smallPrice * _smallAirplanePriceMultiplier > Player.Money)
+        {
+            BuyMessageFailureNotEnoughCoins("small");
+            return;
+        }
+
+        // Check valid index
         int index = smallAirplaneSelector.value;
         if (index > smallAirplaneSelector.options.Count)
             return;
 
+        // Save airport name
         string airportName = smallAirplaneSelector.options[index].text;
 
+        // Check airport exists
         if (!_info.savedAirports.ContainsKey(airportName))
             return;
+
+        _economy.SubtractCoins((int)(GameConstants.smallPrice * _smallAirplanePriceMultiplier));
 
         // Create airplane
         Airplane airplane = (Airplane)_airplaneFactory.Build(AirplaneTypes.Small, earth.transform);
         _info.airplanes.Add(airplane);
 
         // Add airplane to hangar
+        _info.savedAirports[airportName].Hangar.Add(airplane);
 
         // Remove airplane from remaining
         if (smallAirplanes > 0)
@@ -71,47 +96,108 @@ public class AirplaneStore : MonoBehaviour
             smallAirplanes--;
         }
 
-        if (smallAirplanes == 0)
-            smallAirplaneBuy.onClick.RemoveListener(smallAirplaneBought);
+        // Success message
+        BuyMessageSuccess("small", airportName);
+
+        // Launch flight
+        FlightLauncher.LaunchFlights();
     }
 
     public void mediumAirplaneBought()
     {
+        // If no more remaining cannot buy
+        if (mediumAirplanes == 0)
+        {
+            BuyMessageFailureNoStock("medium");
+            return;
+        }
+
+        if (GameConstants.mediumPrice * _mediumAirplanePriceMultiplier > Player.Money)
+        {
+            BuyMessageFailureNotEnoughCoins("medium");
+            return;
+        }
+
+        // Check valid index
         int index = mediumAirplaneSelector.value;
         if (index > mediumAirplaneSelector.options.Count)
             return;
 
+        // Save airport name
         string airportName = mediumAirplaneSelector.options[index].text;
 
+        // Check airport exists
         if (!_info.savedAirports.ContainsKey(airportName))
             return;
 
+        _economy.SubtractCoins((int)(GameConstants.mediumPrice * _mediumAirplanePriceMultiplier));
+
+        // Create airplane
+        Airplane airplane = (Airplane)_airplaneFactory.Build(AirplaneTypes.Medium, earth.transform);
+        _info.airplanes.Add(airplane);
+
+        // Add airplane to hangar
+        _info.savedAirports[airportName].Hangar.Add(airplane);
+
+        // Remove airplane from remaining
         if (mediumAirplanes > 0)
         {
             mediumAirplanes--;
         }
 
-        if (mediumAirplanes == 0)
-            mediumAirplaneBuy.onClick.RemoveListener(mediumAirplaneBought);
+        // Success message
+        BuyMessageSuccess("medium", airportName);
+
+        // Launch flight
+        FlightLauncher.LaunchFlights();
     }
     public void largeAirplaneBought()
     {
+        // If no more remaining cannot buy
+        if (largeAirplanes == 0)
+        {
+            BuyMessageFailureNoStock("large");
+            return;
+        }
+
+        if (GameConstants.largePrice * _largeAirplanePriceMultiplier > Player.Money)
+        {
+            BuyMessageFailureNotEnoughCoins("large");
+            return;
+        }
+
+        // Check valid index
         int index = largeAirplaneSelector.value;
         if (index > largeAirplaneSelector.options.Count)
             return;
 
+        // Save airport name
         string airportName = largeAirplaneSelector.options[index].text;
 
+        // Check airport exists
         if (!_info.savedAirports.ContainsKey(airportName))
             return;
 
+        _economy.SubtractCoins((int)(GameConstants.largePrice * _largeAirplanePriceMultiplier));
+
+        // Create airplane
+        Airplane airplane = (Airplane)_airplaneFactory.Build(AirplaneTypes.Large, earth.transform);
+        _info.airplanes.Add(airplane);
+
+        // Add airplane to hangar
+        _info.savedAirports[airportName].Hangar.Add(airplane);
+
+        // Remove airplane from remaining
         if (largeAirplanes > 0)
         {
             largeAirplanes--;
         }
 
-        if (largeAirplanes == 0)
-            largeAirplaneBuy.onClick.RemoveListener(largeAirplaneBought);
+        // Success message
+        BuyMessageSuccess("large", airportName);
+
+        // Launch flight
+        FlightLauncher.LaunchFlights();
     }
 
     public void LoadStore()
@@ -159,13 +245,22 @@ public class AirplaneStore : MonoBehaviour
     public void Awake()
     {
         UIEvents.LoadedListeners.AddListener(LoadStore);
-        gameObject.SetActive(false);
+        buyMessagePanel.gameObject.SetActive(false);
+
         openStore.onClick.AddListener(ShowStoreUI);
         closeStore.onClick.AddListener(CloseStoreUI);
+        closeBuyMessage.onClick.AddListener(CloseBuyMessage);
+
+        smallAirplaneBuy.onClick.AddListener(OpenBuyMessage);
+        mediumAirplaneBuy.onClick.AddListener(OpenBuyMessage);
+        largeAirplaneBuy.onClick.AddListener(OpenBuyMessage);
+
+        gameObject.SetActive(false);
     }
 
     public void ShowStoreUI()
     {
+        _economy.SetCoins(1000000);
         gameObject.SetActive(true);
         UIEvents.OnStoreEnter.Invoke();
     }
@@ -174,5 +269,36 @@ public class AirplaneStore : MonoBehaviour
     {
         gameObject.SetActive(false);
         UIEvents.OnStoreExit.Invoke();
+    }
+
+    public void OpenBuyMessage()
+    {
+        buyMessagePanel.gameObject.SetActive(true);
+
+        // Disable close store button
+        closeStore.interactable = false;
+    }
+
+    public void CloseBuyMessage()
+    {
+        buyMessagePanel.gameObject.SetActive(false);
+
+        // Enable close store button
+        closeStore.interactable = true;
+    }
+
+    public void BuyMessageSuccess(string airplaneType, string airportName)
+    {
+        buyMessage.text = $"Sucess!\n\nThe {airplaneType} airplane is now in {airportName}";
+    }
+
+    public void BuyMessageFailureNotEnoughCoins(string airplaneType)
+    {
+        buyMessage.text = $"Not enough coins to buy {airplaneType} airplane!";
+    }
+
+    public void BuyMessageFailureNoStock(string airplaneType)
+    {
+        buyMessage.text = $"You have already bought all {airplaneType} airplanes!";
     }
 }

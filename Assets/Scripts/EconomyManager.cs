@@ -27,4 +27,16 @@ public class EconomyManager
             MoneyChange?.Invoke(this, EventArgs.Empty);
         }
     }
+
+    public void SetCoins(int money)
+    {
+        Player.Money = money;
+        MoneyChange?.Invoke(this, EventArgs.Empty);
+    }
+
+    public void SubtractCoins(int money)
+    {
+        Player.Money -= money;
+        MoneyChange?.Invoke(this, EventArgs.Empty);
+    }
 }
