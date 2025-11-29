@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -84,9 +82,6 @@ public class InfoSingleton
     // Game information
     public int totalTravellersReceived { get; set; } = 0;
 
-    // Dijkstra graph
-    public Dictionary<Airport, List<RouteAssigner.Edge>> DijkstraGraph { get; private set; }
-
     // GameObjects set in GameManager
     public AirportUI airportUI;
     public FlightUI flightUI;
@@ -96,19 +91,6 @@ public class InfoSingleton
 
     // Singleton
     private static InfoSingleton _instance;
-
-    private InfoSingleton()
-    {
-
-        DijkstraGraph = new Dictionary<Airport, List<RouteAssigner.Edge>>();
-
-        foreach (Airport airport in savedAirports.Values.ToList())
-        {
-            DijkstraGraph.Add(airport, new List<RouteAssigner.Edge>());
-        }
-
-
-    }
 
     public static InfoSingleton GetInstance()
     {

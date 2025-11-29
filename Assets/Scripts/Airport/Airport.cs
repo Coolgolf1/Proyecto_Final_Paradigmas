@@ -112,7 +112,7 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
     public (Airplane, Airport) FindHopForTravellersToAirport(Airport objectiveAirport)
     {
         // Calculate optimal path for plane
-        (Airplane nextAirplane, List<Airport> path) = RouteAssigner.Dijkstra(_info.DijkstraGraph, this, objectiveAirport);
+        (Airplane nextAirplane, List<Airport> path) = RouteAssigner.Dijkstra(DijkstraGraph.graph, this, objectiveAirport);
 
         if (nextAirplane is null)
         {
@@ -335,6 +335,8 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
         {
             tempFlight.StartFlight();
         }
+
+        FlightLauncher.LaunchFlights();
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created

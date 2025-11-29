@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.IO;
-using Unity.VisualScripting;
 using UnityEngine;
 
 internal static class Auxiliary
@@ -13,7 +12,7 @@ internal static class Auxiliary
 
     public static double GetDistanceBetweenAirports(Airport airport1, Airport airport2)
     {
-        
+
         if (airport1 == airport2)
         {
             return 0;
@@ -49,15 +48,15 @@ internal static class Auxiliary
 
     public static Dictionary<string, double> GetDistancesFromCSV()
     {
-        
-        
+
+
         string[] lines = File.ReadAllLines(_pathName)[1..];
-        
+
         Dictionary<string, double> dictDistances = new Dictionary<string, double>();
 
         foreach (string line in lines)
         {
-            
+
             string[] data = line.Split(",");
             string codes = data[0];
 
@@ -65,7 +64,7 @@ internal static class Auxiliary
 
             dictDistances[codes] = distance;
         }
-        
+
         return dictDistances;
     }
 
@@ -78,7 +77,7 @@ internal static class Auxiliary
             Route route = routes[routeName];
 
             route.SetDistance(GetDistanceBetweenAirports(route.Airport1, route.Airport2));
-            
+
         }
     }
 
@@ -87,16 +86,16 @@ internal static class Auxiliary
         // Make sure all airports are included
         foreach (Airport airport in _info.savedAirports.Values)
         {
-            if (!_info.DijkstraGraph.ContainsKey(airport))
+            if (!DijkstraGraph.graph.ContainsKey(airport))
             {
-                _info.DijkstraGraph.Add(airport, new List<RouteAssigner.Edge>());
+                DijkstraGraph.graph.Add(airport, new List<RouteAssigner.Edge>());
             }
         }
 
         // Clear all airport information
-        foreach (Airport airport in _info.DijkstraGraph.Keys)
+        foreach (Airport airport in DijkstraGraph.graph.Keys)
         {
-            _info.DijkstraGraph[airport].Clear();
+            DijkstraGraph.graph[airport].Clear();
         }
 
         // Save edges information in Dijkstra Graph
@@ -107,7 +106,7 @@ internal static class Auxiliary
             double distance = route.Distance;
 
             // Forward: airport1 -> airport2
-            List<RouteAssigner.Edge> edges1 = _info.DijkstraGraph[airport1];
+            List<RouteAssigner.Edge> edges1 = DijkstraGraph.graph[airport1];
 
             // Check if edge from airport1 to airport2 already exists
             bool exists1 = false;
@@ -125,7 +124,7 @@ internal static class Auxiliary
             }
 
             // Reverse: airport2 -> airport1
-            List<RouteAssigner.Edge> edges2 = _info.DijkstraGraph[airport2];
+            List<RouteAssigner.Edge> edges2 = DijkstraGraph.graph[airport2];
 
             // Check if edge from airport2 to airport1 already exists
             bool exists2 = false;

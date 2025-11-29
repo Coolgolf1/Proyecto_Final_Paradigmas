@@ -19,6 +19,9 @@ public class GameMaster
         InHangar = new InHangarState(this);
         End = new EndState(this);
 
+        // ARREGLAR ESTO EN OTRO SITIO ============================================
+        DijkstraGraph.Initialise();
+
         UIEvents.LoadedListeners.AddListener(InitState);
     }
 
