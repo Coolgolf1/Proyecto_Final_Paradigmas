@@ -34,6 +34,7 @@ public class FlightUI : MonoBehaviour
     {
         if (_linkedAirplane != null)
         {
+            CloseUI();
             _info.GoToHangar(_linkedAirplane);
         }
     }
