@@ -88,7 +88,7 @@ internal static class Auxiliary
         {
             if (!DijkstraGraph.graph.ContainsKey(airport))
             {
-                DijkstraGraph.graph.Add(airport, new List<RouteAssigner.Edge>());
+                DijkstraGraph.graph.Add(airport, new List<Edge>());
             }
         }
 
@@ -106,11 +106,11 @@ internal static class Auxiliary
             double distance = route.Distance;
 
             // Forward: airport1 -> airport2
-            List<RouteAssigner.Edge> edges1 = DijkstraGraph.graph[airport1];
+            List<Edge> edges1 = DijkstraGraph.graph[airport1];
 
             // Check if edge from airport1 to airport2 already exists
             bool exists1 = false;
-            foreach (RouteAssigner.Edge edge in edges1)
+            foreach (Edge edge in edges1)
             {
                 if (edge.To == airport2)
                 {
@@ -120,15 +120,15 @@ internal static class Auxiliary
 
             if (!exists1)
             {
-                edges1.Add(new RouteAssigner.Edge(airport2, distance));
+                edges1.Add(new Edge(airport2, distance));
             }
 
             // Reverse: airport2 -> airport1
-            List<RouteAssigner.Edge> edges2 = DijkstraGraph.graph[airport2];
+            List<Edge> edges2 = DijkstraGraph.graph[airport2];
 
             // Check if edge from airport2 to airport1 already exists
             bool exists2 = false;
-            foreach (RouteAssigner.Edge edge in edges2)
+            foreach (Edge edge in edges2)
             {
                 if (edge.To == airport1)
                 {
@@ -138,7 +138,7 @@ internal static class Auxiliary
 
             if (!exists2)
             {
-                edges2.Add(new RouteAssigner.Edge(airport1, distance));
+                edges2.Add(new Edge(airport1, distance));
             }
         }
     }

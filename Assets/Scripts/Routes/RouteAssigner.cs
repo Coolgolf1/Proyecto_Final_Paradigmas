@@ -1,20 +1,20 @@
 using System.Collections.Generic;
 
+public class Edge
+{
+    public Airport To { get; private set; }
+    public double distance { get; private set; }
+
+    public Edge(Airport to, double distance)
+    {
+        To = to;
+        this.distance = distance;
+    }
+}
+
 public static class RouteAssigner
 {
     private static InfoSingleton _info = InfoSingleton.GetInstance();
-
-    public class Edge
-    {
-        public Airport To { get; private set; }
-        public double distance { get; private set; }
-
-        public Edge(Airport to, double distance)
-        {
-            To = to;
-            this.distance = distance;
-        }
-    }
 
     private static (Airplane, double) GetFastestAirplaneAndTime(Airport origin, Edge edge, Airport start, Airport end)
     {
