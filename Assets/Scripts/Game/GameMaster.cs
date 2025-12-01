@@ -1,7 +1,7 @@
 
 public class GameMaster
 {
-    private static GameMaster _instance = GetInstance();
+    private static GameMaster _instance;
 
     public GameState currentState;
 

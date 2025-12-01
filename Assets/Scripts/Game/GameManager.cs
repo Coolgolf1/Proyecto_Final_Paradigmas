@@ -67,14 +67,14 @@ public class GameManager : MonoBehaviour
         Player.Money = 0;
     }
 
-    public void InitMainMenuAirplanes(AirplaneFactory airplaneFactory, Transform earthTransform)
+    public void InitMainMenuAirplanes(Transform earthTransform)
     {
         System.Random rand = new System.Random();
 
         for (int i = 0; i < 20; i++)
         {
             int r = rand.Next(3);
-            Airplane airplane = (Airplane)airplaneFactory.Build(AirplaneTypes.Small + r, earthTransform);
+            Airplane airplane = (Airplane)_airplaneFactory.Build(AirplaneTypes.Small + r, earthTransform);
 
             int a = rand.Next(_info.savedAirports.Count);
             string key = _info.savedAirports.Keys.ToList()[a];
@@ -100,7 +100,7 @@ public class GameManager : MonoBehaviour
 
         if (_mainMenuGame)
         {
-            InitMainMenuAirplanes(_airplaneFactory, earth.transform);
+            InitMainMenuAirplanes(earth.transform);
         }
         else
         {
