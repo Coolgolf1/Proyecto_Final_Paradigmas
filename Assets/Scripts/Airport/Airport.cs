@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -112,7 +113,7 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
     public (Airplane, Airport) FindHopForTravellersToAirport(Airport objectiveAirport)
     {
         // Calculate optimal path for plane
-        (Airplane nextAirplane, List<Airport> path) = RouteAssigner.Dijkstra(DijkstraGraph.graph, this, objectiveAirport);
+        (Airplane nextAirplane, List<Airport> path) = RouteAssigner.Dijkstra(this, objectiveAirport);
 
         if (nextAirplane is null)
         {
@@ -198,23 +199,55 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
         return null;
     }
 
+    public List<Airport> GetReachableAirportsForAirplane(Airplane airplane)
+    {
+        List<Airport> availableAirports = new List<Airport>();
+        foreach (Airport airport in TravellersToAirport.Keys)
+        {
+            double distance = Auxiliary.GetDirectDistanceBetweenAirports(this, airport);
+            if (distance < airplane.Range)
+            {
+                availableAirports.Add(airport);
+            }
+            
+        }
+
+        return availableAirports;
+    }
+
     public (Airplane, Airport, Airport) GetHopToEmptyAirport()
     {
-        int travellers = TravellersToAirport.Values.Sum();
 
-        if (travellers > 0)
-            return (null, null, null);
 
-        Airport emptyAirport = GetNotEmptyAirport();
+        Airport notEmptyAirport = GetNotEmptyAirport();
 
-        if (emptyAirport == null)
+        if (notEmptyAirport == null)
         {
             return (null, null, null);
         }
 
-        (Airplane objAirplane, Airport nextHop) = FindHopForTravellersToAirport(emptyAirport);
+        (Airplane objAirplane, Airport nextHop) = FindHopForTravellersToAirport(notEmptyAirport);
 
-        return (objAirplane, nextHop, emptyAirport);
+
+
+        if (objAirplane is null)
+        {
+            return (null, null, null);
+        }
+
+        int travellers = 0;
+        List<Airport> availableAirports = GetReachableAirportsForAirplane(objAirplane);
+
+        foreach (Airport airport in availableAirports)
+        {
+            travellers += TravellersToAirport[airport];
+        }
+
+        if (travellers > 0)
+            return (null, null, null);
+        
+
+        return (objAirplane, nextHop, notEmptyAirport);
     }
 
     public void HandleTakeOff(object sender, EventArgs e)
@@ -271,7 +304,14 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
         // For all travellers in origin airport, assign each group of travellers an airplane
         List<Airport> origKeys = new List<Airport>(TravellersToAirport.Keys);
 
-        Queue<Airport> airportQueue = new Queue<Airport>(_info.savedAirports.Values.ToList());
+        //Queue<Airport> airportQueue = new Queue<Airport>(_info.savedAirports.Values.ToList());
+
+        PriorityQueue<Airport> airportQueue = new PriorityQueue<Airport>();
+
+        foreach(Airport airport in TravellersToAirport.Keys)
+        {
+            airportQueue.Enqueue(airport, -TravellersToAirport[airport]);
+        }
 
         List<Airplane> airplaneInFlight = new List<Airplane>();
 

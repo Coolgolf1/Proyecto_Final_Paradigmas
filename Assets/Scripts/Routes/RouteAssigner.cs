@@ -24,7 +24,7 @@ public static class RouteAssigner
 
         foreach (Airplane airplane in start.Hangar)
         {
-            double distance = Auxiliary.GetDistanceBetweenAirports(origin, edge.To);
+            double distance = Auxiliary.GetDirectDistanceBetweenAirports(origin, edge.To);
 
             if (distance > airplane.Range)
                 continue;
@@ -53,16 +53,16 @@ public static class RouteAssigner
                 }
                 else
                 {
-                    tempDistance = flight.Route.Distance + Auxiliary.GetDistanceBetweenAirports(airportDest, end);
+                    tempDistance = flight.Route.Distance + Auxiliary.GetDirectDistanceBetweenAirports(airportDest, end);
                 }
             }
             // 2. Flight not yet created
             else
             {
-                tempDistance = Auxiliary.GetDistanceBetweenAirports(origin, end);
+                tempDistance = Auxiliary.GetDirectDistanceBetweenAirports(origin, end);
             }
 
-            if (tempDistance > Auxiliary.GetDistanceBetweenAirports(origin, end))
+            if (tempDistance > Auxiliary.GetDirectDistanceBetweenAirports(origin, end))
                 continue;
 
             // Choose best airplane with distance
@@ -82,7 +82,6 @@ public static class RouteAssigner
     }
 
     public static (Airplane, List<Airport>) Dijkstra(
-          Dictionary<Airport, List<Edge>> graph,
           Airport start,
           Airport end, bool getFullPath = false)
     {
@@ -91,8 +90,9 @@ public static class RouteAssigner
         PriorityQueue<Airport> queue = new PriorityQueue<Airport>();
         Dictionary<Airport, Airplane> airplaneUsed = new Dictionary<Airport, Airplane>();
 
+        
         // Initialize
-        foreach (Airport node in graph.Keys)
+        foreach (Airport node in DijkstraGraph.graph.Keys)
         {
             distanceFromStart[node] = double.PositiveInfinity;
         }
@@ -110,7 +110,7 @@ public static class RouteAssigner
             if (current == end)
                 break;
 
-            if (!graph.ContainsKey(current))
+            if (!DijkstraGraph.graph.ContainsKey(current))
                 continue;
 
             if (processed.Contains(current))
@@ -118,7 +118,7 @@ public static class RouteAssigner
 
             processed.Add(current);
 
-            foreach (Edge edge in graph[current])
+            foreach (Edge edge in DijkstraGraph.graph[current])
             {
                 (Airplane airplane, double cost) = GetFastestAirplaneAndTime(current, edge, start, end);
 

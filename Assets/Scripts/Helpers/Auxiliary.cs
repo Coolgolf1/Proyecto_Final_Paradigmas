@@ -10,7 +10,7 @@ internal static class Auxiliary
 
     private static InfoSingleton _info = InfoSingleton.GetInstance();
 
-    public static double GetDistanceBetweenAirports(Airport airport1, Airport airport2)
+    public static double GetDirectDistanceBetweenAirports(Airport airport1, Airport airport2)
     {
 
         if (airport1 == airport2)
@@ -46,6 +46,11 @@ internal static class Auxiliary
 
     }
 
+    //public static double GetDistanceBetweenAirports(Airport airport1, Airport airport2)
+    //{
+
+    //}
+
     public static Dictionary<string, double> GetDistancesFromCSV()
     {
 
@@ -76,7 +81,7 @@ internal static class Auxiliary
         {
             Route route = routes[routeName];
 
-            route.SetDistance(GetDistanceBetweenAirports(route.Airport1, route.Airport2));
+            route.SetDistance(GetDirectDistanceBetweenAirports(route.Airport1, route.Airport2));
 
         }
     }
