@@ -22,7 +22,7 @@ public static class FlightLauncher
         // For all travellers in origin airport, assign each of the travellers an airplane
         Queue<Airport> airportQueue = new Queue<Airport>(destinations);
 
-        
+
 
         List<Airplane> airplaneInFlight = new List<Airplane>();
 
@@ -31,22 +31,22 @@ public static class FlightLauncher
             Airport origAirport = airportQueue.Dequeue();
 
 
-            (Airplane emptyAirplane, Airport emptyHop, Airport emptyAirport) = origAirport.GetHopToEmptyAirport();
+            //(Airplane emptyAirplane, Airport emptyHop, Airport emptyAirport) = origAirport.GetHopToEmptyAirport();
 
-            if (emptyAirplane is not null && emptyHop is not null)
-            {
-                Flight emptyFlight;
+            //if (emptyAirplane is not null && emptyHop is not null)
+            //{
+            //    Flight emptyFlight;
 
-                GameObject flightGO = new GameObject();
-                flightGO.name = $"{origAirport.Name}-{emptyHop.Name}";
-                emptyFlight = flightGO.AddComponent<Flight>();
-                emptyFlight.Initialise(origAirport, emptyHop, _info.savedRoutes[$"{origAirport.Name}-{emptyHop.Name}"], emptyAirplane);
-                _info.flights.Add(emptyFlight);
-                emptyFlight.StartFlight();
+            //    GameObject flightGO = new GameObject();
+            //    flightGO.name = $"{origAirport.Name}-{emptyHop.Name}";
+            //    emptyFlight = flightGO.AddComponent<Flight>();
+            //    emptyFlight.Initialise(origAirport, emptyHop, _info.savedRoutes[$"{origAirport.Name}-{emptyHop.Name}"], emptyAirplane);
+            //    _info.flights.Add(emptyFlight);
+            //    emptyFlight.StartFlight();
 
-                _info.airplanesGoingFromEmptyAirport[emptyAirport].Add(emptyAirplane);
-                return;
-            }
+            //    _info.airplanesGoingFromEmptyAirport[emptyAirport].Add(emptyAirplane);
+            //    return;
+            //}
 
             PriorityQueue<Airport> airportDestinationQueue = new PriorityQueue<Airport>();
 
@@ -118,6 +118,6 @@ public static class FlightLauncher
         {
             tempFlight.StartFlight();
         }
-        
+
     }
 }
