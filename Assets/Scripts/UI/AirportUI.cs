@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,6 +10,7 @@ public class AirportUI : MonoBehaviour
     [SerializeField] private TMP_Text airportName;
     [SerializeField] private TMP_Text passengers;
     [SerializeField] private Button closeButton;
+    [SerializeField] private TMP_Text numAirplanes;
 
     private InfoSingleton _info = InfoSingleton.GetInstance();
 
@@ -18,6 +20,7 @@ public class AirportUI : MonoBehaviour
         airportID = GameObject.Find("AirportID").GetComponent<TMP_Text>();
         airportName = GameObject.Find("CityName").GetComponent<TMP_Text>();
         passengers = GameObject.Find("AirportClientList").GetComponent<TMP_Text>();
+        numAirplanes = GameObject.Find("NumAirplanes").GetComponent<TMP_Text>();
         closeButton = GameObject.Find("CloseAirportUI").GetComponent<Button>();
         closeButton.onClick.AddListener(CloseUI);
         gameObject.SetActive(false);
@@ -62,5 +65,7 @@ public class AirportUI : MonoBehaviour
         passengersText += $"\n- En Destino Final: {airport.ReceivedTravellers} pasajeros\n";
 
         passengers.text = passengersText;
+
+        numAirplanes.text = $"Number of airplanes: {airport.Hangar.Count}";
     }
 }

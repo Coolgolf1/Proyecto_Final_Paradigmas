@@ -12,6 +12,9 @@ public class HangarUI : MonoBehaviour
     //[SerializeField] private TMP_Dropdown dropdown;
     [SerializeField] private Button buttonBack;
     [SerializeField] private TMP_Text airplaneID;
+    [SerializeField] private TMP_Text airplaneStats;
+    [SerializeField] private Button buttonUpgrade;
+    [SerializeField] private TMP_Text upgradeText;
     private InfoSingleton _info;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -23,6 +26,12 @@ public class HangarUI : MonoBehaviour
         GameObject airplaneGO = Instantiate(_info.airplaneToHangar.gameObject, new Vector3(0,0,0), new Quaternion(0, 0.306609124f, 0, 0.951835513f));
         airplaneGO.GetComponentInChildren<TrailRenderer>().enabled = false;
         SetLayerRecursively(airplaneGO, "HangarObjects");
+
+        buttonUpgrade.onClick.AddListener(UpgradePlane);
+
+        airplaneStats.text = $"- Speed: {_info.airplaneToHangar.Speed} km/h\n- Capacity: {_info.airplaneToHangar.Capacity} pass.\n- Range: {_info.airplaneToHangar.Range} km";
+        
+
         var escena = SceneManager.GetSceneByName("Hangar");
         SceneManager.MoveGameObjectToScene(airplaneGO, escena);
     }
@@ -41,5 +50,10 @@ public class HangarUI : MonoBehaviour
         {
             SetLayerRecursively(child.gameObject, layerName);
         }
+    }
+
+    void UpgradePlane()
+    {
+
     }
 }
