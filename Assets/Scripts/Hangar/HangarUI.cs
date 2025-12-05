@@ -10,30 +10,73 @@ using UnityEngine.UI;
 public class HangarUI : MonoBehaviour
 {
     //[SerializeField] private TMP_Dropdown dropdown;
+    
     [SerializeField] private Button buttonBack;
     [SerializeField] private TMP_Text airplaneID;
-    [SerializeField] private TMP_Text airplaneStats;
     [SerializeField] private Button buttonUpgrade;
     [SerializeField] private TMP_Text upgradeText;
+    [SerializeField] private TMP_Text airplaneSpeed;
+    [SerializeField] private TMP_Text speedUpgrade;
+    [SerializeField] private TMP_Text airplaneRange;
+    [SerializeField] private TMP_Text airplaneCapacity;
     private InfoSingleton _info;
+
+    private EconomyManager _economy = EconomyManager.GetInstance();
+
+    private int _upgradeQuantity;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+
         _info = InfoSingleton.GetInstance();
         airplaneID.text = _info.airplaneToHangar.TailNumber;
         buttonBack.onClick.AddListener(_info.GoToSpace);
-        GameObject airplaneGO = Instantiate(_info.airplaneToHangar.gameObject, new Vector3(0,0,0), new Quaternion(0, 0.306609124f, 0, 0.951835513f));
+        GameObject airplaneGO = Instantiate(_info.airplaneToHangar.gameObject, new Vector3(0, 0, 0), new Quaternion(0, 0.306609124f, 0, 0.951835513f));
         airplaneGO.GetComponentInChildren<TrailRenderer>().enabled = false;
         SetLayerRecursively(airplaneGO, "HangarObjects");
 
         buttonUpgrade.onClick.AddListener(UpgradePlane);
-
-        airplaneStats.text = $"- Speed: {_info.airplaneToHangar.Speed} km/h\n- Capacity: {_info.airplaneToHangar.Capacity} pass.\n- Range: {_info.airplaneToHangar.Range} km";
-        
+        UpdateInfo();
 
         var escena = SceneManager.GetSceneByName("Hangar");
         SceneManager.MoveGameObjectToScene(airplaneGO, escena);
+    }
+
+    private void UpdateInfo()
+    {
+        
+        airplaneSpeed.text = $"{(int)(_info.airplaneToHangar.Speed * 5)} km/h";
+        airplaneCapacity.text = $"{_info.airplaneToHangar.Capacity}";
+        airplaneRange.text = $"{_info.airplaneToHangar.Range} km";
+
+        _upgradeQuantity = (int)(_info.airplaneToHangar.Speed * 5 * 0.15);
+
+        Image buttonImage = buttonUpgrade.GetComponent<Image>();
+        if (_economy.GetBalance() > _upgradeQuantity * 100)
+        {
+            buttonImage.color = new Color(57, 205, 77);
+            buttonUpgrade.interactable = true;
+        }
+        else
+        {
+            buttonImage.color = new Color(166, 166, 166);
+            buttonUpgrade.interactable = false;
+        }
+
+
+        if (_info.airplaneToHangar.Level != Levels.Elite)
+        {
+            speedUpgrade.text = $"+{_upgradeQuantity}";
+            upgradeText.text = $"{_upgradeQuantity * 100} coins";
+        }
+        else
+        {
+            speedUpgrade.text = "";
+            upgradeText.text = "Can't upgrade";
+            buttonImage.color = new Color(166, 166, 166);
+            buttonUpgrade.interactable = false;
+        }
+            
     }
 
     // Update is called once per frame
@@ -54,6 +97,15 @@ public class HangarUI : MonoBehaviour
 
     void UpgradePlane()
     {
+        if (_info.airplaneToHangar.Level != Levels.Elite)
+        {
+            if (_economy.SubtractCoins(_upgradeQuantity * 100))
+            {
+                _info.airplaneToHangar.Speed += _upgradeQuantity / 5;
+                _info.airplaneToHangar.Upgrade();
+                UpdateInfo();
 
+            }
+        }
     }
 }

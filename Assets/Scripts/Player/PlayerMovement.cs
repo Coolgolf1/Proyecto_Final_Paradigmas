@@ -19,6 +19,7 @@ public abstract class PlayerMovement : MonoBehaviour
 
 
     protected bool _enabled = false;
+    protected InfoSingleton _info = InfoSingleton.GetInstance();
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     public void Awake()

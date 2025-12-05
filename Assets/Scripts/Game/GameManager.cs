@@ -15,6 +15,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private FlightUI flightUI;
     [SerializeField] private Camera playerCamera;
     [SerializeField] private AirplaneSpawner airplaneSpawner;
+    
 
     private InfoSingleton _info = InfoSingleton.GetInstance();
     private AirplaneFactory _airplaneFactory = AirplaneFactory.GetInstance();
@@ -26,6 +27,7 @@ public class GameManager : MonoBehaviour
     {
         new GameObject("Init");
         _info.DistanceAirports = Auxiliary.GetDistancesFromCSV();
+        _info.earth = earth;
 
         // Define UI and Camera Objects
         _info.airportUI = airportUI;

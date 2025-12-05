@@ -34,9 +34,19 @@ public class EconomyManager
         MoneyChange?.Invoke(this, EventArgs.Empty);
     }
 
-    public void SubtractCoins(int money)
+    public bool SubtractCoins(int money)
     {
+       if (Player.Money < money)
+        {
+            return false;
+        }
         Player.Money -= money;
         MoneyChange?.Invoke(this, EventArgs.Empty);
+        return true;
+    }
+
+    public int GetBalance()
+    {
+        return Player.Money;
     }
 }

@@ -2,6 +2,7 @@ using System.Reflection;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UIElements;
 
 public class SpaceCamera : PlayerMovement
 {
@@ -14,6 +15,8 @@ public class SpaceCamera : PlayerMovement
     private float targetZoom = 0;
     private float previousZoom = 0;
     private float actualZoom = 0;
+
+    private Airplane followingAirplane;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     //public void Start()
     //{
@@ -28,6 +31,11 @@ public class SpaceCamera : PlayerMovement
         if (_enabled)
         {
             SmoothZoom();
+        }
+
+        if (followingAirplane is not null)
+        {
+            FollowAirplane();
         }
     }
 
@@ -48,5 +56,39 @@ public class SpaceCamera : PlayerMovement
         transform.position += transform.forward * (actualZoom - previousZoom);
 
         previousZoom = actualZoom;
+    }
+
+    public void SetAirplane(Airplane airplane)
+    {
+        followingAirplane = airplane;
+    }
+
+    private void FollowAirplane()
+    {
+        if (drag.IsPressed())
+        {
+            followingAirplane = null;
+            return;
+        }
+
+
+        Vector3 centroTierra = _info.earth.transform.position;
+
+        // Posición del avión
+        Vector3 posicionAvion = followingAirplane.transform.position;
+
+        // Vector desde la tierra hacia el avión
+        Vector3 direccion = (posicionAvion - centroTierra).normalized;
+
+        // Distancia deseada de la cámara respecto al avión (puedes ajustar este valor)
+        float distanciaSobreAvion = 20f;
+
+        // Nueva posición de la cámara: sobre el avión, en la misma dirección que el centro de la tierra
+        Vector3 posicionCamara = posicionAvion + direccion * distanciaSobreAvion;
+
+        // Sitúa la cámara en la posición calculada
+        transform.position = posicionCamara;
+
+        transform.LookAt(_info.earth.transform.position);
     }
 }

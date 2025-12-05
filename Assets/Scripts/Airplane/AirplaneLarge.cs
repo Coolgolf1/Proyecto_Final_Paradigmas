@@ -1,3 +1,5 @@
+using UnityEngine;
+
 public class AirplaneLarge : Airplane
 {
     public override void Awake()
@@ -8,6 +10,7 @@ public class AirplaneLarge : Airplane
         Speed *= 4.7;
         Capacity = 300;
         Price = 50000;
+        
     }
 
     public override void SetTailNumber()

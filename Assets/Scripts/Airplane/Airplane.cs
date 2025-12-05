@@ -11,7 +11,7 @@ public abstract class Airplane : MonoBehaviour, IUpgradable, IObject
 
     public double Range { get; protected set; }
     public int Capacity { get; protected set; }
-    public double Speed { get; protected set; } = GameConstants.relativeSpeed * GameConstants.speedMultiplier;
+    public double Speed = GameConstants.relativeSpeed * GameConstants.speedMultiplier;
     public Levels Level { get; protected set; }
     public int Price { get; protected set; }
 
@@ -62,6 +62,7 @@ public abstract class Airplane : MonoBehaviour, IUpgradable, IObject
     {
         if (Level < Levels.Elite)
             Level++;
+        
     }
 
     private void OnClickAirplane(InputAction.CallbackContext ctx)
@@ -79,6 +80,10 @@ public abstract class Airplane : MonoBehaviour, IUpgradable, IObject
                 Flight flight = _info.GetFlightOfAirplane(this);
                 _info.flightUI.ShowFlight(flight);
                 _info.GetRouteOfAirplane(this).LitRoute();
+                if (_info.playerCamera.GetComponent<PlayerMovement>() is SpaceCamera camera)
+                {
+                    camera.SetAirplane(this);
+                }
             }
         }
     }

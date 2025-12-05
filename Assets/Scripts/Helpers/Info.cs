@@ -86,6 +86,7 @@ public class InfoSingleton
     public AirportUI airportUI;
     public FlightUI flightUI;
     public Camera playerCamera;
+    public GameObject earth;
 
     public Airplane airplaneToHangar;
 
