@@ -215,7 +215,7 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
         return availableAirports;
     }
 
-    public (Airplane, Airport, Airport) GetHopToEmptyAirport(Airplane airplane)
+    public (Airplane, Airport, Airport) GetHopFromEmptyAirport(Airplane airplane)
     {
         Airport notEmptyAirport = GetNotEmptyAirportForAirplane(airplane);
 
@@ -225,8 +225,6 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
         }
 
         (Airplane objAirplane, Airport nextHop) = FindHopForTravellersToAirport(notEmptyAirport);
-
-
 
         if (objAirplane is null)
         {
@@ -275,15 +273,17 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
         Dictionary<Airport, int> airportsGoing = new Dictionary<Airport, int>();
 
         // FIX THIS LOGIC =========================================================================================
-
+        List<Airplane> airplanesInHangar = new List<Airplane>();
         foreach (Airport airport in _info.savedAirports.Values)
         {
             airportsGoing.Add(airport, 0);
+
+            airplanesInHangar.Concat(airport.Hangar);
         }
 
-        foreach (Airplane airplane in Hangar)
+        foreach (Airplane airplane in airplanesInHangar)
         {
-            (Airplane emptyAirplane, Airport emptyHop, Airport emptyAirport) = GetHopToEmptyAirport(airplane);
+            (Airplane emptyAirplane, Airport emptyHop, Airport emptyAirport) = GetHopFromEmptyAirport(airplane);
 
             if (emptyAirplane is not null && emptyHop is not null)
             {
