@@ -378,7 +378,7 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
         }
 
         // If origin airport has no travellers, take any airplane to another airport with passengers
-        //FlightLauncher.LaunchFlights();
+        FlightLauncher.LaunchEmptyFlights();
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created

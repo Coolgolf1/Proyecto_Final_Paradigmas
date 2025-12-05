@@ -100,7 +100,7 @@ public class AirplaneStore : MonoBehaviour
         BuyMessageSuccess("small", airportName);
 
         // Launch flight
-        FlightLauncher.LaunchFlights();
+        FlightLauncher.LaunchNewFlights();
     }
 
     public void mediumAirplaneBought()
@@ -149,7 +149,7 @@ public class AirplaneStore : MonoBehaviour
         BuyMessageSuccess("medium", airportName);
 
         // Launch flight
-        FlightLauncher.LaunchFlights();
+        FlightLauncher.LaunchNewFlights();
     }
     public void largeAirplaneBought()
     {
@@ -197,7 +197,7 @@ public class AirplaneStore : MonoBehaviour
         BuyMessageSuccess("large", airportName);
 
         // Launch flight
-        FlightLauncher.LaunchFlights();
+        FlightLauncher.LaunchNewFlights();
     }
 
     public void LoadStore()

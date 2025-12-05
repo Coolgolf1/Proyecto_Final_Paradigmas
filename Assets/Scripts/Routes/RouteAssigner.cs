@@ -83,7 +83,7 @@ public static class RouteAssigner
 
     public static (Airplane, List<Airport>) Dijkstra(
           Airport start,
-          Airport end, bool getFullPath = false)
+          Airport end)
     {
         Dictionary<Airport, double> distanceFromStart = new Dictionary<Airport, double>();
         Dictionary<Airport, Airport> previous = new Dictionary<Airport, Airport>();
