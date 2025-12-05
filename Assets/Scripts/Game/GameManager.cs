@@ -104,28 +104,30 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            // Create Airplanes with Factory
-            Airplane airplane = (Airplane)_airplaneFactory.Build(AirplaneTypes.Large, earth.transform);
-            _info.airplanes.Add(airplane);
+            //// Create Airplanes with Factory
+            //Airplane airplane = (Airplane)_airplaneFactory.Build(AirplaneTypes.Large, earth.transform);
+            //_info.airplanes.Add(airplane);
 
-            Airplane airplane2 = (Airplane)_airplaneFactory.Build(AirplaneTypes.Large, earth.transform);
-            _info.airplanes.Add(airplane2);
+            //Airplane airplane2 = (Airplane)_airplaneFactory.Build(AirplaneTypes.Large, earth.transform);
+            //_info.airplanes.Add(airplane2);
 
-            Airplane airplane3 = (Airplane)_airplaneFactory.Build(AirplaneTypes.Large, earth.transform);
-            _info.airplanes.Add(airplane3);
+            //Airplane airplane3 = (Airplane)_airplaneFactory.Build(AirplaneTypes.Large, earth.transform);
+            //_info.airplanes.Add(airplane3);
 
-            Airplane airplane4 = (Airplane)_airplaneFactory.Build(AirplaneTypes.Large, earth.transform);
-            _info.airplanes.Add(airplane4);
+            //Airplane airplane4 = (Airplane)_airplaneFactory.Build(AirplaneTypes.Large, earth.transform);
+            //_info.airplanes.Add(airplane4);
 
-            _info.savedAirports["Madrid"].Hangar.Add(airplane);
-            _info.savedAirports["Dubai"].Hangar.Add(airplane2);
-            _info.savedAirports["Madrid"].Hangar.Add(airplane3);
-            _info.savedAirports["Shanghai"].Hangar.Add(airplane4);
+            //_info.savedAirports["Madrid"].Hangar.Add(airplane);
+            //_info.savedAirports["Dubai"].Hangar.Add(airplane2);
+            //_info.savedAirports["Madrid"].Hangar.Add(airplane3);
+            //_info.savedAirports["Shanghai"].Hangar.Add(airplane4);
 
         }
 
         // Init travellers in each airport
         Auxiliary.InitTravellersInAirports();
+
+        _info.savedAirports["Sao Paulo"].TravellersToAirport[_info.savedAirports["Lima"]] = 500;
 
         // Load the real distances from dataset
         Auxiliary.LoadRouteDistances(_info.savedRoutes);

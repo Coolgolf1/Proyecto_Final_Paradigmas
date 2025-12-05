@@ -164,8 +164,8 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
                 continue;
 
             // Check airport doesn't have any airplanes in hangar
-            if (airport.Hangar.Count > 0)
-                continue;
+            //if (airport.Hangar.Count > 0)
+            //    continue;
 
             // If a plane is already going there and its capacity is enough, no need to take plane
             bool airplaneGoing = false;
@@ -268,30 +268,14 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
         }
     }
 
-    public Dictionary<Airplane, Flight> SaveEmptyAirportFlights(Dictionary<Airplane, Flight> createdFlights)
+    public Dictionary<Airplane, Flight> SaveNotEmptyAirportFlights(Dictionary<Airplane, Flight> createdFlights)
     {
-        Dictionary<Airport, int> airportsGoing = new Dictionary<Airport, int>();
-
-        // FIX THIS LOGIC =========================================================================================
-        List<Airplane> airplanesInHangar = new List<Airplane>();
-        foreach (Airport airport in _info.savedAirports.Values)
-        {
-            airportsGoing.Add(airport, 0);
-
-            airplanesInHangar.Concat(airport.Hangar);
-        }
-
-        foreach (Airplane airplane in airplanesInHangar)
+        foreach (Airplane airplane in Hangar)
         {
             (Airplane emptyAirplane, Airport emptyHop, Airport emptyAirport) = GetHopFromEmptyAirport(airplane);
 
             if (emptyAirplane is not null && emptyHop is not null)
             {
-                if (airportsGoing[emptyHop] * airplane.Capacity > TravellersToAirport[emptyHop])
-                    continue;
-
-                Debug.Log($"HELLO, I'm {airplane}, {airportsGoing[emptyHop] * airplane.Capacity}");
-
                 Flight emptyFlight;
 
                 GameObject flightGO = new GameObject();
@@ -302,8 +286,6 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
                 createdFlights[emptyAirplane] = emptyFlight;
 
                 _info.airplanesGoingFromEmptyAirport[emptyAirport].Add(emptyAirplane);
-
-                airportsGoing[emptyHop] += 1;
             }
         }
 
@@ -321,9 +303,6 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
 
         Dictionary<Airplane, Flight> createdFlights = new Dictionary<Airplane, Flight>();
 
-        // If origin airport has no travellers, take any airplane to another airport with passengers
-        createdFlights = SaveEmptyAirportFlights(createdFlights);
-
         // For all travellers in origin airport, assign each group of travellers an airplane
         List<Airport> origKeys = new List<Airport>(TravellersToAirport.Keys);
 
@@ -331,10 +310,11 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
 
         foreach (Airport airport in TravellersToAirport.Keys)
         {
+            // Min priority queue, so negative number
             airportQueue.Enqueue(airport, -TravellersToAirport[airport]);
         }
 
-        List<Airplane> airplaneInFlight = new List<Airplane>();
+        List<Airplane> airplanesInFlight = new List<Airplane>();
 
         while (airportQueue.Count > 0)
         {
@@ -360,7 +340,7 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
 
                 if (usedThisIteration.Contains(objAirplane))
                 {
-                    break; // or: try to pick another plane
+                    break;
                 }
                 usedThisIteration.Add(objAirplane);
 
@@ -368,7 +348,7 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
                 {
                     newFlight = createdFlights[objAirplane];
                 }
-                else if (airplaneInFlight.Contains(objAirplane))
+                else if (airplanesInFlight.Contains(objAirplane))
                     continue;
                 else
                 {
@@ -380,7 +360,7 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
                     _info.flights.Add(newFlight);
                     createdFlights[objAirplane] = newFlight;
 
-                    airplaneInFlight.Add(objAirplane);
+                    airplanesInFlight.Add(objAirplane);
                 }
 
                 newFlight.Embark(TravellersToAirport[airport], airport);
@@ -397,6 +377,7 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
             tempFlight.StartFlight();
         }
 
+        // If origin airport has no travellers, take any airplane to another airport with passengers
         //FlightLauncher.LaunchFlights();
     }
 
