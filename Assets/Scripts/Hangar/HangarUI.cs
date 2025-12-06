@@ -72,7 +72,7 @@ public class HangarUI : MonoBehaviour
         else
         {
             speedUpgrade.text = "";
-            upgradeText.text = "Can't upgrade";
+            upgradeText.text = "Max Level";
             buttonImage.color = new Color(166, 166, 166);
             buttonUpgrade.interactable = false;
         }

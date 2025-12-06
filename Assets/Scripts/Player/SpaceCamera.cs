@@ -17,6 +17,7 @@ public class SpaceCamera : PlayerMovement
     private float actualZoom = 0;
 
     private Airplane followingAirplane;
+    private bool _arrived;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     //public void Start()
     //{
@@ -36,6 +37,10 @@ public class SpaceCamera : PlayerMovement
         if (followingAirplane is not null)
         {
             FollowAirplane();
+        }
+        else
+        {
+            _arrived = false;
         }
     }
 
@@ -72,23 +77,32 @@ public class SpaceCamera : PlayerMovement
         }
 
 
-        Vector3 centroTierra = _info.earth.transform.position;
+        Vector3 earthCenter = _info.earth.transform.position;
 
-        // Posición del avión
-        Vector3 posicionAvion = followingAirplane.transform.position;
+        Vector3 airplanePos = followingAirplane.transform.position;
 
-        // Vector desde la tierra hacia el avión
-        Vector3 direccion = (posicionAvion - centroTierra).normalized;
+        Vector3 direction = (airplanePos - earthCenter).normalized;
+        float distanceOver = 15f;
 
-        // Distancia deseada de la cámara respecto al avión (puedes ajustar este valor)
-        float distanciaSobreAvion = 20f;
+        Vector3 objPosition = airplanePos + direction * distanceOver;
 
-        // Nueva posición de la cámara: sobre el avión, en la misma dirección que el centro de la tierra
-        Vector3 posicionCamara = posicionAvion + direccion * distanciaSobreAvion;
+        if (!_arrived)
+        {
+            transform.position = Vector3.Slerp(transform.position, objPosition, Time.fixedDeltaTime);
+            //Quaternion finalRotation = Quaternion.LookRotation(direction, Vector3.up);
+            //transform.rotation = Quaternion.Lerp(transform.rotation, finalRotation, 3 * Time.deltaTime);
 
-        // Sitúa la cámara en la posición calculada
-        transform.position = posicionCamara;
+            // If not close enough to initial view
+            if ((objPosition - transform.position).magnitude < 0.5)
+                _arrived = true;
 
+        }
+
+        else
+        {
+            transform.position = objPosition;
+            
+        }
         transform.LookAt(_info.earth.transform.position);
     }
 }

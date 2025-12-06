@@ -10,6 +10,7 @@ public class FlightUI : MonoBehaviour
     [SerializeField] private TMP_Text passengers;
     [SerializeField] private Button closeButton;
     [SerializeField] private Button upgradePlane;
+    [SerializeField] private Button viewPlane;
     private Airplane _linkedAirplane;
     private InfoSingleton _info = InfoSingleton.GetInstance();
 
@@ -22,6 +23,7 @@ public class FlightUI : MonoBehaviour
         //closeButton = GameObject.Find("CloseFlightUI").GetComponent<Button>();
         closeButton.onClick.AddListener(CloseUI);
         upgradePlane.onClick.AddListener(OnUpgrade);
+        viewPlane.onClick.AddListener(OnView);
         gameObject.SetActive(false);
     }
 
@@ -36,6 +38,15 @@ public class FlightUI : MonoBehaviour
         {
             CloseUI();
             _info.GoToHangar(_linkedAirplane);
+        }
+    }
+
+    private void OnView()
+    {
+        if (_info.playerCamera.GetComponent<PlayerMovement>() is SpaceCamera camera)
+        {
+            camera.SetAirplane(_linkedAirplane);
+            CloseUI();
         }
     }
 

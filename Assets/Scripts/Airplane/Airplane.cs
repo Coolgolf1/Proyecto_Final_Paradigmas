@@ -80,10 +80,7 @@ public abstract class Airplane : MonoBehaviour, IUpgradable, IObject
                 Flight flight = _info.GetFlightOfAirplane(this);
                 _info.flightUI.ShowFlight(flight);
                 _info.GetRouteOfAirplane(this).LitRoute();
-                if (_info.playerCamera.GetComponent<PlayerMovement>() is SpaceCamera camera)
-                {
-                    camera.SetAirplane(this);
-                }
+                
             }
         }
     }
