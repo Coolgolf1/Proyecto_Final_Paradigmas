@@ -59,11 +59,11 @@ public static class FlightLauncher
                             break;
                         }
 
-                        if (usedThisIteration.Contains(objAirplane))
-                        {
-                            break; // no more airplanes left
-                        }
-                        usedThisIteration.Add(objAirplane);
+                        //if (usedThisIteration.Contains(objAirplane))
+                        //{
+                        //    break; // no more airplanes left
+                        //}
+                        //usedThisIteration.Add(objAirplane);
 
                         if (createdFlights.Keys.Contains(objAirplane))
                         {
@@ -279,6 +279,10 @@ public static class FlightLauncher
     private static Flight CreateAndRegisterFlight(Airplane airplane, Airport from, Airport to)
     {
         (Airplane _, List<Airport> path) = RouteAssigner.Dijkstra(from, to);
+        if (path is null)
+        {
+            return null;
+        }
         Airport hop = RouteAssigner.GetNextHop(path);
 
         if (hop == null) return null;

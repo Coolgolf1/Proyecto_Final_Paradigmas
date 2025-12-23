@@ -7,7 +7,7 @@ public class GameManager : MonoBehaviour
 {
     [SerializeField] private GameObject airportPrefab;
 
-    [SerializeField] private GameObject routePrefab;
+    
 
     [SerializeField] private GameObject earth;
 
@@ -15,6 +15,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private FlightUI flightUI;
     [SerializeField] private Camera playerCamera;
     [SerializeField] private AirplaneSpawner airplaneSpawner;
+    [SerializeField] private GameObject routePrefab;
     
 
     private InfoSingleton _info = InfoSingleton.GetInstance();
@@ -93,19 +94,23 @@ public class GameManager : MonoBehaviour
         // Save data of airports
         _init.SaveDataOfAirports(airportPrefab, earth.transform);
 
+        Player.UnlockedAirports = _info.savedAirports.Values.ToList();
+
         // Initialise list of empty airports once airports have loaded
         _info.InitEmptyAirportList();
 
         // Save data of routes
-        _init.SaveDataOfRoutes(routePrefab, earth.transform);
 
+        
 
         if (_mainMenuGame)
         {
             InitMainMenuAirplanes(earth.transform);
+            _init.SaveDataOfRoutes(routePrefab, earth.transform);
         }
         else
         {
+            _info.ResetRoutes();
             //// Create Airplanes with Factory
             //Airplane airplane = (Airplane)_airplaneFactory.Build(AirplaneTypes.Large, earth.transform);
             //_info.airplanes.Add(airplane);

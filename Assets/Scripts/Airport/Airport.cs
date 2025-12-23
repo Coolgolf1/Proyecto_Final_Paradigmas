@@ -366,11 +366,11 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
                 if (objAirplane is null || nextHop is null)
                     break;
 
-                if (usedThisIteration.Contains(objAirplane))
-                {
-                    break;
-                }
-                usedThisIteration.Add(objAirplane);
+                //if (usedThisIteration.Contains(objAirplane))
+                //{
+                //    break;
+                //}
+                //usedThisIteration.Add(objAirplane);
 
                 if (createdFlights.Keys.Contains(objAirplane))
                 {
