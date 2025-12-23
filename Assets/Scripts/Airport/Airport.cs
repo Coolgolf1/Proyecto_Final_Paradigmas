@@ -23,6 +23,7 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
     // Objects/Dependencies
     private InfoSingleton _info = InfoSingleton.GetInstance();
     private EconomyManager _economy = EconomyManager.GetInstance();
+    private GameMaster _gm = GameMaster.GetInstance();
 
     private InputAction _clickAction;
     private Camera _cam;
@@ -108,6 +109,21 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
                 TravellersToAirport[airport] = rand.Next(GameConstants.minTravellersCreatedInAirport, GameConstants.maxTravellersCreatedInAirport);
             }
         }
+    }
+
+    public void SpawnTravellers()
+    {
+        System.Random rand = new System.Random();
+
+        foreach (Airport airport in _info.savedAirports.Values)
+        {
+            if (airport != this)
+            {
+                TravellersToAirport[airport] = rand.Next(GameConstants.minTravellersCreatedInAirport, GameConstants.maxTravellersCreatedInAirport);
+            }
+        }
+
+        CheckMaxPassengers();
     }
 
     public (Airplane, Airport) FindHopForTravellersToAirport(Airport objectiveAirport)
@@ -209,7 +225,7 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
             {
                 availableAirports.Add(airport);
             }
-            
+
         }
 
         return availableAirports;
@@ -241,9 +257,19 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
 
         if (travellers > 0)
             return (null, null, null);
-        
+
 
         return (objAirplane, nextHop, notEmptyAirport);
+    }
+
+    public void CheckMaxPassengers()
+    {
+        int count = TravellersToAirport.Values.Sum();
+
+        if (count > GameConstants.maxTravellersInAirport)
+        {
+            _gm.ChangeState(_gm.End);
+        }
     }
 
     public void HandleTakeOff(object sender, EventArgs e)
@@ -266,6 +292,8 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
             // Give coins to user
             _economy.SaveCoins(passengers);
         }
+
+        CheckMaxPassengers();
     }
 
     public Dictionary<Airplane, Flight> SaveNotEmptyAirportFlights(Dictionary<Airplane, Flight> createdFlights)

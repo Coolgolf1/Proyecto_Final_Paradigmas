@@ -9,6 +9,4 @@ public static class GameEvents
     public static UnityEvent OnMainMenuExit = new UnityEvent();
 
     public static UnityEvent OnTransitionExit = new UnityEvent();
-
-
 }

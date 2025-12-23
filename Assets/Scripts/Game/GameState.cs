@@ -87,13 +87,11 @@ public class EndState : GameState
     public override void OnStateEnter()
     {
         // Transitioned by another state
+        UIEvents.OnEndGameEnter?.Invoke();
     }
 
     public override void OnStateExit()
-    // Catch listener (main menu or restart)
     {
-        // Go to Main Menu
-
-        // Restart game
+        UIEvents.OnEndGameExit?.Invoke();
     }
 }

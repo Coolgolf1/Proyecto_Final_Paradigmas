@@ -24,6 +24,7 @@ public class EconomyManager
         if (passengers > 0)
         {
             Player.Money += passengers;
+            Score.UpdateScore(passengers);
             MoneyChange?.Invoke(this, EventArgs.Empty);
         }
     }
@@ -36,7 +37,7 @@ public class EconomyManager
 
     public bool SubtractCoins(int money)
     {
-       if (Player.Money < money)
+        if (Player.Money < money)
         {
             return false;
         }

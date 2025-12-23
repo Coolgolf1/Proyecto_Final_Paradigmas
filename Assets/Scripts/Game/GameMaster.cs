@@ -5,6 +5,8 @@ public class GameMaster
 
     public GameState currentState;
 
+
+
     public MainMenuState MainMenu { get; private set; }
     public PlayState Play { get; private set; }
     public MainTransitionGameState Transition { get; private set; }
