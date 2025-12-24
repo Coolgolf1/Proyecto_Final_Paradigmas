@@ -99,23 +99,35 @@ public class GameManager : MonoBehaviour
         // Save data of airports
         _init.SaveDataOfAirports(airportPrefab, earth.transform);
 
-        Player.UnlockedAirports = _info.savedAirports.Values.ToList();
-
         // Initialise list of empty airports once airports have loaded
         _info.InitEmptyAirportList();
 
         // Save data of routes
-
-
-
         if (_mainMenuGame)
         {
             InitMainMenuAirplanes(earth.transform);
+
             _init.SaveDataOfRoutes(routePrefab, earth.transform);
+            foreach (Airport airport in _info.savedAirports.Values)
+            {
+                Player.UnlockAirport(airport);
+            }
         }
         else
         {
             _info.ResetRoutes();
+
+            System.Random _rand = new System.Random();
+
+            int initialAirport1 = _rand.Next(0, _info.savedAirports.Values.Count() - 1);
+
+            int initialAirport2 = _rand.Next(0, _info.savedAirports.Values.Count() - 1);
+            while (initialAirport1 == initialAirport2)
+                initialAirport2 = _rand.Next(0, _info.savedAirports.Values.Count() - 1);
+
+            Debug.Log(initialAirport1 + ", " + initialAirport2);
+            Player.UnlockAirport(_info.savedAirports.Values.ToList()[initialAirport1]);
+            Player.UnlockAirport(_info.savedAirports.Values.ToList()[initialAirport2]);
             //// Create Airplanes with Factory
             //Airplane airplane = (Airplane)_airplaneFactory.Build(AirplaneTypes.Large, earth.transform);
             //_info.airplanes.Add(airplane);
@@ -176,24 +188,20 @@ public class GameManager : MonoBehaviour
                     continue;
                 }
 
-                HashSet<Airplane> usedThisIteration = new HashSet<Airplane>();
+                HashSet<Airplane> fullAirplanes = new HashSet<Airplane>();
 
+                Debug.Log("BEFORE LOOP");
                 while (_info.savedAirports[origAirport.Name].TravellersToAirport[objAirport] > 0)
                 {
                     Flight flight;
-
+                    Debug.Log("GET FLIGHT");
                     (Airplane objAirplane, Airport nextHop) = _info.savedAirports[origAirport.Name].FindHopForTravellersToAirport(objAirport);
 
                     if (objAirplane is null || nextHop is null)
-                    {
                         break;
-                    }
 
-                    if (usedThisIteration.Contains(objAirplane))
-                    {
-                        break; // no more airplanes left
-                    }
-                    usedThisIteration.Add(objAirplane);
+                    if (fullAirplanes.Contains(objAirplane))
+                        break;
 
                     if (airportFlights[objAirport].Keys.Contains(objAirplane))
                     {
@@ -216,7 +224,11 @@ public class GameManager : MonoBehaviour
                     }
 
                     flight.Embark(_info.savedAirports[origAirport.Name].TravellersToAirport[objAirport], objAirport);
+
+                    if (flight.Full)
+                        fullAirplanes.Add(objAirplane);
                 }
+                Debug.Log("EXIT LOOP");
             }
         }
 
@@ -233,5 +245,6 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
+
     }
 }

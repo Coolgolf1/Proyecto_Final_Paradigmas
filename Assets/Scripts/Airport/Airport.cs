@@ -15,11 +15,14 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
     public Location Location { get; private set; }
     public Levels Level { get; private set; }
     public int Capacity { get; private set; } = GameConstants.maxTravellersInAirport;
+    public bool Unlocked { get; private set; } = false;
 
     // Collections
     public List<Airplane> Hangar { get; } = new List<Airplane>();
 
     public Dictionary<Airport, int> TravellersToAirport { get; } = new Dictionary<Airport, int>();
+
+    private float _unlockTime;
 
     // Objects/Dependencies
     private InfoSingleton _info = InfoSingleton.GetInstance();
@@ -28,6 +31,8 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
 
     private InputAction _clickAction;
     private Camera _cam;
+
+    private System.Random _rand = new System.Random();
 
     // Serialize Field
     [SerializeField] public GameObject modelPrefab;
@@ -42,6 +47,15 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
 
         Capacity = GameConstants.maxTravellersInAirport;
         Level = Levels.Basic;
+
+        gameObject.SetActive(false);
+    }
+
+    public void Unlock()
+    {
+        Unlocked = true;
+        _unlockTime = Time.time;
+        gameObject.SetActive(Unlocked);
     }
 
     public void Upgrade()
@@ -109,18 +123,18 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
             }
         }
 
-        System.Random rand = new System.Random();
+
 
         foreach (Airport airport in _info.savedAirports.Values)
         {
             if (airport != this)
             {
-                TravellersToAirport[airport] = rand.Next(GameConstants.minTravellersCreatedInAirport, GameConstants.maxTravellersCreatedInAirport);
+                TravellersToAirport[airport] = _rand.Next(GameConstants.minTravellersCreatedInAirport, GameConstants.maxTravellersCreatedInAirport);
             }
         }
     }
 
-    public void SpawnTravellers()
+    public void SpawnTravellers(float multiplier)
     {
         System.Random rand = new System.Random();
 
@@ -128,11 +142,9 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
         {
             if (airport != this)
             {
-                TravellersToAirport[airport] = rand.Next(GameConstants.minTravellersCreatedInAirport, GameConstants.maxTravellersCreatedInAirport);
+                TravellersToAirport[airport] = (int)(rand.Next(GameConstants.minTravellersRandom, GameConstants.maxTravellersRandom) * multiplier);
             }
         }
-
-        CheckMaxPassengers();
     }
 
     public (Airplane, Airport) FindHopForTravellersToAirport(Airport objectiveAirport)
@@ -435,5 +447,22 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
     // Update is called once per frame
     private void Update()
     {
+        if (!Unlocked)
+            return;
+
+        float current = Time.time;
+
+        int prob = _rand.Next(0, 100);
+
+        // 1% chance
+        if (prob == 0)
+        {
+            if (current - _unlockTime < 300)
+                SpawnTravellers(1);
+            else if (current - _unlockTime < 500)
+                SpawnTravellers(1.5f);
+            else
+                SpawnTravellers(2);
+        }
     }
 }

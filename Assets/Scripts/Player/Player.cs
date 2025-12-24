@@ -8,7 +8,7 @@ public static class Player
     public static int Score { get; set; } = 0;
     public static int Money { get; set; } = 0;
     public static List<Airplane> Airplanes { get; private set; }
-    public static List<Airport> UnlockedAirports { get; set; }
+    public static List<Airport> UnlockedAirports { get; set; } = new List<Airport>();
 
     private const string _scoreName = "highScore";
 
@@ -26,5 +26,11 @@ public static class Player
     {
         PlayerPrefs.SetInt(_scoreName, Score);
         PlayerPrefs.Save();
+    }
+
+    public static void UnlockAirport(Airport airport)
+    {
+        UnlockedAirports.Add(airport);
+        airport.Unlock();
     }
 }

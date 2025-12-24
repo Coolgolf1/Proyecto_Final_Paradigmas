@@ -4,8 +4,10 @@ public static class GameConstants
 {
     // Game parameters
     public const int minTravellersCreatedInAirport = 100;
-
     public const int maxTravellersCreatedInAirport = 1000;
+
+    public const int minTravellersRandom = 0;
+    public const int maxTravellersRandom = 10;
 
     public const int maxTravellersInAirport = 14000;
 
