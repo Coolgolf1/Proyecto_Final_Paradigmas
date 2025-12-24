@@ -97,8 +97,13 @@ public class RoutesUI : MonoBehaviour
 
         priceText.text = $"{_price} coins";
 
-        if (_info.savedRoutes.ContainsKey($"{a1value}-{a2value}") || _economy.GetBalance() < _price)
+        if (_economy.GetBalance() < _price)
         {
+            buyRoute.interactable = false;
+        } 
+        else if (_info.savedRoutes.ContainsKey($"{a1value}-{a2value}"))
+        {
+            priceText.text = $"Already Purchased";
             buyRoute.interactable = false;
         }
         else
@@ -149,6 +154,9 @@ public class RoutesUI : MonoBehaviour
                 Auxiliary.CalculateDijkstraGraph();
 
                 FlightLauncher.LaunchNewFlights();
+
+                priceText.text = $"Already Purchased";
+                buyRoute.interactable = false;
             }
         }
     }
