@@ -1,13 +1,11 @@
 using System;
-using System.IO;
-using System.Text;
 using UnityEngine;
 
 public static class Score
 {
     private static int _score = 0;
 
-    private static string _path = Path.Combine(Application.streamingAssetsPath, "../highscore.txt");
+    private const string _scoreName = "highScore";
 
     public static void UpdateScore(int coins)
     {
@@ -21,16 +19,12 @@ public static class Score
 
     public static int GetHighScore()
     {
-        string highScoreString = File.ReadAllText(_path);
-        int highScore = int.Parse(highScoreString);
-        return highScore;
+        return PlayerPrefs.GetInt(_scoreName);
     }
 
     public static void SaveHighScore()
     {
-        byte[] bytes = Encoding.UTF8.GetBytes(_score.ToString());
-
-        using FileStream file = new FileStream(_path, FileMode.Create, FileAccess.Write);
-        file.Write(bytes, 0, bytes.Length);
+        PlayerPrefs.SetInt(_scoreName, _score);
+        PlayerPrefs.Save();
     }
 }
