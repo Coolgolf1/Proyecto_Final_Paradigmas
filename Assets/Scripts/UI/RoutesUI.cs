@@ -33,6 +33,7 @@ public class RoutesUI : MonoBehaviour
         closeUI.onClick.AddListener(CloseStoreUI);
         gameObject.SetActive(false);
 
+        UIEvents.OnAirplaneStoreEnter.AddListener(CloseStoreUI);
     }
 
     void LoadStore()
@@ -40,6 +41,7 @@ public class RoutesUI : MonoBehaviour
 
         UpdateFirstChoice();
         UpdateSecondChoice();
+        UpdatePriceAndButton();
 
         airport2.onValueChanged.AddListener(delegate { UpdatePriceAndButton(); });
         airport1.onValueChanged.AddListener(delegate { UpdateSecondChoice(); UpdatePriceAndButton(); });
@@ -95,7 +97,7 @@ public class RoutesUI : MonoBehaviour
 
         _price = (int)Mathf.Pow((float)distance, 1.55f);
 
-        priceText.text = $"{_price} coins";
+        priceText.text = $"{_price.ToString("#,#")} coins";
 
         if (_economy.GetBalance() < _price)
         {
@@ -116,13 +118,13 @@ public class RoutesUI : MonoBehaviour
     {
         _economy.SetCoins(1000000);
         gameObject.SetActive(true);
-        UIEvents.OnStoreEnter.Invoke();
+        UIEvents.OnRouteStoreEnter.Invoke();
     }
 
     public void CloseStoreUI()
     {
         gameObject.SetActive(false);
-        UIEvents.OnStoreExit.Invoke();
+        UIEvents.OnRouteStoreExit.Invoke();
     }
 
     void BuyRoute()

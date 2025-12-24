@@ -255,6 +255,8 @@ public class AirplaneStore : MonoBehaviour
         mediumAirplaneBuy.onClick.AddListener(OpenBuyMessage);
         largeAirplaneBuy.onClick.AddListener(OpenBuyMessage);
 
+        UIEvents.OnRouteStoreEnter.AddListener(CloseStoreUI);
+
         gameObject.SetActive(false);
     }
 
@@ -262,13 +264,14 @@ public class AirplaneStore : MonoBehaviour
     {
         _economy.SetCoins(1000000);
         gameObject.SetActive(true);
-        UIEvents.OnStoreEnter.Invoke();
+
+        UIEvents.OnAirplaneStoreEnter.Invoke();
     }
 
     public void CloseStoreUI()
     {
         gameObject.SetActive(false);
-        UIEvents.OnStoreExit.Invoke();
+        UIEvents.OnAirplaneStoreExit.Invoke();
     }
 
     public void OpenBuyMessage()

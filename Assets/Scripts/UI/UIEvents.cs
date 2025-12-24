@@ -11,8 +11,11 @@ public static class UIEvents
 
     public static UnityEvent OnTransitionExit = new UnityEvent();
 
-    public static UnityEvent OnStoreEnter = new UnityEvent();
-    public static UnityEvent OnStoreExit = new UnityEvent();
+    public static UnityEvent OnAirplaneStoreEnter = new UnityEvent();
+    public static UnityEvent OnAirplaneStoreExit = new UnityEvent();
+
+    public static UnityEvent OnRouteStoreEnter = new UnityEvent();
+    public static UnityEvent OnRouteStoreExit = new UnityEvent();
 
     public static UnityEvent OnEndGameEnter = new UnityEvent();
     public static UnityEvent OnEndGameExit = new UnityEvent();

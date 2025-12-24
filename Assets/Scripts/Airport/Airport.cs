@@ -76,8 +76,10 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
         _clickAction = InputSystem.actions.FindAction("Click");
         _cam = _info.playerCamera;
         ReceivedTravellers = 0;
-        UIEvents.OnStoreEnter.AddListener(_clickAction.Disable);
-        UIEvents.OnStoreExit.AddListener(_clickAction.Enable);
+        UIEvents.OnAirplaneStoreEnter.AddListener(_clickAction.Disable);
+        UIEvents.OnAirplaneStoreExit.AddListener(_clickAction.Enable);
+        UIEvents.OnRouteStoreEnter.AddListener(_clickAction.Disable);
+        UIEvents.OnRouteStoreExit.AddListener(_clickAction.Enable);
     }
 
     private void OnEnable()

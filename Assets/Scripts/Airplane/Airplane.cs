@@ -42,8 +42,10 @@ public abstract class Airplane : MonoBehaviour, IUpgradable, IObject
         _camera = _info.playerCamera;
         UIEvents.OnMainMenuEnter.AddListener(_clickAction.Disable);
         UIEvents.OnPlayEnter.AddListener(_clickAction.Enable);
-        UIEvents.OnStoreEnter.AddListener(_clickAction.Disable);
-        UIEvents.OnStoreExit.AddListener(_clickAction.Enable);
+        UIEvents.OnAirplaneStoreEnter.AddListener(_clickAction.Disable);
+        UIEvents.OnAirplaneStoreExit.AddListener(_clickAction.Enable);
+        UIEvents.OnRouteStoreEnter.AddListener(_clickAction.Disable);
+        UIEvents.OnRouteStoreExit.AddListener(_clickAction.Enable);
     }
 
 
