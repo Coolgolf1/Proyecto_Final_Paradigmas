@@ -62,7 +62,9 @@ public abstract class Airplane : MonoBehaviour, IUpgradable, IObject
     {
         if (Level < Levels.Elite)
             Level++;
-        
+
+        Speed += (int)(Speed * 0.15);
+
     }
 
     private void OnClickAirplane(InputAction.CallbackContext ctx)
@@ -80,7 +82,7 @@ public abstract class Airplane : MonoBehaviour, IUpgradable, IObject
                 Flight flight = _info.GetFlightOfAirplane(this);
                 _info.flightUI.ShowFlight(flight);
                 _info.GetRouteOfAirplane(this).LitRoute();
-                
+
             }
         }
     }

@@ -7,7 +7,7 @@ public static class GameConstants
 
     public const int maxTravellersCreatedInAirport = 1000;
 
-    public const int maxTravellersInAirport = 50;
+    public const int maxTravellersInAirport = 14000;
 
     public static Vector3 mainMenuCameraPosition = new Vector3(27.6100006f, 36.0400009f, -28.3400002f);
     public static Quaternion mainMenuCameraRotation = new Quaternion(-0.331260532f, 0.501139224f, -0.113941371f, -0.791292191f);

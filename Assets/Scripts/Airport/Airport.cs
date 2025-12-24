@@ -14,6 +14,7 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
     public int ReceivedTravellers { get; private set; }
     public Location Location { get; private set; }
     public Levels Level { get; private set; }
+    public int Capacity { get; private set; } = GameConstants.maxTravellersInAirport;
 
     // Collections
     public List<Airplane> Hangar { get; } = new List<Airplane>();
@@ -39,6 +40,7 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
         ReceivedTravellers = 0;
         Location = location;
 
+        Capacity = GameConstants.maxTravellersInAirport;
         Level = Levels.Basic;
     }
 
@@ -46,6 +48,13 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
     {
         if (Level < Levels.Elite)
             Level++;
+
+        Capacity = GameConstants.maxTravellersInAirport + (int)Level * 3000;
+    }
+
+    public void SetCapacity(int capacity)
+    {
+        Capacity = capacity;
     }
 
     public void Awake()
@@ -266,7 +275,7 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
     {
         int count = TravellersToAirport.Values.Sum();
 
-        if (count > GameConstants.maxTravellersInAirport)
+        if (count > Capacity)
         {
             _gm.ChangeState(_gm.End);
         }
@@ -290,7 +299,7 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
             _info.totalTravellersReceived += passengers;
 
             // Give coins to user
-            _economy.SaveCoins(passengers);
+            _economy.SaveCoins(passengers, Auxiliary.GetDirectDistanceBetweenAirports(this, objAirport));
         }
     }
 

@@ -27,11 +27,4 @@ public static class Player
         PlayerPrefs.SetInt(_scoreName, Score);
         PlayerPrefs.Save();
     }
-
-    public static void Restart()
-    {
-        Score = 0;
-        Money = 0;
-        UnlockedAirports = new List<Airport>();
-    }
 }

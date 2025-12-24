@@ -98,6 +98,5 @@ public class EndState : GameState
     {
         Time.timeScale = 1;
         UIEvents.OnEndGameExit?.Invoke();
-        Player.Restart();
     }
 }

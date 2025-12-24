@@ -1,6 +1,3 @@
-using NUnit.Framework;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -10,7 +7,7 @@ using UnityEngine.UI;
 public class HangarUI : MonoBehaviour
 {
     //[SerializeField] private TMP_Dropdown dropdown;
-    
+
     [SerializeField] private Button buttonBack;
     [SerializeField] private TMP_Text airplaneID;
     [SerializeField] private Button buttonUpgrade;
@@ -29,9 +26,9 @@ public class HangarUI : MonoBehaviour
     {
 
         _info = InfoSingleton.GetInstance();
-        airplaneID.text = _info.airplaneToHangar.TailNumber;
+        airplaneID.text = _info.airplaneInHangar.TailNumber;
         buttonBack.onClick.AddListener(_info.GoToSpace);
-        GameObject airplaneGO = Instantiate(_info.airplaneToHangar.gameObject, new Vector3(0, 0, 0), new Quaternion(0, 0.306609124f, 0, 0.951835513f));
+        GameObject airplaneGO = Instantiate(_info.airplaneInHangar.gameObject, new Vector3(0, 0, 0), new Quaternion(0, 0.306609124f, 0, 0.951835513f));
         airplaneGO.GetComponentInChildren<TrailRenderer>().enabled = false;
         SetLayerRecursively(airplaneGO, "HangarObjects");
 
@@ -44,12 +41,12 @@ public class HangarUI : MonoBehaviour
 
     private void UpdateInfo()
     {
-        
-        airplaneSpeed.text = $"{(int)(_info.airplaneToHangar.Speed * 5)} km/h";
-        airplaneCapacity.text = $"{_info.airplaneToHangar.Capacity}";
-        airplaneRange.text = $"{_info.airplaneToHangar.Range} km";
 
-        _upgradeQuantity = (int)(_info.airplaneToHangar.Speed * 5 * 0.15);
+        airplaneSpeed.text = $"{(int)(_info.airplaneInHangar.Speed * 5)} km/h";
+        airplaneCapacity.text = $"{_info.airplaneInHangar.Capacity}";
+        airplaneRange.text = $"{_info.airplaneInHangar.Range} km";
+
+        _upgradeQuantity = (int)(_info.airplaneInHangar.Speed * 5 * 0.15);
 
         Image buttonImage = buttonUpgrade.GetComponent<Image>();
         if (_economy.GetBalance() > _upgradeQuantity * 100)
@@ -64,7 +61,7 @@ public class HangarUI : MonoBehaviour
         }
 
 
-        if (_info.airplaneToHangar.Level != Levels.Elite)
+        if (_info.airplaneInHangar.Level != Levels.Elite)
         {
             speedUpgrade.text = $"+{_upgradeQuantity}";
             upgradeText.text = $"{_upgradeQuantity * 100} coins";
@@ -76,13 +73,13 @@ public class HangarUI : MonoBehaviour
             buttonImage.color = new Color(166, 166, 166);
             buttonUpgrade.interactable = false;
         }
-            
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     void SetLayerRecursively(GameObject obj, string layerName)
@@ -97,12 +94,11 @@ public class HangarUI : MonoBehaviour
 
     void UpgradePlane()
     {
-        if (_info.airplaneToHangar.Level != Levels.Elite)
+        if (_info.airplaneInHangar.Level != Levels.Elite)
         {
             if (_economy.SubtractCoins(_upgradeQuantity * 100))
             {
-                _info.airplaneToHangar.Speed += _upgradeQuantity / 5;
-                _info.airplaneToHangar.Upgrade();
+                _info.airplaneInHangar.Upgrade();
                 UpdateInfo();
 
             }

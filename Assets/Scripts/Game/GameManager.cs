@@ -7,7 +7,7 @@ public class GameManager : MonoBehaviour
 {
     [SerializeField] private GameObject airportPrefab;
 
-    
+
 
     [SerializeField] private GameObject earth;
 
@@ -16,10 +16,11 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Camera playerCamera;
     [SerializeField] private AirplaneSpawner airplaneSpawner;
     [SerializeField] private GameObject routePrefab;
-    
+
 
     private InfoSingleton _info = InfoSingleton.GetInstance();
     private AirplaneFactory _airplaneFactory = AirplaneFactory.GetInstance();
+    private EconomyManager _economy = EconomyManager.GetInstance();
     private Init _init;
     private bool _mainMenuGame = false;
 
@@ -54,11 +55,13 @@ public class GameManager : MonoBehaviour
     public void StartMainMenuGame()
     {
         _mainMenuGame = true;
+        _economy.mainMenuGame = true;
     }
 
     public void StopMainMenuGame()
     {
         _mainMenuGame = false;
+        _economy.mainMenuGame = false;
     }
 
     public void ResetGame()
@@ -68,6 +71,7 @@ public class GameManager : MonoBehaviour
         _info.ResetFlights();
         _info.ResetRoutes();
         Player.Money = 0;
+        Player.Score = 0;
     }
 
     public void InitMainMenuAirplanes(Transform earthTransform)
@@ -82,6 +86,7 @@ public class GameManager : MonoBehaviour
             int a = rand.Next(_info.savedAirports.Count);
             string key = _info.savedAirports.Keys.ToList()[a];
             _info.savedAirports[key].Hangar.Add(airplane);
+            _info.savedAirports[key].SetCapacity(1000000000);
             _info.airplanes.Add(airplane);
         }
     }
@@ -101,7 +106,7 @@ public class GameManager : MonoBehaviour
 
         // Save data of routes
 
-        
+
 
         if (_mainMenuGame)
         {

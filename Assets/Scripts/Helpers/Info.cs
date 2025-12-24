@@ -88,7 +88,7 @@ public class InfoSingleton
     public Camera playerCamera;
     public GameObject earth;
 
-    public Airplane airplaneToHangar;
+    public Airplane airplaneInHangar;
 
     // Singleton
     private static InfoSingleton _instance;
@@ -238,7 +238,7 @@ public class InfoSingleton
     public void GoToHangar(Airplane airplane)
     {
         Time.timeScale = 0;
-        airplaneToHangar = airplane;
+        airplaneInHangar = airplane;
         SceneManager.LoadScene("Hangar", LoadSceneMode.Additive);
     }
 

@@ -7,6 +7,8 @@ public class EconomyManager
 
     public event EventHandler MoneyChange;
 
+    public bool mainMenuGame;
+
     public EconomyManager() { }
 
     public static EconomyManager GetInstance()
@@ -19,11 +21,14 @@ public class EconomyManager
         return _instance;
     }
 
-    public void SaveCoins(int passengers)
+    public void SaveCoins(int passengers, double distance)
     {
+        if (!mainMenuGame)
+            return;
+
         if (passengers > 0)
         {
-            Player.Money += passengers;
+            Player.Money += passengers * (int)(distance / 25);
             Player.UpdateScore(passengers);
             MoneyChange?.Invoke(this, EventArgs.Empty);
         }
