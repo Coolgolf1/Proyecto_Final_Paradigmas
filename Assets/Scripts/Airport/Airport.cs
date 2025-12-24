@@ -292,8 +292,6 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
             // Give coins to user
             _economy.SaveCoins(passengers);
         }
-
-        CheckMaxPassengers();
     }
 
     public Dictionary<Airplane, Flight> SaveNotEmptyAirportFlights(Dictionary<Airplane, Flight> createdFlights)

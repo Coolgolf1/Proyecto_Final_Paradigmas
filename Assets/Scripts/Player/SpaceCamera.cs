@@ -1,8 +1,4 @@
-using System.Reflection;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.InputSystem;
-using UnityEngine.UIElements;
 
 public class SpaceCamera : PlayerMovement
 {
@@ -11,7 +7,7 @@ public class SpaceCamera : PlayerMovement
     [SerializeField] private float moduloPower = 1.8f;
     [SerializeField] private float zoomDecay = 8f;
     [SerializeField] private float zoomSensitivity = 2500f;
-    
+
     private float targetZoom = 0;
     private float previousZoom = 0;
     private float actualZoom = 0;
@@ -19,12 +15,23 @@ public class SpaceCamera : PlayerMovement
     private Airplane followingAirplane;
     private bool _arrived;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    //public void Start()
-    //{
-        
-        
-    //}
-    
+    public void Start()
+    {
+        UIEvents.OnEndGameEnter.AddListener(StopFollowing);
+        UIEvents.OnRestartGame.AddListener(RestartGame);
+    }
+
+    public void RestartGame()
+    {
+        transform.position = GameConstants.initCameraPosition;
+        transform.rotation = GameConstants.initCameraRotation;
+    }
+
+    public void StopFollowing()
+    {
+        followingAirplane = null;
+    }
+
     // Update is called once per frame
     public override void Update()
     {
@@ -72,7 +79,7 @@ public class SpaceCamera : PlayerMovement
     {
         if (drag.IsPressed())
         {
-            followingAirplane = null;
+            StopFollowing();
             return;
         }
 
@@ -101,7 +108,7 @@ public class SpaceCamera : PlayerMovement
         else
         {
             transform.position = objPosition;
-            
+
         }
         transform.LookAt(_info.earth.transform.position);
     }

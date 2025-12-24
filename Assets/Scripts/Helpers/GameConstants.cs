@@ -9,6 +9,8 @@ public static class GameConstants
 
     public const int maxTravellersInAirport = 50;
 
+    public static Vector3 mainMenuCameraPosition = new Vector3(27.6100006f, 36.0400009f, -28.3400002f);
+    public static Quaternion mainMenuCameraRotation = new Quaternion(-0.331260532f, 0.501139224f, -0.113941371f, -0.791292191f);
     public static Vector3 initCameraPosition = new Vector3(52.46f, 1.1f, 8.75f);
     public static Quaternion initCameraRotation = new Quaternion(0f, 0.766044259f, 0f, -0.642787814f);
 

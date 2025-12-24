@@ -65,6 +65,15 @@ public class MainMenuUI : MonoBehaviour
     {
         startGame.onClick.AddListener(StartLoad);
         //earth.GetComponent<SpinFree>().enabled = true;
+        UIEvents.OnMainMenuEnter.AddListener(RestartMenu);
+    }
+
+    public void RestartMenu()
+    {
+        player.transform.position = GameConstants.mainMenuCameraPosition;
+        player.transform.rotation = GameConstants.mainMenuCameraRotation;
+        gameObject.SetActive(true);
+        ShowButtons();
     }
 
     // Update is called once per frame
@@ -84,6 +93,7 @@ public class MainMenuUI : MonoBehaviour
             player.transform.position = GameConstants.initCameraPosition;
             player.transform.rotation = GameConstants.initCameraRotation;
             _startAnimation = false;
+            HideButtons();
             gameObject.SetActive(false);
 
             // Change state to play
@@ -101,5 +111,4 @@ public class MainMenuUI : MonoBehaviour
     {
         _gameMaster.ChangeState(_gameMaster.Play);
     }
-
 }

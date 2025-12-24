@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -10,8 +9,8 @@ public abstract class PlayerMovement : MonoBehaviour
     protected InputAction zoom;
     private Vector2 velocity;
     private Vector2 moveValue;
-    
-    
+
+
     [SerializeField] private float decay = 8f;
 
     [SerializeField] private float sensitivity = 1f;
@@ -31,6 +30,8 @@ public abstract class PlayerMovement : MonoBehaviour
         UIEvents.OnPlayEnter.AddListener(EnableActions);
         UIEvents.OnStoreEnter.AddListener(DisableActions);
         UIEvents.OnStoreExit.AddListener(EnableActions);
+        UIEvents.OnEndGameEnter.AddListener(DisableActions);
+        UIEvents.OnEndGameExit.AddListener(DisableActions);
     }
 
     public void DisableActions()
@@ -62,7 +63,7 @@ public abstract class PlayerMovement : MonoBehaviour
             transform.RotateAround(Vector3.zero, transform.right, -moveValue[1] * sensitivity * zoomFactor);
 
         }
-        
+
     }
 
     private void InertiaDrag()

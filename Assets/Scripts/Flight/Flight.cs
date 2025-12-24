@@ -104,6 +104,9 @@ public class Flight : MonoBehaviour
             AirportDest.ReceivePassengers(TravellersToAirport[airport], airport);
             TravellersToAirport[airport] = 0;
         }
+
+        // When finished disembarking
+        AirportDest.CheckMaxPassengers();
     }
 
     public void EndFlight()

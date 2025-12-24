@@ -8,6 +8,7 @@ public class Sun : MonoBehaviour
     private void Start()
     {
         GameEvents.OnMainMenuExit.AddListener(ResetSun);
+        UIEvents.OnEndGameExit.AddListener(ResetSun);
     }
 
     // Update is called once per frame

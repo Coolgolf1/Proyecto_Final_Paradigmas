@@ -16,4 +16,6 @@ public static class UIEvents
 
     public static UnityEvent OnEndGameEnter = new UnityEvent();
     public static UnityEvent OnEndGameExit = new UnityEvent();
+
+    public static UnityEvent OnRestartGame = new UnityEvent();
 }

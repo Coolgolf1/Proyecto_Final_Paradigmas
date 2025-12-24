@@ -24,7 +24,7 @@ public class EconomyManager
         if (passengers > 0)
         {
             Player.Money += passengers;
-            Score.UpdateScore(passengers);
+            Player.UpdateScore(passengers);
             MoneyChange?.Invoke(this, EventArgs.Empty);
         }
     }

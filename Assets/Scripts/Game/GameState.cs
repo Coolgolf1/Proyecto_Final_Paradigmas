@@ -1,3 +1,5 @@
+using UnityEngine;
+
 public abstract class GameState
 {
     protected GameMaster _gm;
@@ -35,6 +37,7 @@ public class MainTransitionGameState : GameState
 
     public override void OnStateEnter()
     {
+        UIEvents.OnMainMenuEnter?.Invoke();
     }
 
     public override void OnStateExit()
@@ -87,11 +90,14 @@ public class EndState : GameState
     public override void OnStateEnter()
     {
         // Transitioned by another state
+        Time.timeScale = 0;
         UIEvents.OnEndGameEnter?.Invoke();
     }
 
     public override void OnStateExit()
     {
+        Time.timeScale = 1;
         UIEvents.OnEndGameExit?.Invoke();
+        Player.Restart();
     }
 }

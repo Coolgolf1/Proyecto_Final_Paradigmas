@@ -25,12 +25,12 @@ public class GameEndUI : MonoBehaviour
 
     public void ShowEndGameUI()
     {
-        int currentScore = Score.GetScore();
-        int highScore = Score.GetHighScore();
+        int currentScore = Player.Score;
+        int highScore = Player.GetHighScore();
 
         if (currentScore > highScore)
         {
-            Score.SaveHighScore();
+            Player.SaveHighScore();
         }
 
         highScoreText.text = $"High Score: {highScore}";
@@ -41,6 +41,7 @@ public class GameEndUI : MonoBehaviour
 
     public void RestartGame()
     {
+        UIEvents.OnRestartGame?.Invoke();
         _gm.ChangeState(_gm.Play);
     }
 

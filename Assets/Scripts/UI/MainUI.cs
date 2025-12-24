@@ -8,6 +8,7 @@ public class MainUI : MonoBehaviour
     private float _elapsedTime;
     [SerializeField] private TMP_Text timeCounter;
     [SerializeField] private TMP_Text dayCounter;
+    [SerializeField] private TMP_Text score;
     [SerializeField] private Button play;
     [SerializeField] private Button pause;
     [SerializeField] private Button fastForward;
@@ -71,6 +72,7 @@ public class MainUI : MonoBehaviour
             string minutes = ((Mathf.Floor(_elapsedTime / 60) + refTime.Item2) % 60).ToString("00");
             //string seconds = ((Mathf.Floor(_elapsedTime % 60) + refTime.Item3) % 60).ToString("00");
             timeCounter.text = $"{hours}:{minutes}";
+            score.text = $"Score: {Player.Score}";
             money.text = $"Coins: {_currentMoney}";
             dayCounter.text = $"Day: {_days}";
         }
