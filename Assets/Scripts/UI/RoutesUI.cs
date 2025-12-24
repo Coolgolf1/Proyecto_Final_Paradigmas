@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEditor.FilePathAttribute;
 
 public class RoutesUI : MonoBehaviour
 {
@@ -21,6 +22,8 @@ public class RoutesUI : MonoBehaviour
     private EconomyManager _economy = EconomyManager.GetInstance();
     private InfoSingleton _info = InfoSingleton.GetInstance();
 
+    private int _price;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
@@ -34,19 +37,12 @@ public class RoutesUI : MonoBehaviour
 
     void LoadStore()
     {
-        List<TMP_Dropdown.OptionData> options1 = new List<TMP_Dropdown.OptionData>();
 
-        foreach (Airport airport in Player.UnlockedAirports)
-        {
-            options1.Add(new TMP_Dropdown.OptionData(airport.Name));
-        }
-
-        airport1.ClearOptions();
-        airport1.AddOptions(options1);
-
+        UpdateFirstChoice();
         UpdateSecondChoice();
 
-        airport1.onValueChanged.AddListener(delegate { UpdateSecondChoice(); });
+        airport2.onValueChanged.AddListener(delegate { UpdatePriceAndButton(); });
+        airport1.onValueChanged.AddListener(delegate { UpdateSecondChoice(); UpdatePriceAndButton(); });
 
     }
 
@@ -54,6 +50,20 @@ public class RoutesUI : MonoBehaviour
     void Update()
     {
         
+    }
+
+    void UpdateFirstChoice()
+    {
+        List<TMP_Dropdown.OptionData> options1 = new List<TMP_Dropdown.OptionData>();
+
+        foreach (Airport airport in Player.UnlockedAirports)
+        {
+            if (airport.Name != airport2.options[airport2.value].text)
+                options1.Add(new TMP_Dropdown.OptionData(airport.Name));
+        }
+
+        airport1.ClearOptions();
+        airport1.AddOptions(options1);
     }
 
     void UpdateSecondChoice()
@@ -71,6 +81,30 @@ public class RoutesUI : MonoBehaviour
 
         airport2.ClearOptions();
         airport2.AddOptions(options2);
+    }
+
+    void UpdatePriceAndButton()
+    {
+        string a1value = airport1.options[airport1.value].text;
+        string a2value = airport2.options[airport2.value].text;
+
+        Airport a1 = _info.savedAirports[a1value];
+        Airport a2 = _info.savedAirports[a2value];
+
+        double distance = Auxiliary.GetDirectDistanceBetweenAirports(a1, a2);
+
+        _price = (int)Mathf.Pow((float)distance, 1.55f);
+
+        priceText.text = $"{_price} coins";
+
+        if (_info.savedRoutes.ContainsKey($"{a1value}-{a2value}") || _economy.GetBalance() < _price)
+        {
+            buyRoute.interactable = false;
+        }
+        else
+        {
+            buyRoute.interactable = true;
+        }
     }
 
     public void ShowStoreUI()
@@ -92,26 +126,30 @@ public class RoutesUI : MonoBehaviour
         string location2 = airport2.options[airport2.value].text;
         if (!_info.savedRoutes.ContainsKey($"{location1}-{location2}"))
         {
-            GameObject routeGO = Instantiate(routePrefab, earth.transform);
+            if (_economy.SubtractCoins(_price))
+                {
+            
+                GameObject routeGO = Instantiate(routePrefab, earth.transform);
 
-            routeGO.name = $"{location1}-{location2}";
+                routeGO.name = $"{location1}-{location2}";
 
-            // Get route component of GameObject
-            Route route = routeGO.GetComponent<Route>();
+                // Get route component of GameObject
+                Route route = routeGO.GetComponent<Route>();
 
-            // Initialise route
-            route.Initialise(airport1: _info.savedAirports[location1], airport2: _info.savedAirports[location2]);
+                // Initialise route
+                route.Initialise(airport1: _info.savedAirports[location1], airport2: _info.savedAirports[location2]);
 
-            // Save route in both ways
-            _info.savedRoutes[routeGO.name] = route;
-            _info.savedRoutes[$"{location2}-{location1}"] = route;
+                // Save route in both ways
+                _info.savedRoutes[routeGO.name] = route;
+                _info.savedRoutes[$"{location2}-{location1}"] = route;
 
-            Auxiliary.LoadRouteDistances(_info.savedRoutes);
+                Auxiliary.LoadRouteDistances(_info.savedRoutes);
 
-            // Calculate initial Dijkstra Graph
-            Auxiliary.CalculateDijkstraGraph();
+                // Calculate initial Dijkstra Graph
+                Auxiliary.CalculateDijkstraGraph();
 
-            FlightLauncher.LaunchNewFlights();
+                FlightLauncher.LaunchNewFlights();
+            }
         }
     }
 
