@@ -115,7 +115,7 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
         }
     }
 
-    public void InitTravellers()
+    public void InitTravellers(bool mainMenuGame = false)
     {
         foreach (Airport airportDest in _info.savedAirports.Values)
         {
@@ -125,7 +125,8 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
             }
         }
 
-
+        if (!mainMenuGame)
+            return;
 
         foreach (Airport airport in _info.savedAirports.Values)
         {
@@ -140,11 +141,11 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
     {
         System.Random rand = new System.Random();
 
-        foreach (Airport airport in _info.savedAirports.Values)
+        foreach (Airport airport in Player.UnlockedAirports)
         {
             if (airport != this)
             {
-                TravellersToAirport[airport] = (int)(rand.Next(GameConstants.minTravellersRandom, GameConstants.maxTravellersRandom) * multiplier);
+                TravellersToAirport[airport] += (int)(rand.Next(GameConstants.minTravellersRandom, GameConstants.maxTravellersRandom) * multiplier);
             }
         }
     }
@@ -245,6 +246,22 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
         {
             double distance = Auxiliary.GetDirectDistanceBetweenAirports(this, airport);
             if (distance < airplane.Range)
+            {
+                availableAirports.Add(airport);
+            }
+
+        }
+
+        return availableAirports;
+    }
+
+    public List<Airport> GetReachableAirportsForRange(double range)
+    {
+        List<Airport> availableAirports = new List<Airport>();
+        foreach (Airport airport in TravellersToAirport.Keys)
+        {
+            double distance = Auxiliary.GetDirectDistanceBetweenAirports(this, airport);
+            if (distance < range)
             {
                 availableAirports.Add(airport);
             }

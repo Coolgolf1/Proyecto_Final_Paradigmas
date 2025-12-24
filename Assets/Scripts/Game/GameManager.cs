@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -72,6 +71,7 @@ public class GameManager : MonoBehaviour
         _info.ResetRoutes();
         Player.Money = 0;
         Player.Score = 0;
+
     }
 
     public void InitMainMenuAirplanes(Transform earthTransform)
@@ -112,6 +112,9 @@ public class GameManager : MonoBehaviour
             {
                 Player.UnlockAirport(airport);
             }
+
+            // Init travellers in each airport
+            Auxiliary.InitTravellersInAirports(mainMenuGame: true);
         }
         else
         {
@@ -119,39 +122,46 @@ public class GameManager : MonoBehaviour
 
             System.Random _rand = new System.Random();
 
-            int initialAirport1 = _rand.Next(0, _info.savedAirports.Values.Count() - 1);
+            // 1. Get all airports ONCE to avoid re-converting repeatedly
+            List<Airport> allAirports = _info.savedAirports.Values.ToList();
 
-            int initialAirport2 = _rand.Next(0, _info.savedAirports.Values.Count() - 1);
-            while (initialAirport1 == initialAirport2)
-                initialAirport2 = _rand.Next(0, _info.savedAirports.Values.Count() - 1);
+            // 2. Filter: Find ONLY airports that actually have neighbors in range
+            // We create a list of 'candidates' so we know our random pick will succeed.
+            List<Airport> validStarts = new List<Airport>();
 
-            Debug.Log(initialAirport1 + ", " + initialAirport2);
-            Player.UnlockAirport(_info.savedAirports.Values.ToList()[initialAirport1]);
-            Player.UnlockAirport(_info.savedAirports.Values.ToList()[initialAirport2]);
-            //// Create Airplanes with Factory
-            //Airplane airplane = (Airplane)_airplaneFactory.Build(AirplaneTypes.Large, earth.transform);
-            //_info.airplanes.Add(airplane);
+            foreach (var airport in allAirports)
+            {
+                // Check if this airport has at least one reachable neighbor
+                if (airport.GetReachableAirportsForRange(GameConstants.smallRange).Count > 0)
+                {
+                    validStarts.Add(airport);
+                }
+            }
 
-            //Airplane airplane2 = (Airplane)_airplaneFactory.Build(AirplaneTypes.Large, earth.transform);
-            //_info.airplanes.Add(airplane2);
+            // 3. SAFETY CHECK: What if NO airports work?
+            if (validStarts.Count == 0)
+            {
+                Debug.LogError("Infinite Loop Prevented: No airports have neighbors within Small Range!");
+                // Handle this case: Maybe increase range, or unlock a default pair?
+                return;
+            }
 
-            //Airplane airplane3 = (Airplane)_airplaneFactory.Build(AirplaneTypes.Large, earth.transform);
-            //_info.airplanes.Add(airplane3);
+            // 4. Now we can safely pick a random one from the VALID list
+            Airport initialAirport1 = validStarts[_rand.Next(0, validStarts.Count)];
 
-            //Airplane airplane4 = (Airplane)_airplaneFactory.Build(AirplaneTypes.Large, earth.transform);
-            //_info.airplanes.Add(airplane4);
+            // We know this list is not empty because we just checked it in step 2
+            List<Airport> reachableAirports = initialAirport1.GetReachableAirportsForRange(GameConstants.smallRange);
 
-            //_info.savedAirports["Madrid"].Hangar.Add(airplane);
-            //_info.savedAirports["Dubai"].Hangar.Add(airplane2);
-            //_info.savedAirports["Madrid"].Hangar.Add(airplane3);
-            //_info.savedAirports["Shanghai"].Hangar.Add(airplane4);
+            // 5. Pick the second airport
+            Airport initialAirport2 = reachableAirports[_rand.Next(0, reachableAirports.Count)];
+
+            Player.UnlockAirport(initialAirport1);
+            Player.UnlockAirport(initialAirport2);
+
+            // Init travellers in each airport
+            Auxiliary.InitTravellersInAirports();
 
         }
-
-        // Init travellers in each airport
-        Auxiliary.InitTravellersInAirports();
-
-        _info.savedAirports["Sao Paulo"].TravellersToAirport[_info.savedAirports["Lima"]] = 500;
 
         // Load the real distances from dataset
         Auxiliary.LoadRouteDistances(_info.savedRoutes);
@@ -190,11 +200,10 @@ public class GameManager : MonoBehaviour
 
                 HashSet<Airplane> fullAirplanes = new HashSet<Airplane>();
 
-                Debug.Log("BEFORE LOOP");
                 while (_info.savedAirports[origAirport.Name].TravellersToAirport[objAirport] > 0)
                 {
                     Flight flight;
-                    Debug.Log("GET FLIGHT");
+
                     (Airplane objAirplane, Airport nextHop) = _info.savedAirports[origAirport.Name].FindHopForTravellersToAirport(objAirport);
 
                     if (objAirplane is null || nextHop is null)
@@ -208,7 +217,9 @@ public class GameManager : MonoBehaviour
                         flight = airportFlights[objAirport][objAirplane];
                     }
                     else if (airplaneInFlight.Contains(objAirplane))
-                        continue;
+                    {
+                        break;
+                    }
                     else
                     {
                         GameObject flightGO = new GameObject();
@@ -228,7 +239,6 @@ public class GameManager : MonoBehaviour
                     if (flight.Full)
                         fullAirplanes.Add(objAirplane);
                 }
-                Debug.Log("EXIT LOOP");
             }
         }
 

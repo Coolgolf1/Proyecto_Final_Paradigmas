@@ -148,11 +148,11 @@ internal static class Auxiliary
         }
     }
 
-    public static void InitTravellersInAirports()
+    public static void InitTravellersInAirports(bool mainMenuGame = false)
     {
         foreach (Airport airport in _info.savedAirports.Values)
         {
-            airport.InitTravellers();
+            airport.InitTravellers(mainMenuGame);
         }
     }
 }

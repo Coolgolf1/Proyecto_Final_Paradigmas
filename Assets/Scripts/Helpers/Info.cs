@@ -110,6 +110,7 @@ public class InfoSingleton
         }
 
         savedAirports.Clear();
+        Player.UnlockedAirports.Clear();
     }
 
     public void ResetRoutes()
