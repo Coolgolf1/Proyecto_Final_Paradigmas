@@ -158,6 +158,12 @@ public class GameManager : MonoBehaviour
             Player.UnlockAirport(initialAirport1);
             Player.UnlockAirport(initialAirport2);
 
+            if (_info.playerCamera.GetComponent<PlayerMovement>() is SpaceCamera camera)
+            {
+                camera.SetAirport(initialAirport1);
+                
+            }
+
             // Init travellers in each airport
             Auxiliary.InitTravellersInAirports();
 
@@ -180,7 +186,7 @@ public class GameManager : MonoBehaviour
         // For all travellers in origin airport, assign each of the travellers an airplane
         Queue<Airport> airportQueue = new Queue<Airport>(destinations);
 
-        //List<Airplane> airplaneInFlight = new List<Airplane>();
+        List<Airplane> airplaneInFlight = new List<Airplane>();
 
         while (airportQueue.Count > 0)
         {
@@ -216,10 +222,10 @@ public class GameManager : MonoBehaviour
                     {
                         flight = airportFlights[objAirport][objAirplane];
                     }
-                    //else if (airplaneInFlight.Contains(objAirplane))
-                    //{
-                    //    break;
-                    //}
+                    else if (airplaneInFlight.Contains(objAirplane))
+                    {
+                        break;
+                    }
                     else
                     {
                         GameObject flightGO = new GameObject();
@@ -231,7 +237,7 @@ public class GameManager : MonoBehaviour
                         _info.flights.Add(flight);
                         airportFlights[origAirport][objAirplane] = flight;
 
-                        //airplaneInFlight.Add(objAirplane);
+                        airplaneInFlight.Add(objAirplane);
                     }
 
                     flight.Embark(_info.savedAirports[origAirport.Name].TravellersToAirport[objAirport], objAirport);

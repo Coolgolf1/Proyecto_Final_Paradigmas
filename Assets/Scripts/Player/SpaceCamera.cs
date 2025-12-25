@@ -1,3 +1,5 @@
+using System.Runtime.CompilerServices;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class SpaceCamera : PlayerMovement
@@ -13,7 +15,10 @@ public class SpaceCamera : PlayerMovement
     private float actualZoom = 0;
 
     private Airplane followingAirplane;
-    private bool _arrived;
+    private bool _arrivedAirplane;
+    private bool _arrivedAirport;
+
+    private Airport airportObj;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     public void Start()
     {
@@ -30,6 +35,7 @@ public class SpaceCamera : PlayerMovement
     public void StopFollowing()
     {
         followingAirplane = null;
+        airportObj = null;
     }
 
     // Update is called once per frame
@@ -47,8 +53,19 @@ public class SpaceCamera : PlayerMovement
         }
         else
         {
-            _arrived = false;
+            _arrivedAirplane = false;
         }
+
+        if (airportObj is not null)
+        {
+            GoToAirport();
+        }
+        else
+        {
+            _arrivedAirport = false;
+        }
+
+
     }
 
     private void SmoothZoom()
@@ -73,6 +90,13 @@ public class SpaceCamera : PlayerMovement
     public void SetAirplane(Airplane airplane)
     {
         followingAirplane = airplane;
+        airportObj = null;
+    }
+
+    public void SetAirport(Airport airport)
+    {
+        followingAirplane = null;
+        airportObj = airport;
     }
 
     private void FollowAirplane()
@@ -93,7 +117,7 @@ public class SpaceCamera : PlayerMovement
 
         Vector3 objPosition = airplanePos + direction * distanceOver;
 
-        if (!_arrived)
+        if (!_arrivedAirplane)
         {
             transform.position = Vector3.Slerp(transform.position, objPosition, Time.fixedDeltaTime);
             //Quaternion finalRotation = Quaternion.LookRotation(direction, Vector3.up);
@@ -101,7 +125,7 @@ public class SpaceCamera : PlayerMovement
 
             // If not close enough to initial view
             if ((objPosition - transform.position).magnitude < 0.5)
-                _arrived = true;
+                _arrivedAirplane = true;
 
         }
 
@@ -111,5 +135,33 @@ public class SpaceCamera : PlayerMovement
 
         }
         transform.LookAt(_info.earth.transform.position);
+    }
+
+    private void GoToAirport()
+    {
+    
+        if (!_arrivedAirport) {
+            Vector3 earthCenter = _info.earth.transform.position;
+
+            Vector3 airportPos = airportObj.transform.position;
+
+            Vector3 direction = (airportPos - earthCenter).normalized;
+            float distanceOver = 20f;
+
+            Vector3 objPosition = airportPos + direction * distanceOver;
+
+            transform.position = Vector3.Slerp(transform.position, objPosition, Time.fixedDeltaTime);
+            
+            
+            // If not close enough to initial view
+            if ((objPosition - transform.position).magnitude < 0.5)
+            {
+                _arrivedAirport = true;
+                transform.position = objPosition;
+                airportObj = null;
+            }
+            transform.LookAt(_info.earth.transform.position);
+        } 
+
     }
 }
