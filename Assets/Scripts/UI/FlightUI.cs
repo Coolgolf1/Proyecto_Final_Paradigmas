@@ -22,7 +22,11 @@ public class FlightUI : MonoBehaviour
         viewPlane.onClick.AddListener(OnView);
         gameObject.SetActive(false);
 
-        UIEvents.OnEndGameEnter.AddListener(CleanUI);
+        UIEvents.OnEndGameEnter.AddListener(CloseUI);
+
+        UIEvents.OnAirplaneStoreEnter.AddListener(CloseUI);
+        UIEvents.OnRouteStoreEnter.AddListener(CloseUI);
+        
     }
 
     // Update is called once per frame
@@ -30,10 +34,7 @@ public class FlightUI : MonoBehaviour
     {
     }
 
-    public void CleanUI()
-    {
-        _info.flightUI.gameObject.SetActive(false);
-    }
+    
 
     private void OnUpgrade()
     {

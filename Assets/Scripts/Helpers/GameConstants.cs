@@ -9,7 +9,7 @@ public static class GameConstants
     public const int minTravellersRandom = 0;
     public const int maxTravellersRandom = 10;
 
-    public const int maxTravellersInAirport = 50;
+    public const int maxTravellersInAirport = 500;
     public const int AirportTravellersUpgrade = 1000;
 
     public static Vector3 mainMenuCameraPosition = new Vector3(27.6100006f, 36.0400009f, -28.3400002f);

@@ -90,6 +90,7 @@ public class InfoSingleton
 
     public Airplane airplaneInHangar;
 
+
     // Singleton
     private static InfoSingleton _instance;
 

@@ -38,6 +38,7 @@ public class AirplaneStore : MonoBehaviour
     [SerializeField] private GameObject earth;
 
     [SerializeField] private Button openStore;
+    [SerializeField] private Button externalOpenStore;
     [SerializeField] private Button closeStore;
 
     [SerializeField] private GameObject buyMessagePanel;
@@ -330,6 +331,31 @@ public class AirplaneStore : MonoBehaviour
         gameObject.SetActive(true);
         UpdateAirports();
         UIEvents.OnAirplaneStoreEnter.Invoke();
+    }
+
+    public void OpenStoreFor(Airport airport)
+    {
+       if (airport == null) return;
+
+       ShowStoreUI();
+
+       int index = smallAirplaneSelector.options.FindIndex(x => x.text == airport.Name);
+       if (index >= 0)
+       {
+           smallAirplaneSelector.value = index;
+       }
+
+        index = mediumAirplaneSelector.options.FindIndex(x => x.text == airport.Name);
+        if (index >= 0)
+        {
+            mediumAirplaneSelector.value = index;
+        }
+
+        index = largeAirplaneSelector.options.FindIndex(x => x.text == airport.Name);
+        if (index >= 0)
+        {
+            largeAirplaneSelector.value = index;
+        }
     }
 
     public void CloseStoreUI()
