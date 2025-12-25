@@ -16,7 +16,7 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
     public Levels Level { get; private set; }
     public int Capacity { get; private set; }
     public bool Unlocked { get; private set; } = false;
-    public Phases Phase { get; private set; }
+    public double Phase { get; private set; }
 
     // Collections
     public List<Airplane> Hangar { get; } = new List<Airplane>();
@@ -33,12 +33,17 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
     private InputAction _clickAction;
     private Camera _cam;
 
-    private System.Random _rand = new System.Random();
-
     private UnityEvent _advancePhase = new UnityEvent();
+    private UnityEvent _reducePhase = new UnityEvent();
 
     // Serialize Field
     [SerializeField] public GameObject modelPrefab;
+
+    // AI Spawner
+    private System.Random _rand = new System.Random();
+    private float _phaseTimer = 0f;
+    private const float SpawnJitter = 0.5f;
+    private float _nextSpawnTime = 0f;
 
     public void Initialise(string id, string name, Location location, int numberOfRunways = 2)
     {
@@ -56,13 +61,134 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
 
         GameEvents.OnAirportUnlock.AddListener(UpdateCapacity);
 
-        _advancePhase.AddListener(AdvancePhase);
+        _nextSpawnTime = Time.time + 2.0f;
+
+        SetNextEventTime();
+    }
+
+    private void SetNextEventTime()
+    {
+        switch (Phase)
+        {
+            case Phases.Easy:
+                // Stay in Easy for 45 to 60 seconds
+                _phaseTimer = UnityEngine.Random.Range(45f, 60f);
+                break;
+
+            case Phases.Medium:
+                // Stay in Medium for 60 to 90 seconds
+                _phaseTimer = UnityEngine.Random.Range(60f, 90f);
+                break;
+
+            case Phases.Hard:
+                // Stay in Hard for 30 to 50 seconds before the next Surge hits
+                _phaseTimer = UnityEngine.Random.Range(30f, 50f);
+                break;
+
+            case Phases.Surge:
+                // Surges are short: Only last 15 to 25 seconds
+                _phaseTimer = UnityEngine.Random.Range(15f, 25f);
+                break;
+        }
+    }
+
+    private void PhaseDirectorUpdate()
+    {
+        _phaseTimer -= Time.deltaTime;
+
+        if (_phaseTimer <= 0)
+        {
+            if (Phase == Phases.Surge)
+            {
+                ReducePhase();
+            }
+            else
+            {
+                AdvancePhase();
+            }
+
+            SetNextEventTime();
+        }
+    }
+
+    private float GetSpawnIntervalForPhase()
+    {
+        switch (Phase)
+        {
+            case Phases.Easy:
+                return 3.0f;
+
+            case Phases.Medium:
+                return 2.0f;
+
+            case Phases.Hard:
+                return 1.0f;
+
+            case Phases.Surge:
+                return 0.5f;
+
+            default:
+                return 2.0f;
+        }
+    }
+
+    private void HandleSpawning()
+    {
+        if (Time.time >= _nextSpawnTime)
+        {
+            SpawnTravellers(Phase);
+
+            float baseInterval = GetSpawnIntervalForPhase();
+
+            float randomVariance = UnityEngine.Random.Range(-SpawnJitter, SpawnJitter);
+            float interval = Mathf.Max(0.5f, baseInterval + randomVariance);
+
+            _nextSpawnTime = Time.time + interval;
+        }
     }
 
     public void AdvancePhase()
     {
-        if (Phase < Phases.Surge)
-            Phase++;
+        switch (Phase)
+        {
+            case Phases.Easy:
+                Phase = Phases.Medium;
+                break;
+
+            case Phases.Medium:
+                Phase = Phases.Hard;
+                break;
+
+            case Phases.Hard:
+                Phase = Phases.Surge;
+                break;
+
+            case Phases.Surge:
+                Phase = Phases.Surge;
+                break;
+        }
+    }
+
+    public void ReducePhase()
+    {
+        switch (Phase)
+        {
+            case Phases.Easy:
+                Phase = Phases.Easy;
+                break;
+
+            case Phases.Medium:
+                Phase = Phases.Medium;
+                break;
+
+            case Phases.Hard:
+                Phase = Phases.Hard;
+                break;
+
+            case Phases.Surge:
+                Phase = Phases.Hard;
+                break;
+        }
     }
 
     public void Unlock()
@@ -168,7 +294,7 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
         }
     }
 
-    public void SpawnTravellers(float multiplier)
+    public void SpawnTravellers(double multiplier)
     {
         System.Random rand = new System.Random();
 
@@ -176,6 +302,7 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
         {
             if (airport != this)
             {
+                //Debug.Log((int)(rand.Next(GameConstants.minTravellersRandom, GameConstants.maxTravellersRandom) * multiplier));
                 TravellersToAirport[airport] += (int)(rand.Next(GameConstants.minTravellersRandom, GameConstants.maxTravellersRandom) * multiplier);
             }
         }
@@ -501,16 +628,9 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
         if (!Unlocked)
             return;
 
-        float current = Time.time;
+        HandleSpawning();
 
-        int prob = _rand.Next(0, 100);
-
-        // 1% chance
-        if (prob == 0)
-        {
-            if (current - _unlockTime < 300)
-                SpawnTravellers(1);
-        }
+        PhaseDirectorUpdate();
 
         CheckMaxPassengers();
     }

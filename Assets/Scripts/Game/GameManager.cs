@@ -73,7 +73,7 @@ public class GameManager : MonoBehaviour
         _economy.mainMenuGame = false;
     }
 
-    
+
 
     public void ResetGame()
     {
@@ -223,9 +223,9 @@ public class GameManager : MonoBehaviour
                     if (fullAirplanes.Contains(objAirplane))
                         break;
 
-                    if (airportFlights[objAirport].Keys.Contains(objAirplane))
+                    if (airportFlights[origAirport].Keys.Contains(objAirplane))
                     {
-                        flight = airportFlights[objAirport][objAirplane];
+                        flight = airportFlights[origAirport][objAirplane];
                     }
                     else if (airplaneInFlight.Contains(objAirplane))
                     {
