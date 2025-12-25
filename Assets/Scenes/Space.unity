@@ -1742,7 +1742,7 @@ MonoBehaviour:
   buyAirplanes: {fileID: 1919509536}
   upgradeAirport: {fileID: 477334731}
   store: {fileID: 246972755}
-  maxClients: {fileID: 0}
+  maxClients: {fileID: 1650912440}
 --- !u!1 &220263442
 GameObject:
   m_ObjectHideFlags: 0

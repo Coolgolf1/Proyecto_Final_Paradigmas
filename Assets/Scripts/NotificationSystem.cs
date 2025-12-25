@@ -32,7 +32,7 @@ public class NotificationSystem : MonoBehaviour
 
         queuedNotifications.Add(notifComp);
 
-        notifComp.createdTime = Time.time;
+        notifComp.createdTime = Time.fixedTime;
 
         RectTransform rt = notif.GetComponent<RectTransform>();
         rt.anchoredPosition = new Vector2(rt.anchoredPosition.x, _baseY - 55 * (queuedNotifications.Count - 1));
@@ -44,7 +44,7 @@ public class NotificationSystem : MonoBehaviour
 
         foreach (CustomNotif notif in actualNotifs)
         {
-            if (Time.time - notif.createdTime > 5)
+            if (Time.fixedTime - notif.createdTime > 10)
             {
                 queuedNotifications.Remove(notif);
                 notif.FadeOutAndDestroy();

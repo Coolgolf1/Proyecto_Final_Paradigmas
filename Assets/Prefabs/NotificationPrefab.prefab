@@ -306,6 +306,7 @@ MonoBehaviour:
   alert: {fileID: 21300000, guid: 55863b1948d30434897e96df931af72a, type: 3}
   warning: {fileID: 21300000, guid: 82534454bf20f0c4887bf1c0eb047bc6, type: 3}
   route: {fileID: 21300000, guid: 29ec5ee8ef25fe14fbaa6a35e40510b3, type: 3}
+  airport: {fileID: 21300000, guid: 2b33328d97b756e468845038ca100f64, type: 3}
   messageUI: {fileID: 4280938425370751069}
   iconUI: {fileID: 357686364386561490}
   panelBase: {fileID: 4708619775779904625}

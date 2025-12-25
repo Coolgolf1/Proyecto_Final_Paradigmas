@@ -19,16 +19,20 @@ public static class RouteAssigner
 
     private static (Airplane, double) GetFastestAirplaneAndTime(Airport origin, Edge edge, Airport start, Airport end)
     {
+        
+
         // Compute the shortest possible time (in hours) among all airplanes
         double bestDistance = double.PositiveInfinity;
         Airplane bestAirplane = null;
+
+        //bool notEnoughRange = true;
 
         foreach (Airplane airplane in start.Hangar)
         {
             double distance = Auxiliary.GetDirectDistanceBetweenAirports(origin, edge.To);
 
-            if (distance > airplane.Range)
-                continue;
+            //if (distance <= airplane.Range)
+            //    notEnoughRange = false;
 
             double tempDistance;
 
@@ -50,27 +54,31 @@ public static class RouteAssigner
 
                 if (airportDest == edge.To)
                 {
-                    tempDistance = 0;
+                    tempDistance = flight.Route.Distance;
                 }
                 else
                 {
-                    tempDistance = flight.Route.Distance + Auxiliary.GetDirectDistanceBetweenAirports(airportDest, end);
+                    continue;
+                    // tempDistance = flight.Route.Distance + Auxiliary.GetDirectDistanceBetweenAirports(airportDest, edge.To);
                 }
             }
             // 2. Flight not yet created
             else
             {
-                tempDistance = Auxiliary.GetDirectDistanceBetweenAirports(origin, end);
+                tempDistance = distance;
             }
 
-            if (tempDistance > Auxiliary.GetDirectDistanceBetweenAirports(origin, end))
-                continue;
+            //if (tempDistance > Auxiliary.GetDirectDistanceBetweenAirports(origin, end))
+            //    continue;
 
             // Choose best airplane with distance
             if (tempDistance <= bestDistance)
             {
                 bestDistance = tempDistance;
-                bestAirplane = airplane;
+                if (distance <= airplane.Range)
+                {
+                    bestAirplane = airplane;
+                }
             }
         }
 
@@ -103,6 +111,9 @@ public static class RouteAssigner
 
         HashSet<Airport> processed = new HashSet<Airport>();
 
+        Airport partialFarthest = start;
+        double bestReached = 0;
+
         while (queue.Count > 0)
         {
             Airport current = queue.Dequeue();
@@ -119,11 +130,17 @@ public static class RouteAssigner
 
             processed.Add(current);
 
+            if (previous.ContainsKey(current) || current == start)
+            {
+                partialFarthest = current;
+                bestReached = currentDistance;
+            }
+
             foreach (Edge edge in DijkstraGraph.graph[current])
             {
                 (Airplane airplane, double cost) = GetFastestAirplaneAndTime(current, edge, start, end);
 
-                if (airplane is null) continue;
+                //if (airplane is null) continue;
                 if (double.IsInfinity(cost)) continue;
 
                 Airport neighbor = edge.To;
@@ -133,7 +150,10 @@ public static class RouteAssigner
                 {
                     distanceFromStart[neighbor] = newDistance;
                     previous[neighbor] = current;
-                    airplaneUsed[neighbor] = airplane;
+                    if (airplane is not null)
+                    {
+                        airplaneUsed[neighbor] = airplane;
+                    }
                     queue.Enqueue(neighbor, (int)newDistance);
                 }
             }
@@ -142,8 +162,28 @@ public static class RouteAssigner
         // If nothing found
         if (!previous.ContainsKey(end) && start != end)
         {
-            return (null, null);
+            
+            //List<Airport> pathPartial = new List<Airport>();
+            //Airport uP = partialFarthest;
+            //while (previous.ContainsKey(uP))
+            //{
+            //    pathPartial.Insert(0, uP);
+            //    uP = previous[uP];
+            //}
+            //pathPartial.Insert(0, start);
+
+            //if (pathPartial.Count < 2)
+                return (null, null);
+            //Airport nextHopPartial = GetNextHop(pathPartial);
+
+            //Airplane nextAirplanePartial = null;
+            //if (nextHopPartial != null)
+            //    airplaneUsed.TryGetValue(nextHopPartial, out nextAirplanePartial);
+
+            //return (nextAirplanePartial, pathPartial);
+           
         }
+       
 
         // Reconstruct path
         List<Airport> path = new List<Airport>();

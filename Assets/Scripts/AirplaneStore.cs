@@ -67,6 +67,10 @@ public class AirplaneStore : MonoBehaviour
         smallAirplanes = 9;
         mediumAirplanes = 7;
         largeAirplanes = 5;
+
+        _smallAirplanePriceMultiplier = 1.01;
+        _mediumAirplanePriceMultiplier = 1.02;
+        _largeAirplanePriceMultiplier = 1.03;
     }
 
     public void smallAirplaneBought()
@@ -333,7 +337,7 @@ public class AirplaneStore : MonoBehaviour
 
     public void ShowStoreUI()
     {
-        _economy.SetCoins(1000000);
+        //_economy.SetCoins(1000000);
         gameObject.SetActive(true);
         UpdateAirports();
         UIEvents.OnAirplaneStoreEnter.Invoke();

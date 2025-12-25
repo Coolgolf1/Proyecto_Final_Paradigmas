@@ -116,7 +116,7 @@ public class RoutesUI : MonoBehaviour
 
     public void ShowStoreUI()
     {
-        _economy.SetCoins(1000000);
+        //_economy.SetCoins(1000000);
 
         UpdateFirstChoice();
         UpdateSecondChoice();

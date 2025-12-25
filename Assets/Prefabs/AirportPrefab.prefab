@@ -159,13 +159,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 390a2388cd08bdb4385d9851ffbe4d87, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Airport
-  id: 
-  Name: 
-  numberOfRunways: 0
-  hangar: []
-  receivedTravellers: 0
-  location: {fileID: 787081354997723788}
-  modelPrefab: {fileID: 0}
+  statusLight: {fileID: 2108605442833143109}
 --- !u!65 &6621061556808936736
 BoxCollider:
   m_ObjectHideFlags: 0

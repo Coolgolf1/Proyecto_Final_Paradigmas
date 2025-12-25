@@ -37,7 +37,8 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
     private UnityEvent _reducePhase = new UnityEvent();
 
     // Serialize Field
-    [SerializeField] public GameObject modelPrefab;
+    [SerializeField] private Light statusLight;
+    private int _lightInt;
 
     // AI Spawner
     private System.Random _rand = new System.Random();
@@ -191,11 +192,47 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
         }
     }
 
+    private void UpdateLight()
+    {
+        int totalTravellers = TravellersToAirport.Values.Sum();
+        
+        float ratio = (float)totalTravellers / Capacity;
+        
+        if (Capacity != 0)
+        {
+            
+            if (ratio < 0.5)
+            {
+                statusLight.color = Color.green;
+                _lightInt = 1;
+            }
+            else if (ratio < 0.7)
+            {
+                statusLight.color = Color.orange;
+                if (_lightInt == 1)
+                {
+                    _info.notificationSystem.AddNotification($"{Name} is over 50% capacity", "warning", "orange");
+                }
+                _lightInt = 2;
+            }
+            else
+            {
+                statusLight.color = Color.red;
+                if (_lightInt != 3)
+                {
+                    _info.notificationSystem.AddNotification($"{Name} is over 70% capacity", "alert", "red");
+                }
+                _lightInt = 3;
+            }
+        }
+    }
+
     public void Unlock()
     {
         Unlocked = true;
         _unlockTime = Time.time;
         gameObject.SetActive(Unlocked);
+        
         GameEvents.OnAirportUnlock?.Invoke();
     }
 
@@ -466,9 +503,14 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
     public void CheckMaxPassengers()
     {
         int count = TravellersToAirport.Values.Sum();
-
+        
         if (count > Capacity)
         {
+            if (_info.playerCamera.GetComponent<PlayerMovement>() is SpaceCamera camera)
+            {
+                camera.SetAirport(this);
+                
+            }
             _gm.ChangeState(_gm.End);
         }
     }
@@ -633,5 +675,7 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
         PhaseDirectorUpdate();
 
         CheckMaxPassengers();
+
+        UpdateLight();
     }
 }

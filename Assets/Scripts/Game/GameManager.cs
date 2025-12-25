@@ -94,11 +94,12 @@ public class GameManager : MonoBehaviour
         _info.ResetAirports();
         _info.ResetFlights();
         _info.ResetRoutes();
+        //_economy.SetCoins(2000000);
         Player.Restart();
         Phase = Phases.Easy;
         _phaseTimer = _rand.Next(50, 70);
         _currentMaxExpansion = 2000;
-        _nextUnlockTime = Time.time + 2.0f;
+        _nextUnlockTime = Time.time + _phaseTimer;
     }
 
     public void InitMainMenuAirplanes(Transform earthTransform)
@@ -119,6 +120,7 @@ public class GameManager : MonoBehaviour
 
     public void StartGame()
     {
+        
 
         // Initialise Factory
         _airplaneFactory.Initialise(airplaneSpawner);
@@ -147,6 +149,8 @@ public class GameManager : MonoBehaviour
         }
         else
         {
+
+            _economy.SetCoins(2000000);
             _clickAction.Enable();
 
             _info.ResetRoutes();
@@ -323,7 +327,8 @@ public class GameManager : MonoBehaviour
         Airport newAirport = possibleAirports[_rand.Next(possibleAirports.Count)];
         Player.UnlockAirport(newAirport);
 
-        Debug.Log($"Unlocked new airport: {newAirport}.");
+        //Debug.Log($"Unlocked new airport: {newAirport}.");
+        _info.notificationSystem.AddNotification($"Unlocked new airport: {newAirport}.", "airport", "blue");
 
 
 

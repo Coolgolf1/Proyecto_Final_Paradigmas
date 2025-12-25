@@ -11,6 +11,7 @@ public class CustomNotif : MonoBehaviour
     [SerializeField] private Sprite alert;
     [SerializeField] private Sprite warning;
     [SerializeField] private Sprite route;
+    [SerializeField] private Sprite airport;
 
     [Header("Components")]
     [SerializeField] private TMP_Text messageUI;
@@ -31,6 +32,7 @@ public class CustomNotif : MonoBehaviour
         spriteDict["alert"] = alert;
         spriteDict["warning"] = warning;
         spriteDict["route"] = route;
+        spriteDict["airport"] = airport;
 
         if (canvasGroup == null)
         {

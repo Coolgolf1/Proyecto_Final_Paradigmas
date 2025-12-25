@@ -65,7 +65,7 @@ public class AirportUI : MonoBehaviour
         }
 
         airportID.text = airport.Id.ToUpper();
-        airportName.text = airport.name;
+        airportName.text = airport.Name;
         maxClients.text = $"{airport.Capacity} max";
         string passengersText = "";
         foreach (Airport destAirport in Player.UnlockedAirports)
