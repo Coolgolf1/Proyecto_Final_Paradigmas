@@ -112,6 +112,7 @@ public class AirplaneStore : MonoBehaviour
         }
         _smallAirplanePriceMultiplier = Mathf.Pow((float)_smallAirplanePriceMultiplier, 2);
         UpdateButtons();
+        _info.notificationSystem.AddNotification($"Added Small airplane to {airportName}", "airplane", "blue");
         // Success message
         //BuyMessageSuccess("small", airportName);
 
@@ -166,6 +167,7 @@ public class AirplaneStore : MonoBehaviour
         // Success message
         //BuyMessageSuccess("medium", airportName);
         _mediumAirplanePriceMultiplier = Mathf.Pow((float)_mediumAirplanePriceMultiplier, 2);
+        _info.notificationSystem.AddNotification($"Added Medium airplane to {airportName}", "airplane", "blue");
         UpdateButtons();
         // Launch flight
         FlightLauncher.LaunchNewFlights();
@@ -218,6 +220,8 @@ public class AirplaneStore : MonoBehaviour
         _largeAirplanePriceMultiplier = Mathf.Pow((float)_largeAirplanePriceMultiplier, 2);
 
         UpdateButtons();
+        _info.notificationSystem.AddNotification($"Added Large airplane to {airportName}", "airplane", "blue");
+
         // Launch flight
         FlightLauncher.LaunchNewFlights();
 
@@ -251,6 +255,8 @@ public class AirplaneStore : MonoBehaviour
 
         // Dropdowns
         UpdateAirports();
+
+
 
     }
 

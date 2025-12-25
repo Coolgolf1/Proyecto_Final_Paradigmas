@@ -17,6 +17,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private AirplaneSpawner airplaneSpawner;
     [SerializeField] private GameObject routePrefab;
 
+    [SerializeField] private NotificationSystem notificationSystem;
+
 
     private InfoSingleton _info = InfoSingleton.GetInstance();
     private AirplaneFactory _airplaneFactory = AirplaneFactory.GetInstance();
@@ -45,6 +47,8 @@ public class GameManager : MonoBehaviour
         _info.airportUI = airportUI;
         _info.flightUI = flightUI;
         _info.playerCamera = playerCamera;
+
+        _info.notificationSystem = notificationSystem;
 
         // Initialise initialliser
         _init = gameObject.AddComponent<Init>();

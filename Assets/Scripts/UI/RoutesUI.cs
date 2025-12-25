@@ -165,6 +165,8 @@ public class RoutesUI : MonoBehaviour
 
                 priceText.text = $"Already Purchased";
                 buyRoute.interactable = false;
+
+                _info.notificationSystem.AddNotification($"Created Route {location1}-{location2}", "route", "blue");
             }
         }
     }
