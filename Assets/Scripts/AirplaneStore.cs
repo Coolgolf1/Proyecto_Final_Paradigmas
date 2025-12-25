@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class AirplaneStore : MonoBehaviour
 {
-    private double _smallAirplanePriceMultiplier = 1;
+    private double _smallAirplanePriceMultiplier = 1.01;
     [SerializeField] private TMP_Text smallAirplaneTitle;
     [SerializeField] private Image smallAirplaneImage;
     [SerializeField] private TMP_Text smallAirplanePrice;
@@ -15,7 +15,7 @@ public class AirplaneStore : MonoBehaviour
     [SerializeField] private TMP_Dropdown smallAirplaneSelector;
     [SerializeField] private Button smallAirplaneBuy;
 
-    private double _mediumAirplanePriceMultiplier = 1;
+    private double _mediumAirplanePriceMultiplier = 1.02;
     [SerializeField] private TMP_Text mediumAirplaneTitle;
     [SerializeField] private Image mediumAirplaneImage;
     [SerializeField] private TMP_Text mediumAirplanePrice;
@@ -25,7 +25,7 @@ public class AirplaneStore : MonoBehaviour
     [SerializeField] private TMP_Dropdown mediumAirplaneSelector;
     [SerializeField] private Button mediumAirplaneBuy;
 
-    private double _largeAirplanePriceMultiplier = 1;
+    private double _largeAirplanePriceMultiplier = 1.03;
     [SerializeField] private TMP_Text largeAirplaneTitle;
     [SerializeField] private Image largeAirplaneImage;
     [SerializeField] private TMP_Text largeAirplanePrice;
@@ -63,7 +63,7 @@ public class AirplaneStore : MonoBehaviour
             return;
         }
 
-        if (GameConstants.smallPrice * _smallAirplanePriceMultiplier > Player.Money)
+        if ((int)(GameConstants.smallPrice * _smallAirplanePriceMultiplier) > Player.Money)
         {
             //BuyMessageFailureNotEnoughCoins("small");
             return;
@@ -95,12 +95,15 @@ public class AirplaneStore : MonoBehaviour
         {
             smallAirplanes--;
         }
+        _smallAirplanePriceMultiplier = Mathf.Pow((float)_smallAirplanePriceMultiplier, 2);
         UpdateButtons();
         // Success message
         //BuyMessageSuccess("small", airportName);
 
         // Launch flight
         FlightLauncher.LaunchNewFlights();
+
+        
     }
 
     public void mediumAirplaneBought()
@@ -112,7 +115,7 @@ public class AirplaneStore : MonoBehaviour
             return;
         }
 
-        if (GameConstants.mediumPrice * _mediumAirplanePriceMultiplier > Player.Money)
+        if ((int)(GameConstants.mediumPrice * _mediumAirplanePriceMultiplier) > Player.Money)
         {
             //BuyMessageFailureNotEnoughCoins("medium");
             return;
@@ -147,6 +150,7 @@ public class AirplaneStore : MonoBehaviour
 
         // Success message
         //BuyMessageSuccess("medium", airportName);
+        _mediumAirplanePriceMultiplier = Mathf.Pow((float)_mediumAirplanePriceMultiplier, 2);
         UpdateButtons();
         // Launch flight
         FlightLauncher.LaunchNewFlights();
@@ -160,7 +164,7 @@ public class AirplaneStore : MonoBehaviour
             return;
         }
 
-        if (GameConstants.largePrice * _largeAirplanePriceMultiplier > Player.Money)
+        if ((int)(GameConstants.largePrice * _largeAirplanePriceMultiplier) > Player.Money)
         {
             //BuyMessageFailureNotEnoughCoins("large");
             return;
@@ -195,6 +199,9 @@ public class AirplaneStore : MonoBehaviour
 
         // Success message
         //BuyMessageSuccess("large", airportName);
+
+        _largeAirplanePriceMultiplier = Mathf.Pow((float)_largeAirplanePriceMultiplier, 2);
+
         UpdateButtons();
         // Launch flight
         FlightLauncher.LaunchNewFlights();
@@ -206,7 +213,7 @@ public class AirplaneStore : MonoBehaviour
         double baseSpeed = GameConstants.relativeSpeed * GameConstants.speedMultiplier;
 
         // Small Airplane 
-        smallAirplanePrice.text = $"Price: {GameConstants.smallPrice * _smallAirplanePriceMultiplier} coins";
+        
         smallAirplaneCapacity.text = $"Capacity: {GameConstants.smallCapacity}";
         smallAirplaneSpeed.text = $"Speed: {(int)(baseSpeed * GameConstants.smallSpeedMultiplier * 5)}  km/h";
         smallAirplaneRange.text = $"Range: {GameConstants.smallRange} km";
@@ -214,14 +221,14 @@ public class AirplaneStore : MonoBehaviour
         smallAirplaneBuy.onClick.AddListener(smallAirplaneBought);
 
         // Medium Airplane 
-        mediumAirplanePrice.text = $"Price: {GameConstants.mediumPrice * _mediumAirplanePriceMultiplier} coins";
+        
         mediumAirplaneCapacity.text = $"Capacity: {GameConstants.mediumCapacity}";
         mediumAirplaneSpeed.text = $"Speed: {(int)(baseSpeed * GameConstants.mediumSpeedMultiplier * 5)} km/h";
         mediumAirplaneRange.text = $"Range: {GameConstants.mediumRange} km";
         mediumAirplaneBuy.onClick.AddListener(mediumAirplaneBought);
 
         // Large Airplane 
-        largeAirplanePrice.text = $"Price: {GameConstants.largePrice * _largeAirplanePriceMultiplier} coins";
+        
         largeAirplaneCapacity.text = $"Capacity: {GameConstants.largeCapacity}";
         largeAirplaneSpeed.text = $"Speed: {(int)(baseSpeed * GameConstants.largeSpeedMultiplier * 5)} km/h";
         largeAirplaneRange.text = $"Range: {GameConstants.largeRange} km";
@@ -254,6 +261,7 @@ public class AirplaneStore : MonoBehaviour
 
     private void UpdateButtons()
     {
+        smallAirplanePrice.text = $"Price: {(int)(GameConstants.smallPrice * _smallAirplanePriceMultiplier)} coins";
         if (_economy.GetBalance() >= GameConstants.smallPrice * _smallAirplanePriceMultiplier && smallAirplanes != 0)
         {
             smallAirplaneBuy.interactable = true;
@@ -263,7 +271,7 @@ public class AirplaneStore : MonoBehaviour
             smallAirplaneBuy.interactable = false;
         }
 
-
+        mediumAirplanePrice.text = $"Price: {(int)(GameConstants.mediumPrice * _mediumAirplanePriceMultiplier)} coins";
         if (_economy.GetBalance() >= GameConstants.mediumPrice * _mediumAirplanePriceMultiplier && mediumAirplanes != 0)
         {
             mediumAirplaneBuy.interactable = true;
@@ -273,6 +281,7 @@ public class AirplaneStore : MonoBehaviour
             mediumAirplaneBuy.interactable = false;
         }
 
+        largeAirplanePrice.text = $"Price: {(int)(GameConstants.largePrice * _largeAirplanePriceMultiplier)} coins";
         if (_economy.GetBalance() >= GameConstants.largePrice * _largeAirplanePriceMultiplier && largeAirplanes != 0)
         {
             largeAirplaneBuy.interactable = true;
