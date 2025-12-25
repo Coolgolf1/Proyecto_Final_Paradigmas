@@ -28,6 +28,12 @@ public class GameManager : MonoBehaviour
 
     private InputAction _clickAction;
 
+    // Expansion
+    public double Phase { get; private set; }
+    private double _currentMaxExpansion = 2000;
+    private float _nextUnlockTime = 0f;
+    private float _phaseTimer;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     public void Start()
     {
@@ -57,8 +63,11 @@ public class GameManager : MonoBehaviour
         UIEvents.OnEndGameExit.AddListener(ResetGame);
         GameEvents.OnMainMenuExit.AddListener(ResetGame);
 
-
         FlightLauncher.InitFlightLauncher();
+
+        Phase = Phases.Easy;
+
+        _phaseTimer = _rand.Next(50, 70);
     }
 
     public void StartMainMenuGame()
@@ -82,6 +91,10 @@ public class GameManager : MonoBehaviour
         _info.ResetFlights();
         _info.ResetRoutes();
         Player.Restart();
+        Phase = Phases.Easy;
+        _phaseTimer = _rand.Next(50, 70);
+        _currentMaxExpansion = 2000;
+        _nextUnlockTime = Time.time + 2.0f;
     }
 
     public void InitMainMenuAirplanes(Transform earthTransform)
@@ -263,9 +276,145 @@ public class GameManager : MonoBehaviour
 
     }
 
-    public void GetPossibleAirports()
+    public List<Airport> GetPossibleAirports()
     {
+        List<Airport> candidates = new List<Airport>();
+        List<Airport> unlockedAirports = Player.UnlockedAirports;
 
+        foreach (Airport candidate in _info.savedAirports.Values)
+        {
+            if (unlockedAirports.Contains(candidate))
+                continue;
+
+            bool isReachable = false;
+
+            foreach (Airport myAirport in unlockedAirports)
+            {
+                double dist = Auxiliary.GetDirectDistanceBetweenAirports(candidate, myAirport);
+
+                if (dist <= _currentMaxExpansion)
+                {
+                    isReachable = true;
+                    break;
+                }
+            }
+
+            if (isReachable)
+                candidates.Add(candidate);
+        }
+
+        return candidates;
+    }
+
+    private void TriggerAirportExpansion()
+    {
+        List<Airport> possibleAirports = GetPossibleAirports();
+
+        if (possibleAirports.Count <= 0)
+        {
+            _currentMaxExpansion += 2000;
+            return;
+        }
+
+        Airport newAirport = possibleAirports[_rand.Next(possibleAirports.Count)];
+        Player.UnlockAirport(newAirport);
+
+        Debug.Log($"Unlocked new airport: {newAirport}.");
+
+
+
+    }
+
+    private double GetPhaseTimer()
+    {
+        double randomNoise = _rand.Next(-5, 5);
+
+        double phaseDuration;
+
+        switch (Phase)
+        {
+            case Phases.Medium:
+                phaseDuration = _rand.Next(80, 100);
+                break;
+
+            case Phases.Hard:
+                phaseDuration = _rand.Next(40, 60);
+                break;
+
+            case Phases.Surge:
+                phaseDuration = _rand.Next(5, 15);
+                break;
+
+            default:
+                phaseDuration = _rand.Next(80, 100);
+                break;
+        }
+
+        return phaseDuration + randomNoise;
+    }
+
+    private void UpdateDirector()
+    {
+        _phaseTimer -= Time.deltaTime;
+
+        if (_phaseTimer <= 0)
+        {
+            if (Phase == Phases.Surge)
+            {
+                Phase = Phases.Hard;
+                _phaseTimer = (float)GetPhaseTimer();
+            }
+            else
+            {
+                AdvancePhase();
+            }
+
+        }
+
+        UpdateExpansionRules();
+    }
+
+    private void AdvancePhase()
+    {
+        switch (Phase)
+        {
+            case Phases.Easy:
+                Phase = Phases.Medium;
+                _phaseTimer = 90f;
+                break;
+
+            case Phases.Medium:
+                Phase = Phases.Hard;
+                _phaseTimer = 60f;
+                break;
+
+            case Phases.Hard:
+                Phase = Phases.Surge;
+                _phaseTimer = 15f;
+                break;
+        }
+    }
+
+    private void UpdateExpansionRules()
+    {
+        switch (Phase)
+        {
+            case Phases.Easy:
+                _currentMaxExpansion = 5000;
+                break;
+
+            case Phases.Medium:
+                _currentMaxExpansion = 10000;
+                break;
+
+            case Phases.Hard:
+                _currentMaxExpansion = 20000;
+                break;
+
+            case Phases.Surge:
+                _currentMaxExpansion = 20000;
+                break;
+        }
     }
 
     // Update is called once per frame
@@ -274,14 +423,13 @@ public class GameManager : MonoBehaviour
         if (_mainMenuGame)
             return;
 
-        float current = Time.time;
+        UpdateDirector();
 
-        int prob = _rand.Next(0, 1000);
-
-        // 0.1% chance
-        if (prob == 0)
+        if (Time.time > _nextUnlockTime)
         {
+            TriggerAirportExpansion();
 
+            _nextUnlockTime = Time.time + _phaseTimer;
         }
     }
 }
