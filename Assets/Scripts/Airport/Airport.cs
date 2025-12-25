@@ -258,7 +258,7 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
     public List<Airport> GetReachableAirportsForRange(double range)
     {
         List<Airport> availableAirports = new List<Airport>();
-        foreach (Airport airport in TravellersToAirport.Keys)
+        foreach (Airport airport in _info.savedAirports.Values)
         {
             double distance = Auxiliary.GetDirectDistanceBetweenAirports(this, airport);
             if (distance < range)
