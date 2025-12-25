@@ -16,10 +16,7 @@ public class FlightUI : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Start()
     {
-        //flightNumber = GameObject.Find("FlightNumber").GetComponent<TMP_Text>();
-        //routeText = GameObject.Find("RouteText").GetComponent<TMP_Text>();
-        //passengers = GameObject.Find("FlightClientList").GetComponent<TMP_Text>();
-        //closeButton = GameObject.Find("CloseFlightUI").GetComponent<Button>();
+        
         closeButton.onClick.AddListener(CloseUI);
         upgradePlane.onClick.AddListener(OnUpgrade);
         viewPlane.onClick.AddListener(OnView);
