@@ -54,8 +54,9 @@ public class GameManager : MonoBehaviour
         GameEvents.OnMainMenuEnter.AddListener(StartGame);
 
         // Reset game if end or exit main menu game
-        GameEvents.OnPlayExit.AddListener(ResetGame);
+        UIEvents.OnEndGameExit.AddListener(ResetGame);
         GameEvents.OnMainMenuExit.AddListener(ResetGame);
+
 
         FlightLauncher.InitFlightLauncher();
     }
@@ -71,6 +72,8 @@ public class GameManager : MonoBehaviour
         _mainMenuGame = false;
         _economy.mainMenuGame = false;
     }
+
+    
 
     public void ResetGame()
     {

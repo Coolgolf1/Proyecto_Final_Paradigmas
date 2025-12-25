@@ -1,4 +1,6 @@
 
+using UnityEngine;
+
 public class GameMaster
 {
     private static GameMaster _instance;
@@ -44,6 +46,7 @@ public class GameMaster
 
     public void ChangeState(GameState nextState)
     {
+        Debug.Log(nextState.GetType());
         currentState?.OnStateExit();
         currentState = nextState;
         currentState?.OnStateEnter();
