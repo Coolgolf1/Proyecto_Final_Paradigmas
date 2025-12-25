@@ -46,7 +46,9 @@ public class GameMaster
 
     public void ChangeState(GameState nextState)
     {
-        Debug.Log(nextState.GetType());
+
+        if (currentState is not null && currentState.GetType() ==  nextState.GetType()) 
+            return;
         currentState?.OnStateExit();
         currentState = nextState;
         currentState?.OnStateEnter();
