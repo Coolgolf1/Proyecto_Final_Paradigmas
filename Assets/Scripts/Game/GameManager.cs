@@ -54,6 +54,8 @@ public class GameManager : MonoBehaviour
         // Reset game if end or exit main menu game
         GameEvents.OnPlayExit.AddListener(ResetGame);
         GameEvents.OnMainMenuExit.AddListener(ResetGame);
+
+        FlightLauncher.InitFlightLauncher();
     }
 
     public void StartMainMenuGame()
@@ -97,7 +99,7 @@ public class GameManager : MonoBehaviour
 
     public void StartGame()
     {
-        
+
         // Initialise Factory
         _airplaneFactory.Initialise(airplaneSpawner);
 
@@ -161,7 +163,7 @@ public class GameManager : MonoBehaviour
             if (_info.playerCamera.GetComponent<PlayerMovement>() is SpaceCamera camera)
             {
                 camera.SetAirport(initialAirport1);
-                
+
             }
 
             // Init travellers in each airport

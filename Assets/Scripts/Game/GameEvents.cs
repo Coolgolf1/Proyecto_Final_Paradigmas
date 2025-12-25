@@ -11,4 +11,6 @@ public static class GameEvents
     public static UnityEvent OnTransitionExit = new UnityEvent();
 
     public static UnityEvent OnAirportUnlock = new UnityEvent();
+
+    public static UnityEvent OnPlaneLandedAndBoarded = new UnityEvent();
 }

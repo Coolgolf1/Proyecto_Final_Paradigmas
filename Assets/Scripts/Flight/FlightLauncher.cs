@@ -1,12 +1,15 @@
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Xml.Linq;
 using UnityEngine;
 
 public static class FlightLauncher
 {
     private static InfoSingleton _info = InfoSingleton.GetInstance();
+
+    public static void InitFlightLauncher()
+    {
+        GameEvents.OnPlaneLandedAndBoarded.AddListener(LaunchAirplanesInHangar);
+    }
 
     public static void LaunchNewFlights()
     {
@@ -179,60 +182,114 @@ public static class FlightLauncher
     //        flight.StartFlight();
     //    }
     //}
-    public static void LaunchEmptyFlights()
+    //public static void LaunchEmptyFlights()
+    //{
+    //    List<Airplane> airplanesInHangar = new List<Airplane>();
+    //    foreach (Airport airport in _info.savedAirports.Values)
+    //    {
+    //        airplanesInHangar.AddRange(airport.Hangar);
+    //    }
+
+    //    Dictionary<Airport, int> incomingCapacity = new Dictionary<Airport, int>();
+
+    //    // Pre-fill incoming capacity from existing flights
+    //    foreach (Flight f in _info.flights)
+    //    {
+    //        // Only count flights that are NOT full (or explicitly empty)
+    //        if (!f.Full)
+    //        {
+    //            if (!incomingCapacity.ContainsKey(f.AirportDest)) incomingCapacity[f.AirportDest] = 0;
+    //            incomingCapacity[f.AirportDest] += f.Airplane.Capacity;
+    //        }
+    //    }
+
+    //    List<Flight> createdFlights = new List<Flight>();
+
+    //    foreach (Airplane airplane in airplanesInHangar)
+    //    {
+    //        if (_info.GetFlightOfAirplane(airplane) != null) continue;
+
+    //        Airport origin = _info.GetAirportOfAirplane(airplane);
+
+    //        List<Airport> reachableAirports = origin.GetReachableAirportsForAirplane(airplane);
+
+    //        // --- FIX 2: PRIORITIZE BUSIEST AIRPORTS ---
+    //        // Don't just take the first airport in the list. Sort by most desperate.
+    //        // We order by Total Passengers descending.
+    //        var sortedAirports = reachableAirports.OrderByDescending(a => GetTotalPassengers(a)).ToList();
+
+    //        foreach (Airport targetAirport in sortedAirports)
+    //        {
+    //            // Now we check if we should send it
+    //            if (ShouldSendPlane(targetAirport, airplane, incomingCapacity))
+    //            {
+    //                Flight newFlight = CreateAndRegisterFlight(airplane, origin, targetAirport);
+    //                if (newFlight != null)
+    //                {
+    //                    createdFlights.Add(newFlight);
+    //                    break; // Plane assigned, move to next plane
+    //                }
+    //            }
+    //        }
+    //    }
+
+    //    foreach (Flight flight in createdFlights)
+    //    {
+    //        flight.StartFlight();
+    //    }
+    //}
+
+    public static void LaunchAirplanesInHangar()
     {
-        List<Airplane> airplanesInHangar = new List<Airplane>();
         foreach (Airport airport in _info.savedAirports.Values)
         {
-            airplanesInHangar.AddRange(airport.Hangar);
-        }
+            int totalTravellers = airport.TravellersToAirport.Values.Sum();
 
-        Dictionary<Airport, int> incomingCapacity = new Dictionary<Airport, int>();
+            Airport objAirport = airport.TravellersToAirport.Aggregate((x, y) => x.Value > y.Value ? x : y).Key;
 
-        // Pre-fill incoming capacity from existing flights
-        foreach (Flight f in _info.flights)
-        {
-            // Only count flights that are NOT full (or explicitly empty)
-            if (!f.Full)
+            if (totalTravellers <= 0)
+                continue;
+
+            List<Airplane> airplanesInHangar = airport.Hangar.ToList();
+
+            foreach (Airplane airplane in airplanesInHangar)
             {
-                if (!incomingCapacity.ContainsKey(f.AirportDest)) incomingCapacity[f.AirportDest] = 0;
-                incomingCapacity[f.AirportDest] += f.Airplane.Capacity;
-            }
-        }
+                totalTravellers = airport.TravellersToAirport.Values.Sum();
 
-        List<Flight> createdFlights = new List<Flight>();
+                objAirport = airport.TravellersToAirport.Aggregate((x, y) => x.Value > y.Value ? x : y).Key;
 
-        foreach (Airplane airplane in airplanesInHangar)
-        {
-            if (_info.GetFlightOfAirplane(airplane) != null) continue;
-
-            Airport origin = _info.GetAirportOfAirplane(airplane);
-
-            List<Airport> reachableAirports = origin.GetReachableAirportsForAirplane(airplane);
-
-            // --- FIX 2: PRIORITIZE BUSIEST AIRPORTS ---
-            // Don't just take the first airport in the list. Sort by most desperate.
-            // We order by Total Passengers descending.
-            var sortedAirports = reachableAirports.OrderByDescending(a => GetTotalPassengers(a)).ToList();
-
-            foreach (Airport targetAirport in sortedAirports)
-            {
-                // Now we check if we should send it
-                if (ShouldSendPlane(targetAirport, airplane, incomingCapacity))
+                if (totalTravellers > 0)
                 {
-                    Flight newFlight = CreateAndRegisterFlight(airplane, origin, targetAirport);
-                    if (newFlight != null)
+                    Flight flight;
+
+                    (Airplane objAirplane, Airport nextHop) = _info.savedAirports[airport.Name].FindHopForTravellersToAirport(objAirport);
+
+                    if (objAirplane is null || nextHop is null)
                     {
-                        createdFlights.Add(newFlight);
-                        break; // Plane assigned, move to next plane
+                        break;
                     }
+
+                    if (_info.GetFlightOfAirplane(objAirplane) is not null)
+                        continue;
+
+                    GameObject flightGO = new GameObject();
+                    flightGO.name = $"{airport.Name}-{nextHop.Name}";
+                    flight = flightGO.AddComponent<Flight>();
+
+                    flight.Initialise(airport, nextHop, _info.savedRoutes[$"{airport.Name}-{nextHop.Name}"], objAirplane);
+                    _info.flights.Add(flight);
+
+                    totalTravellers -= _info.savedAirports[airport.Name].TravellersToAirport[objAirport];
+
+                    flight.Embark(_info.savedAirports[airport.Name].TravellersToAirport[objAirport], objAirport);
+
+                    flight.StartFlight();
+                }
+                else
+                {
+                    break;
                 }
             }
-        }
-
-        foreach (Flight flight in createdFlights)
-        {
-            flight.StartFlight();
         }
     }
 
