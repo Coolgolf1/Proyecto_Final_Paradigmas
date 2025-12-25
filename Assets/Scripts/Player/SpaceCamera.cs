@@ -18,18 +18,22 @@ public class SpaceCamera : PlayerMovement
     private bool _arrivedAirplane;
     private bool _arrivedAirport;
 
+    public bool GoingToMenu { get; set; }
+    public bool GoingToInit { get; set; }
+
     private Airport airportObj;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     public void Start()
     {
         UIEvents.OnEndGameEnter.AddListener(StopFollowing);
         UIEvents.OnRestartGame.AddListener(RestartGame);
+        GoingToMenu = false;
+        GoingToInit = false;
     }
 
     public void RestartGame()
     {
-        transform.position = GameConstants.initCameraPosition;
-        transform.rotation = GameConstants.initCameraRotation;
+        //GoingToInit = true;
     }
 
     public void StopFollowing()
@@ -65,6 +69,13 @@ public class SpaceCamera : PlayerMovement
             _arrivedAirport = false;
         }
 
+        if (GoingToMenu)
+        {
+            GoToMainMenu();
+        } else if (GoingToInit)
+        {
+            GoToInit();
+        }
 
     }
 
@@ -98,6 +109,8 @@ public class SpaceCamera : PlayerMovement
         followingAirplane = null;
         airportObj = airport;
     }
+
+    
 
     private void FollowAirplane()
     {
@@ -163,5 +176,39 @@ public class SpaceCamera : PlayerMovement
             transform.LookAt(_info.earth.transform.position);
         } 
 
+    }
+
+    public void GoToMainMenu()
+    {
+        
+        transform.position = Vector3.Lerp(transform.position, GameConstants.mainMenuCameraPosition, Time.fixedDeltaTime);
+        transform.rotation = Quaternion.Lerp(transform.rotation, GameConstants.mainMenuCameraRotation, Time.fixedDeltaTime);
+
+        // If not close enough to initial view
+        if ((GameConstants.mainMenuCameraPosition - transform.position).magnitude >= 0.1)
+            return;
+
+        // Animation finished
+        transform.position = GameConstants.mainMenuCameraPosition;
+        transform.rotation = GameConstants.mainMenuCameraRotation;
+        GoingToMenu = false;
+        
+    }
+
+    public void GoToInit()
+    {
+        
+        transform.position = Vector3.Lerp(transform.position, GameConstants.initCameraPosition, Time.fixedDeltaTime);
+        transform.rotation = Quaternion.Lerp(transform.rotation, GameConstants.initCameraRotation, Time.fixedDeltaTime);
+
+        // If not close enough to initial view
+        if ((GameConstants.initCameraPosition - transform.position).magnitude >= 0.1)
+            return;
+
+        // Animation finished
+        transform.position = GameConstants.initCameraPosition;
+        transform.rotation = GameConstants.initCameraRotation;
+        GoingToInit = false;
+        
     }
 }

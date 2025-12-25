@@ -70,8 +70,8 @@ public class MainMenuUI : MonoBehaviour
 
     public void RestartMenu()
     {
-        player.transform.position = GameConstants.mainMenuCameraPosition;
-        player.transform.rotation = GameConstants.mainMenuCameraRotation;
+        SpaceCamera camera = player.GetComponent<SpaceCamera>();
+        camera.GoingToMenu = true;
         gameObject.SetActive(true);
         ShowButtons();
     }

@@ -37,7 +37,7 @@ public class MainTransitionGameState : GameState
 
     public override void OnStateEnter()
     {
-        UIEvents.OnMainMenuEnter?.Invoke();
+        //UIEvents.OnMainMenuExit?.Invoke();
     }
 
     public override void OnStateExit()
