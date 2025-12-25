@@ -1742,6 +1742,7 @@ MonoBehaviour:
   buyAirplanes: {fileID: 1919509536}
   upgradeAirport: {fileID: 477334731}
   store: {fileID: 246972755}
+  maxClients: {fileID: 0}
 --- !u!1 &220263442
 GameObject:
   m_ObjectHideFlags: 0
@@ -12507,10 +12508,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Pasajeros
+  m_text: Passengers
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 2f0923b69fdcc214f9dc6ca88f7daac5, type: 2}
-  m_sharedMaterial: {fileID: 609688620139699448, guid: 2f0923b69fdcc214f9dc6ca88f7daac5, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: d7500af5f481a6f40932430251163f15, type: 2}
+  m_sharedMaterial: {fileID: 1501415557218503022, guid: d7500af5f481a6f40932430251163f15, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -12540,7 +12541,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 4
+  m_fontStyle: 0
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 256
   m_textAlignment: 65535

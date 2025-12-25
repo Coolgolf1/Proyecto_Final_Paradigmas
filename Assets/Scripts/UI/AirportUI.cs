@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,6 +14,7 @@ public class AirportUI : MonoBehaviour
     [SerializeField] private Button buyAirplanes;
     [SerializeField] private Button upgradeAirport;
     [SerializeField] private AirplaneStore store;
+    [SerializeField] private TMP_Text maxClients; 
 
     private InfoSingleton _info = InfoSingleton.GetInstance();
 
@@ -28,6 +30,7 @@ public class AirportUI : MonoBehaviour
         UIEvents.OnAirplaneStoreEnter.AddListener(CloseUI);
         UIEvents.OnRouteStoreEnter.AddListener(CloseUI);
         UIEvents.OnEndGameEnter.AddListener(CloseUI);
+        UIEvents.OnMainMenuEnter.AddListener(CloseUI);
         gameObject.SetActive(false);
     }
 
@@ -63,6 +66,7 @@ public class AirportUI : MonoBehaviour
 
         airportID.text = airport.Id.ToUpper();
         airportName.text = airport.name;
+        maxClients.text = $"{airport.Capacity} max";
         string passengersText = "";
         foreach (Airport destAirport in Player.UnlockedAirports)
         {

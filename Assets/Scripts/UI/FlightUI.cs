@@ -26,6 +26,8 @@ public class FlightUI : MonoBehaviour
 
         UIEvents.OnAirplaneStoreEnter.AddListener(CloseUI);
         UIEvents.OnRouteStoreEnter.AddListener(CloseUI);
+
+        UIEvents.OnMainMenuEnter.AddListener(CloseUI);
         
     }
 
@@ -80,9 +82,9 @@ public class FlightUI : MonoBehaviour
         flightNumber.text = flight.FlightID;
         routeText.text = $"{flight.AirportOrig.Id.ToUpper()} - {flight.AirportDest.Id.ToUpper()}";
         string passengersText = "";
-        foreach (Airport destAirport in flight.TravellersToAirport.Keys)
+        foreach (Airport destAirport in Player.UnlockedAirports)
         {
-            passengersText += $"- {destAirport.name}: {flight.TravellersToAirport[destAirport]}\n";
+            passengersText += $"- {destAirport.Id.ToUpper()}: {flight.TravellersToAirport[destAirport]}\n";
         }
 
         passengers.text = passengersText;
