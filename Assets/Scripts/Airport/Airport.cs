@@ -340,7 +340,7 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
         Hangar.Remove(flight.Airplane);
     }
 
-    public void ReceivePassengers(int passengers, Airport objAirport)
+    public void ReceivePassengers(int passengers, Airport objAirport, Flight flight)
     {
         if (objAirport != this)
         {
@@ -352,7 +352,7 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
             _info.totalTravellersReceived += passengers;
 
             // Give coins to user
-            _economy.SaveCoins(passengers, Auxiliary.GetDirectDistanceBetweenAirports(this, objAirport));
+            _economy.SaveCoins(passengers, Auxiliary.GetDirectDistanceBetweenAirports(this, flight.AirportOrig));
         }
     }
 
@@ -454,7 +454,7 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
 
                 if (newFlight.Full)
                     fullAirplanes.Add(objAirplane);
-                
+
             }
         }
 

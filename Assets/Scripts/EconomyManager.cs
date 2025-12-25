@@ -1,5 +1,6 @@
 
 using System;
+using UnityEngine;
 
 public class EconomyManager
 {
@@ -23,12 +24,14 @@ public class EconomyManager
 
     public void SaveCoins(int passengers, double distance)
     {
-        if (!mainMenuGame)
+        if (mainMenuGame)
             return;
+
+        Debug.Log(passengers * distance / 25);
 
         if (passengers > 0)
         {
-            Player.Money += passengers * (int)(distance / 25);
+            Player.Money += (int)(passengers * distance / 25);
             Player.UpdateScore(passengers);
             MoneyChange?.Invoke(this, EventArgs.Empty);
         }

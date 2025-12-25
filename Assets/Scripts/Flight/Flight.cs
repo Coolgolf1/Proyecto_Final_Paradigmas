@@ -101,7 +101,7 @@ public class Flight : MonoBehaviour
     {
         foreach (Airport airport in _info.savedAirports.Values)
         {
-            AirportDest.ReceivePassengers(TravellersToAirport[airport], airport);
+            AirportDest.ReceivePassengers(TravellersToAirport[airport], airport, this);
             TravellersToAirport[airport] = 0;
         }
 
