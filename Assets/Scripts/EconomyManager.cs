@@ -1,6 +1,5 @@
 
 using System;
-using UnityEngine;
 
 public class EconomyManager
 {
@@ -26,8 +25,6 @@ public class EconomyManager
     {
         if (mainMenuGame)
             return;
-
-        Debug.Log(passengers * distance / 25);
 
         if (passengers > 0)
         {
