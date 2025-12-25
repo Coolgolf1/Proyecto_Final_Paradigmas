@@ -59,13 +59,13 @@ public class AirplaneStore : MonoBehaviour
         // If no more remaining cannot buy
         if (smallAirplanes == 0)
         {
-            BuyMessageFailureNoStock("small");
+            //BuyMessageFailureNoStock("small");
             return;
         }
 
         if (GameConstants.smallPrice * _smallAirplanePriceMultiplier > Player.Money)
         {
-            BuyMessageFailureNotEnoughCoins("small");
+            //BuyMessageFailureNotEnoughCoins("small");
             return;
         }
 
@@ -95,9 +95,9 @@ public class AirplaneStore : MonoBehaviour
         {
             smallAirplanes--;
         }
-
+        UpdateButtons();
         // Success message
-        BuyMessageSuccess("small", airportName);
+        //BuyMessageSuccess("small", airportName);
 
         // Launch flight
         FlightLauncher.LaunchNewFlights();
@@ -108,13 +108,13 @@ public class AirplaneStore : MonoBehaviour
         // If no more remaining cannot buy
         if (mediumAirplanes == 0)
         {
-            BuyMessageFailureNoStock("medium");
+            //BuyMessageFailureNoStock("medium");
             return;
         }
 
         if (GameConstants.mediumPrice * _mediumAirplanePriceMultiplier > Player.Money)
         {
-            BuyMessageFailureNotEnoughCoins("medium");
+            //BuyMessageFailureNotEnoughCoins("medium");
             return;
         }
 
@@ -146,8 +146,8 @@ public class AirplaneStore : MonoBehaviour
         }
 
         // Success message
-        BuyMessageSuccess("medium", airportName);
-
+        //BuyMessageSuccess("medium", airportName);
+        UpdateButtons();
         // Launch flight
         FlightLauncher.LaunchNewFlights();
     }
@@ -156,13 +156,13 @@ public class AirplaneStore : MonoBehaviour
         // If no more remaining cannot buy
         if (largeAirplanes == 0)
         {
-            BuyMessageFailureNoStock("large");
+            //BuyMessageFailureNoStock("large");
             return;
         }
 
         if (GameConstants.largePrice * _largeAirplanePriceMultiplier > Player.Money)
         {
-            BuyMessageFailureNotEnoughCoins("large");
+            //BuyMessageFailureNotEnoughCoins("large");
             return;
         }
 
@@ -194,10 +194,11 @@ public class AirplaneStore : MonoBehaviour
         }
 
         // Success message
-        BuyMessageSuccess("large", airportName);
-
+        //BuyMessageSuccess("large", airportName);
+        UpdateButtons();
         // Launch flight
         FlightLauncher.LaunchNewFlights();
+
     }
 
     public void LoadStore()
@@ -205,21 +206,22 @@ public class AirplaneStore : MonoBehaviour
         double baseSpeed = GameConstants.relativeSpeed * GameConstants.speedMultiplier;
 
         // Small Airplane 
-        smallAirplanePrice.text = $"Price: {GameConstants.smallPrice} coins";
+        smallAirplanePrice.text = $"Price: {GameConstants.smallPrice * _smallAirplanePriceMultiplier} coins";
         smallAirplaneCapacity.text = $"Capacity: {GameConstants.smallCapacity}";
         smallAirplaneSpeed.text = $"Speed: {(int)(baseSpeed * GameConstants.smallSpeedMultiplier * 5)}  km/h";
         smallAirplaneRange.text = $"Range: {GameConstants.smallRange} km";
+        
         smallAirplaneBuy.onClick.AddListener(smallAirplaneBought);
 
         // Medium Airplane 
-        mediumAirplanePrice.text = $"Price: {GameConstants.mediumPrice} coins";
+        mediumAirplanePrice.text = $"Price: {GameConstants.mediumPrice * _mediumAirplanePriceMultiplier} coins";
         mediumAirplaneCapacity.text = $"Capacity: {GameConstants.mediumCapacity}";
         mediumAirplaneSpeed.text = $"Speed: {(int)(baseSpeed * GameConstants.mediumSpeedMultiplier * 5)} km/h";
         mediumAirplaneRange.text = $"Range: {GameConstants.mediumRange} km";
         mediumAirplaneBuy.onClick.AddListener(mediumAirplaneBought);
 
         // Large Airplane 
-        largeAirplanePrice.text = $"Price: {GameConstants.largePrice} coins";
+        largeAirplanePrice.text = $"Price: {GameConstants.largePrice * _largeAirplanePriceMultiplier} coins";
         largeAirplaneCapacity.text = $"Capacity: {GameConstants.largeCapacity}";
         largeAirplaneSpeed.text = $"Speed: {(int)(baseSpeed * GameConstants.largeSpeedMultiplier * 5)} km/h";
         largeAirplaneRange.text = $"Range: {GameConstants.largeRange} km";
@@ -227,6 +229,7 @@ public class AirplaneStore : MonoBehaviour
 
         // Dropdowns
         UpdateAirports();
+        
     }
 
     private void UpdateAirports()
@@ -245,6 +248,39 @@ public class AirplaneStore : MonoBehaviour
         smallAirplaneSelector.AddOptions(options);
         mediumAirplaneSelector.AddOptions(options);
         largeAirplaneSelector.AddOptions(options);
+        UpdateButtons();
+
+    }
+
+    private void UpdateButtons()
+    {
+        if (_economy.GetBalance() >= GameConstants.smallPrice * _smallAirplanePriceMultiplier && smallAirplanes != 0)
+        {
+            smallAirplaneBuy.interactable = true;
+        }
+        else
+        {
+            smallAirplaneBuy.interactable = false;
+        }
+
+
+        if (_economy.GetBalance() >= GameConstants.mediumPrice * _mediumAirplanePriceMultiplier && mediumAirplanes != 0)
+        {
+            mediumAirplaneBuy.interactable = true;
+        }
+        else
+        {
+            mediumAirplaneBuy.interactable = false;
+        }
+
+        if (_economy.GetBalance() >= GameConstants.largePrice * _largeAirplanePriceMultiplier && largeAirplanes != 0)
+        {
+            largeAirplaneBuy.interactable = true;
+        }
+        else
+        {
+            largeAirplaneBuy.interactable = false;
+        }
     }
 
     public void Awake()
@@ -254,11 +290,11 @@ public class AirplaneStore : MonoBehaviour
 
         openStore.onClick.AddListener(ShowStoreUI);
         closeStore.onClick.AddListener(CloseStoreUI);
-        closeBuyMessage.onClick.AddListener(CloseBuyMessage);
+        //closeBuyMessage.onClick.AddListener(CloseBuyMessage);
 
-        smallAirplaneBuy.onClick.AddListener(OpenBuyMessage);
-        mediumAirplaneBuy.onClick.AddListener(OpenBuyMessage);
-        largeAirplaneBuy.onClick.AddListener(OpenBuyMessage);
+        //smallAirplaneBuy.onClick.AddListener(OpenBuyMessage);
+        //mediumAirplaneBuy.onClick.AddListener(OpenBuyMessage);
+        //largeAirplaneBuy.onClick.AddListener(OpenBuyMessage);
 
         UIEvents.OnRouteStoreEnter.AddListener(CloseStoreUI);
 
@@ -279,34 +315,34 @@ public class AirplaneStore : MonoBehaviour
         UIEvents.OnAirplaneStoreExit.Invoke();
     }
 
-    public void OpenBuyMessage()
-    {
-        buyMessagePanel.gameObject.SetActive(true);
+    //public void OpenBuyMessage()
+    //{
+    //    buyMessagePanel.gameObject.SetActive(true);
 
-        // Disable close store button
-        closeStore.interactable = false;
-    }
+    //    // Disable close store button
+    //    closeStore.interactable = false;
+    //}
 
-    public void CloseBuyMessage()
-    {
-        buyMessagePanel.gameObject.SetActive(false);
+    //public void CloseBuyMessage()
+    //{
+    //    buyMessagePanel.gameObject.SetActive(false);
 
-        // Enable close store button
-        closeStore.interactable = true;
-    }
+    //    // Enable close store button
+    //    closeStore.interactable = true;
+    //}
 
-    public void BuyMessageSuccess(string airplaneType, string airportName)
-    {
-        buyMessage.text = $"Sucess!\n\nThe {airplaneType} airplane is now in {airportName}";
-    }
+    //public void BuyMessageSuccess(string airplaneType, string airportName)
+    //{
+    //    buyMessage.text = $"Sucess!\n\nThe {airplaneType} airplane is now in {airportName}";
+    //}
 
-    public void BuyMessageFailureNotEnoughCoins(string airplaneType)
-    {
-        buyMessage.text = $"Not enough coins to buy {airplaneType} airplane!";
-    }
+    //public void BuyMessageFailureNotEnoughCoins(string airplaneType)
+    //{
+    //    buyMessage.text = $"Not enough coins to buy {airplaneType} airplane!";
+    //}
 
-    public void BuyMessageFailureNoStock(string airplaneType)
-    {
-        buyMessage.text = $"You have already bought all {airplaneType} airplanes!";
-    }
+    //public void BuyMessageFailureNoStock(string airplaneType)
+    //{
+    //    buyMessage.text = $"You have already bought all {airplaneType} airplanes!";
+    //}
 }
