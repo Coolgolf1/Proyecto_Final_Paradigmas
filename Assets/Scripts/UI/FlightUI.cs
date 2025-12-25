@@ -1,5 +1,4 @@
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -25,11 +24,18 @@ public class FlightUI : MonoBehaviour
         upgradePlane.onClick.AddListener(OnUpgrade);
         viewPlane.onClick.AddListener(OnView);
         gameObject.SetActive(false);
+
+        UIEvents.OnEndGameEnter.AddListener(CleanUI);
     }
 
     // Update is called once per frame
     private void Update()
     {
+    }
+
+    public void CleanUI()
+    {
+        _info.flightUI.gameObject.SetActive(false);
     }
 
     private void OnUpgrade()
@@ -72,7 +78,7 @@ public class FlightUI : MonoBehaviour
                 route.UnlitRoute();
             }
         }
-        
+
         flightNumber.text = flight.FlightID;
         routeText.text = $"{flight.AirportOrig.Id.ToUpper()} - {flight.AirportDest.Id.ToUpper()}";
         string passengersText = "";

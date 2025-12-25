@@ -86,7 +86,6 @@ public class GameManager : MonoBehaviour
             int a = rand.Next(_info.savedAirports.Count);
             string key = _info.savedAirports.Keys.ToList()[a];
             _info.savedAirports[key].Hangar.Add(airplane);
-            _info.savedAirports[key].SetCapacity(1000000000);
             _info.airplanes.Add(airplane);
         }
     }
@@ -111,6 +110,7 @@ public class GameManager : MonoBehaviour
             foreach (Airport airport in _info.savedAirports.Values)
             {
                 Player.UnlockAirport(airport);
+                airport.SetCapacity(1000000000);
             }
 
             // Init travellers in each airport
@@ -137,7 +137,6 @@ public class GameManager : MonoBehaviour
 
             if (validStarts.Count == 0)
             {
-                Debug.Log("ERROR");
                 return;
             }
 

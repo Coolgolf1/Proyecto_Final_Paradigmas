@@ -14,7 +14,7 @@ public static class Player
 
     public static void UpdateScore(int coins)
     {
-        Score += (int)Math.Floor(coins * 0.01);
+        Score += (int)Math.Ceiling(coins * 0.01);
     }
 
     public static int GetHighScore()

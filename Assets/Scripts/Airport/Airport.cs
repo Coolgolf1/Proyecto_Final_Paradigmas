@@ -14,7 +14,7 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
     public int ReceivedTravellers { get; private set; }
     public Location Location { get; private set; }
     public Levels Level { get; private set; }
-    public int Capacity { get; private set; } = GameConstants.maxTravellersInAirport;
+    public int Capacity { get; private set; }
     public bool Unlocked { get; private set; } = false;
 
     // Collections
@@ -45,10 +45,12 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
         ReceivedTravellers = 0;
         Location = location;
 
-        Capacity = GameConstants.maxTravellersInAirport;
+        Capacity = -GameConstants.maxTravellersInAirport;
         Level = Levels.Basic;
 
         gameObject.SetActive(false);
+
+        GameEvents.OnAirportUnlock.AddListener(UpdateCapacity);
     }
 
     public void Unlock()
@@ -56,6 +58,7 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
         Unlocked = true;
         _unlockTime = Time.time;
         gameObject.SetActive(Unlocked);
+        GameEvents.OnAirportUnlock?.Invoke();
     }
 
     public void Upgrade()
@@ -63,7 +66,7 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
         if (Level < Levels.Elite)
             Level++;
 
-        Capacity = GameConstants.maxTravellersInAirport + (int)Level * 3000;
+        Capacity = GameConstants.maxTravellersInAirport + (int)Level * GameConstants.AirportTravellersUpgrade;
     }
 
     public void SetCapacity(int capacity)
@@ -71,15 +74,28 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
         Capacity = capacity;
     }
 
+    public void UpdateCapacity()
+    {
+        Capacity += GameConstants.maxTravellersInAirport;
+    }
+
     public void Awake()
     {
         _clickAction = InputSystem.actions.FindAction("Click");
         _cam = _info.playerCamera;
         ReceivedTravellers = 0;
+        UIEvents.OnMainMenuEnter.AddListener(_clickAction.Disable);
+        UIEvents.OnEndGameEnter.AddListener(CleanUI);
+        UIEvents.OnPlayEnter.AddListener(_clickAction.Enable);
         UIEvents.OnAirplaneStoreEnter.AddListener(_clickAction.Disable);
         UIEvents.OnAirplaneStoreExit.AddListener(_clickAction.Enable);
         UIEvents.OnRouteStoreEnter.AddListener(_clickAction.Disable);
         UIEvents.OnRouteStoreExit.AddListener(_clickAction.Enable);
+    }
+
+    public void CleanUI()
+    {
+        _info.airportUI.gameObject.SetActive(false);
     }
 
     private void OnEnable()
@@ -91,6 +107,7 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
     private void OnDisable()
     {
         _clickAction.performed -= OnClickAirport;
+        _clickAction.Disable();
     }
 
     private void OnClickAirport(InputAction.CallbackContext ctx)
@@ -101,7 +118,7 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
             // Detecta colisión con este objeto
-            if (hit.collider.gameObject == this.gameObject)
+            if (hit.collider.gameObject == gameObject)
             {
                 _info.flightUI.gameObject.SetActive(false);
                 _info.airportUI.gameObject.SetActive(true);
@@ -260,6 +277,9 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
         List<Airport> availableAirports = new List<Airport>();
         foreach (Airport airport in _info.savedAirports.Values)
         {
+            if (airport == this)
+                continue;
+
             double distance = Auxiliary.GetDirectDistanceBetweenAirports(this, airport);
             if (distance < range)
             {
@@ -483,5 +503,7 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
             else
                 SpawnTravellers(2);
         }
+
+        CheckMaxPassengers();
     }
 }
