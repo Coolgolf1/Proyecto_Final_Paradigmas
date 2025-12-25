@@ -1,6 +1,6 @@
 # MiniAirways
 ## Lógica de Juego
-- Compra de rutas para aeropuertos desbloqueados. ❌
+- Compra de rutas para aeropuertos desbloqueados. ✅
 - Desbloqueo de aeropuertos progresivo según número de pasajeros transportados. ❌
 - Ritmo de aparición de pasajeros que incrementa (solo en aeropuertos desbloqueados). ✅
 - Definir lógica de final de juego: límite de pasajeros en aeropuerto. ✅
