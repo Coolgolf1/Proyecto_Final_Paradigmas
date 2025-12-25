@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
-
 public class Airport : MonoBehaviour, IUpgradable, IObject
 {
     // Read-only from outside
@@ -35,6 +35,8 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
 
     private System.Random _rand = new System.Random();
 
+    private UnityEvent _advancePhase = new UnityEvent();
+
     // Serialize Field
     [SerializeField] public GameObject modelPrefab;
 
@@ -53,6 +55,14 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
         gameObject.SetActive(false);
 
         GameEvents.OnAirportUnlock.AddListener(UpdateCapacity);
+
+        _advancePhase.AddListener(AdvancePhase);
+    }
+
+    public void AdvancePhase()
+    {
+        if (Phase < Phases.Surge)
+            Phase++;
     }
 
     public void Unlock()
@@ -500,10 +510,6 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
         {
             if (current - _unlockTime < 300)
                 SpawnTravellers(1);
-            else if (current - _unlockTime < 500)
-                SpawnTravellers(1.5f);
-            else
-                SpawnTravellers(2);
         }
 
         CheckMaxPassengers();
