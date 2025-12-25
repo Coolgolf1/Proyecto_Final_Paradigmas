@@ -1,9 +1,7 @@
-using NUnit.Framework;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using static UnityEditor.FilePathAttribute;
 
 public class RoutesUI : MonoBehaviour
 {
@@ -34,6 +32,7 @@ public class RoutesUI : MonoBehaviour
         gameObject.SetActive(false);
 
         UIEvents.OnAirplaneStoreEnter.AddListener(CloseStoreUI);
+        UIEvents.OnEndGameEnter.AddListener(CloseStoreUI);
     }
 
     void LoadStore()
@@ -51,7 +50,7 @@ public class RoutesUI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     void UpdateFirstChoice()
@@ -102,7 +101,7 @@ public class RoutesUI : MonoBehaviour
         if (_economy.GetBalance() < _price)
         {
             buyRoute.interactable = false;
-        } 
+        }
         else if (_info.savedRoutes.ContainsKey($"{a1value}-{a2value}"))
         {
             priceText.text = $"Already Purchased";
@@ -139,8 +138,8 @@ public class RoutesUI : MonoBehaviour
         if (!_info.savedRoutes.ContainsKey($"{location1}-{location2}"))
         {
             if (_economy.SubtractCoins(_price))
-                {
-            
+            {
+
                 GameObject routeGO = Instantiate(routePrefab, earth.transform);
 
                 routeGO.name = $"{location1}-{location2}";
@@ -168,5 +167,5 @@ public class RoutesUI : MonoBehaviour
         }
     }
 
-   
+
 }

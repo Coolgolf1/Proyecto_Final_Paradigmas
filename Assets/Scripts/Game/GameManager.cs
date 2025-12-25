@@ -24,6 +24,8 @@ public class GameManager : MonoBehaviour
     private Init _init;
     private bool _mainMenuGame = false;
 
+    private System.Random _rand = new System.Random();
+
     private InputAction _clickAction;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -76,9 +78,7 @@ public class GameManager : MonoBehaviour
         _info.ResetAirports();
         _info.ResetFlights();
         _info.ResetRoutes();
-        Player.Money = 0;
-        Player.Score = 0;
-
+        Player.Restart();
     }
 
     public void InitMainMenuAirplanes(Transform earthTransform)
@@ -260,9 +260,25 @@ public class GameManager : MonoBehaviour
 
     }
 
+    public void UnlockPossibleAirport()
+    {
+
+    }
+
     // Update is called once per frame
     private void Update()
     {
+        if (_mainMenuGame)
+            return;
 
+        float current = Time.time;
+
+        int prob = _rand.Next(0, 1000);
+
+        // 0.1% chance
+        if (prob == 0)
+        {
+
+        }
     }
 }

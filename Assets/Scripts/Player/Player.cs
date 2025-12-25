@@ -33,4 +33,11 @@ public static class Player
         UnlockedAirports.Add(airport);
         airport.Unlock();
     }
+
+    public static void Restart()
+    {
+        Score = 0;
+        Money = 0;
+        UnlockedAirports.Clear();
+    }
 }

@@ -38,6 +38,8 @@ public class MainUI : MonoBehaviour
 
         // Finished loading listeners
         UIEvents.LoadedListeners?.Invoke();
+
+        UIEvents.OnEndGameEnter.AddListener(HideUI);
     }
 
     private void Play()

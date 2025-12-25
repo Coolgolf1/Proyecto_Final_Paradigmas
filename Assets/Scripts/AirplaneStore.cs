@@ -54,6 +54,19 @@ public class AirplaneStore : MonoBehaviour
     private AirplaneFactory _airplaneFactory = AirplaneFactory.GetInstance();
     private EconomyManager _economy = EconomyManager.GetInstance();
 
+    private void Start()
+    {
+        GameEvents.OnPlayEnter.AddListener(RestartAirplanes);
+        UIEvents.OnEndGameEnter.AddListener(CloseStoreUI);
+    }
+
+    public void RestartAirplanes()
+    {
+        smallAirplanes = 9;
+        mediumAirplanes = 7;
+        largeAirplanes = 5;
+    }
+
     public void smallAirplaneBought()
     {
         // If no more remaining cannot buy
