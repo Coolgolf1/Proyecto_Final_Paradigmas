@@ -117,6 +117,11 @@ public class RoutesUI : MonoBehaviour
     public void ShowStoreUI()
     {
         _economy.SetCoins(1000000);
+
+        UpdateFirstChoice();
+        UpdateSecondChoice();
+        UpdatePriceAndButton();
+
         gameObject.SetActive(true);
         UIEvents.OnRouteStoreEnter.Invoke();
     }

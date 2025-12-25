@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class GameManager : MonoBehaviour
 {
@@ -23,6 +24,8 @@ public class GameManager : MonoBehaviour
     private Init _init;
     private bool _mainMenuGame = false;
 
+    private InputAction _clickAction;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     public void Start()
     {
@@ -37,6 +40,8 @@ public class GameManager : MonoBehaviour
 
         // Initialise initialliser
         _init = gameObject.AddComponent<Init>();
+
+        _clickAction = InputSystem.actions.FindAction("Click");
 
         // Start game or main menu game
         GameEvents.OnMainMenuEnter.AddListener(StartMainMenuGame);
@@ -92,6 +97,7 @@ public class GameManager : MonoBehaviour
 
     public void StartGame()
     {
+        
         // Initialise Factory
         _airplaneFactory.Initialise(airplaneSpawner);
 
@@ -104,6 +110,7 @@ public class GameManager : MonoBehaviour
         // Save data of routes
         if (_mainMenuGame)
         {
+            _clickAction.Disable();
             InitMainMenuAirplanes(earth.transform);
 
             _init.SaveDataOfRoutes(routePrefab, earth.transform);
@@ -118,6 +125,8 @@ public class GameManager : MonoBehaviour
         }
         else
         {
+            _clickAction.Enable();
+
             _info.ResetRoutes();
 
             System.Random _rand = new System.Random();
@@ -171,7 +180,7 @@ public class GameManager : MonoBehaviour
         // For all travellers in origin airport, assign each of the travellers an airplane
         Queue<Airport> airportQueue = new Queue<Airport>(destinations);
 
-        List<Airplane> airplaneInFlight = new List<Airplane>();
+        //List<Airplane> airplaneInFlight = new List<Airplane>();
 
         while (airportQueue.Count > 0)
         {
@@ -207,10 +216,10 @@ public class GameManager : MonoBehaviour
                     {
                         flight = airportFlights[objAirport][objAirplane];
                     }
-                    else if (airplaneInFlight.Contains(objAirplane))
-                    {
-                        break;
-                    }
+                    //else if (airplaneInFlight.Contains(objAirplane))
+                    //{
+                    //    break;
+                    //}
                     else
                     {
                         GameObject flightGO = new GameObject();
@@ -222,7 +231,7 @@ public class GameManager : MonoBehaviour
                         _info.flights.Add(flight);
                         airportFlights[origAirport][objAirplane] = flight;
 
-                        airplaneInFlight.Add(objAirplane);
+                        //airplaneInFlight.Add(objAirplane);
                     }
 
                     flight.Embark(_info.savedAirports[origAirport.Name].TravellersToAirport[objAirport], objAirport);

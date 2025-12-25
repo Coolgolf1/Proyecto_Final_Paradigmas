@@ -84,9 +84,9 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
         _clickAction = InputSystem.actions.FindAction("Click");
         _cam = _info.playerCamera;
         ReceivedTravellers = 0;
-        UIEvents.OnMainMenuEnter.AddListener(_clickAction.Disable);
+        //UIEvents.OnMainMenuEnter.AddListener(_clickAction.Disable);
         UIEvents.OnEndGameEnter.AddListener(CleanUI);
-        UIEvents.OnPlayEnter.AddListener(_clickAction.Enable);
+        //UIEvents.OnPlayEnter.AddListener(_clickAction.Enable);
         UIEvents.OnAirplaneStoreEnter.AddListener(_clickAction.Disable);
         UIEvents.OnAirplaneStoreExit.AddListener(_clickAction.Enable);
         UIEvents.OnRouteStoreEnter.AddListener(_clickAction.Disable);
@@ -101,17 +101,19 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
     private void OnEnable()
     {
         _clickAction.performed += OnClickAirport;
-        _clickAction.Enable();
+        //_clickAction.Enable();
     }
 
     private void OnDisable()
     {
         _clickAction.performed -= OnClickAirport;
-        _clickAction.Disable();
+        //_clickAction.Disable();
     }
 
     private void OnClickAirport(InputAction.CallbackContext ctx)
     {
+        if (!ctx.performed) return;
+
         Vector2 screenPos = Mouse.current.position.ReadValue();
         Ray ray = _cam.ScreenPointToRay(screenPos);
 
@@ -413,7 +415,7 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
             if (TravellersToAirport[airport] <= 0)
                 continue;
 
-            HashSet<Airplane> usedThisIteration = new HashSet<Airplane>();
+            HashSet<Airplane> fullAirplanes = new HashSet<Airplane>();
 
             while (TravellersToAirport[airport] > 0)
             {
@@ -424,18 +426,17 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
                 if (objAirplane is null || nextHop is null)
                     break;
 
-                //if (usedThisIteration.Contains(objAirplane))
-                //{
-                //    break;
-                //}
-                //usedThisIteration.Add(objAirplane);
+                if (fullAirplanes.Contains(objAirplane))
+                    break;
 
                 if (createdFlights.Keys.Contains(objAirplane))
                 {
                     newFlight = createdFlights[objAirplane];
                 }
-                else if (airplanesInFlight.Contains(objAirplane))
-                    continue;
+                //else if (airplaneInFlight.Contains(objAirplane))
+                //{
+                //    break;
+                //}
                 else
                 {
                     GameObject flightGO = new GameObject();
@@ -446,15 +447,14 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
                     _info.flights.Add(newFlight);
                     createdFlights[objAirplane] = newFlight;
 
-                    airplanesInFlight.Add(objAirplane);
+                    //airplanesInFlight.Add(objAirplane);
                 }
 
                 newFlight.Embark(TravellersToAirport[airport], airport);
 
                 if (newFlight.Full)
-                {
-                    break;
-                }
+                    fullAirplanes.Add(objAirplane);
+                
             }
         }
 

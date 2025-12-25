@@ -226,11 +226,16 @@ public class AirplaneStore : MonoBehaviour
         largeAirplaneBuy.onClick.AddListener(largeAirplaneBought);
 
         // Dropdowns
+        UpdateAirports();
+    }
+
+    private void UpdateAirports()
+    {
         List<TMP_Dropdown.OptionData> options = new List<TMP_Dropdown.OptionData>();
 
-        foreach (string airportName in _info.savedAirports.Keys)
+        foreach (Airport airport in Player.UnlockedAirports)
         {
-            options.Add(new TMP_Dropdown.OptionData(airportName));
+            options.Add(new TMP_Dropdown.OptionData(airport.Name));
         }
 
         smallAirplaneSelector.ClearOptions();
@@ -264,7 +269,7 @@ public class AirplaneStore : MonoBehaviour
     {
         _economy.SetCoins(1000000);
         gameObject.SetActive(true);
-
+        UpdateAirports();
         UIEvents.OnAirplaneStoreEnter.Invoke();
     }
 

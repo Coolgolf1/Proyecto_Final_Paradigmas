@@ -1656,11 +1656,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c41045fa0ad7a64b90337063b113990, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  airportID: {fileID: 0}
-  airportName: {fileID: 0}
-  passengers: {fileID: 0}
-  closeButton: {fileID: 0}
-  numAirplanes: {fileID: 0}
+  airportID: {fileID: 56736106}
+  airportName: {fileID: 664562304}
+  passengers: {fileID: 821699097}
+  closeButton: {fileID: 2054630674}
+  numAirplanes: {fileID: 811577264}
 --- !u!1 &220263442
 GameObject:
   m_ObjectHideFlags: 0

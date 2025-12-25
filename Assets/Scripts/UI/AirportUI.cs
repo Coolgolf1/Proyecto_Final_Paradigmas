@@ -16,11 +16,7 @@ public class AirportUI : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Start()
     {
-        airportID = GameObject.Find("AirportID").GetComponent<TMP_Text>();
-        airportName = GameObject.Find("CityName").GetComponent<TMP_Text>();
-        passengers = GameObject.Find("AirportClientList").GetComponent<TMP_Text>();
-        numAirplanes = GameObject.Find("NumAirplanes").GetComponent<TMP_Text>();
-        closeButton = GameObject.Find("CloseAirportUI").GetComponent<Button>();
+        
         closeButton.onClick.AddListener(CloseUI);
         gameObject.SetActive(false);
     }
@@ -44,11 +40,15 @@ public class AirportUI : MonoBehaviour
 
     public void ShowAirport(Airport airport)
     {
-        foreach (Route route in _info.savedRoutes.Values)
+        if (airportID == null) Debug.LogError("¡airportID (el componente de texto) es NULL!");
+        if (airport == null) Debug.LogError("¡El objeto airport que recibo es NULL!");
+        else if (airport.Id == null) Debug.LogError("¡El string Id del aeropuerto es NULL!");
+
+        if (_info.savedRoutes != null)
         {
-            if (route.lit)
+            foreach (Route route in _info.savedRoutes.Values)
             {
-                route.UnlitRoute();
+                if (route != null && route.lit) route.UnlitRoute();
             }
         }
 
