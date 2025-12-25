@@ -19,6 +19,7 @@ public class RoutesUI : MonoBehaviour
 
     private EconomyManager _economy = EconomyManager.GetInstance();
     private InfoSingleton _info = InfoSingleton.GetInstance();
+    private GameMaster _gm = GameMaster.GetInstance();
 
     private int _price;
 
@@ -128,7 +129,8 @@ public class RoutesUI : MonoBehaviour
     public void CloseStoreUI()
     {
         gameObject.SetActive(false);
-        UIEvents.OnRouteStoreExit.Invoke();
+        if (_gm.currentState != _gm.End)
+            UIEvents.OnRouteStoreExit.Invoke();
     }
 
     void BuyRoute()

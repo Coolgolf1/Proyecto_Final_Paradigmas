@@ -53,6 +53,7 @@ public class AirplaneStore : MonoBehaviour
     private InfoSingleton _info = InfoSingleton.GetInstance();
     private AirplaneFactory _airplaneFactory = AirplaneFactory.GetInstance();
     private EconomyManager _economy = EconomyManager.GetInstance();
+    private GameMaster _gm = GameMaster.GetInstance();
 
     private void Start()
     {
@@ -116,7 +117,7 @@ public class AirplaneStore : MonoBehaviour
         // Launch flight
         FlightLauncher.LaunchNewFlights();
 
-        
+
     }
 
     public void mediumAirplaneBought()
@@ -226,22 +227,22 @@ public class AirplaneStore : MonoBehaviour
         double baseSpeed = GameConstants.relativeSpeed * GameConstants.speedMultiplier;
 
         // Small Airplane 
-        
+
         smallAirplaneCapacity.text = $"Capacity: {GameConstants.smallCapacity}";
         smallAirplaneSpeed.text = $"Speed: {(int)(baseSpeed * GameConstants.smallSpeedMultiplier * 5)}  km/h";
         smallAirplaneRange.text = $"Range: {GameConstants.smallRange} km";
-        
+
         smallAirplaneBuy.onClick.AddListener(smallAirplaneBought);
 
         // Medium Airplane 
-        
+
         mediumAirplaneCapacity.text = $"Capacity: {GameConstants.mediumCapacity}";
         mediumAirplaneSpeed.text = $"Speed: {(int)(baseSpeed * GameConstants.mediumSpeedMultiplier * 5)} km/h";
         mediumAirplaneRange.text = $"Range: {GameConstants.mediumRange} km";
         mediumAirplaneBuy.onClick.AddListener(mediumAirplaneBought);
 
         // Large Airplane 
-        
+
         largeAirplaneCapacity.text = $"Capacity: {GameConstants.largeCapacity}";
         largeAirplaneSpeed.text = $"Speed: {(int)(baseSpeed * GameConstants.largeSpeedMultiplier * 5)} km/h";
         largeAirplaneRange.text = $"Range: {GameConstants.largeRange} km";
@@ -249,7 +250,7 @@ public class AirplaneStore : MonoBehaviour
 
         // Dropdowns
         UpdateAirports();
-        
+
     }
 
     private void UpdateAirports()
@@ -334,7 +335,8 @@ public class AirplaneStore : MonoBehaviour
     public void CloseStoreUI()
     {
         gameObject.SetActive(false);
-        UIEvents.OnAirplaneStoreExit.Invoke();
+        if (_gm.currentState != _gm.End)
+            UIEvents.OnAirplaneStoreExit.Invoke();
     }
 
     //public void OpenBuyMessage()

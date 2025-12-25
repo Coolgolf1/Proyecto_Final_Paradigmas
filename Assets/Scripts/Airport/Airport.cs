@@ -16,6 +16,7 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
     public Levels Level { get; private set; }
     public int Capacity { get; private set; }
     public bool Unlocked { get; private set; } = false;
+    public Phases Phase { get; private set; }
 
     // Collections
     public List<Airplane> Hangar { get; } = new List<Airplane>();
@@ -47,6 +48,7 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
 
         Capacity = -GameConstants.maxTravellersInAirport;
         Level = Levels.Basic;
+        Phase = Phases.Easy;
 
         gameObject.SetActive(false);
 

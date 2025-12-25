@@ -260,7 +260,7 @@ public class GameManager : MonoBehaviour
 
     }
 
-    public void UnlockPossibleAirport()
+    public void GetPossibleAirports()
     {
 
     }
