@@ -10,6 +10,7 @@
 - Eventos que aumentan la demanda (surges). ✅
 - Guardar highscore persistente. ✅
 - Compra de rutas que cuesta más cada vez. ✅
+- Ajustar la dificultad (nerfeen las phases) ❌
 
 ## UI
 - Mejorar interfaces de aeropuertos/vuelos. ❌
