@@ -253,7 +253,7 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
         if (Level < Levels.Elite)
             Level++;
 
-        Capacity = GameConstants.maxTravellersInAirport + (int)Level * GameConstants.AirportTravellersUpgrade;
+        Capacity = Capacity + (int)(Capacity * (int)Level * GameConstants.AirportTravellersUpgrade);
     }
 
     public void SetCapacity(int capacity)
@@ -263,7 +263,7 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
 
     public void UpdateCapacity()
     {
-        Capacity += GameConstants.maxTravellersInAirport;
+        Capacity += GameConstants.maxTravellersInAirport + (int)(GameConstants.maxTravellersInAirport * (int)Level * GameConstants.AirportTravellersUpgrade);
     }
 
     public void Awake()

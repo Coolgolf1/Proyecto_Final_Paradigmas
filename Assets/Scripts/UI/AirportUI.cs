@@ -5,19 +5,29 @@ using UnityEngine.UI;
 
 public class AirportUI : MonoBehaviour
 {
+    [Header("Text Fields")]
     [SerializeField] private TMP_Text airportID;
-
     [SerializeField] private TMP_Text airportName;
     [SerializeField] private TMP_Text passengers;
-    [SerializeField] private Button closeButton;
     [SerializeField] private TMP_Text numAirplanes;
-    [SerializeField] private Button buyAirplanes;
-    [SerializeField] private Button upgradeAirport;
-    [SerializeField] private AirplaneStore store;
     [SerializeField] private TMP_Text maxClients;
+    [SerializeField] private TMP_Text upgradePrice;
+    
+
+    [Header("Buttons")]
+    [SerializeField] private Button upgradeAirport;
+    [SerializeField] private Button closeButton;
     [SerializeField] private Button activatePriority;
+    [SerializeField] private Button buyAirplanes;
+    [SerializeField] private Button payUpgrade;
+    [SerializeField] private Button closeUpgrade;
+
+    [Header("Others")]
+    [SerializeField] private AirplaneStore store;
+    [SerializeField] private GameObject upgradeMessage;
 
     private InfoSingleton _info = InfoSingleton.GetInstance();
+    private EconomyManager _economy = EconomyManager.GetInstance();
 
     private Airport activeAirport;
 
@@ -28,6 +38,10 @@ public class AirportUI : MonoBehaviour
         closeButton.onClick.AddListener(CloseUI);
         buyAirplanes.onClick.AddListener(BuyAirplanes);
         activatePriority.onClick.AddListener(TogglePriority);
+
+        closeUpgrade.onClick.AddListener(CloseUpgrade);
+        upgradeAirport.onClick.AddListener(ShowUpgrade);
+        payUpgrade.onClick.AddListener(PayUpgrade);
 
         UIEvents.OnAirplaneStoreEnter.AddListener(CloseUI);
         UIEvents.OnRouteStoreEnter.AddListener(CloseUI);
@@ -55,10 +69,12 @@ public class AirportUI : MonoBehaviour
         }
 
         activeAirport = null;
+        CloseUpgrade();
     }
 
     public void ShowAirport(Airport airport)
     {
+        upgradeMessage.SetActive(false);
         activeAirport = airport;
         if (_info.savedRoutes != null)
         {
@@ -67,8 +83,6 @@ public class AirportUI : MonoBehaviour
                 if (route != null && route.lit) route.UnlitRoute();
             }
         }
-
-        
     }
 
     private void UpdateStats()
@@ -100,6 +114,36 @@ public class AirportUI : MonoBehaviour
             activatePriority.GetComponent<Image>().color = Color.red;
             activatePriority.GetComponentInChildren<TMP_Text>().text = "Priority Off";
         }
+
+        int _upgradePrice = ((int)activeAirport.Level + 1) * 1500000;
+        if (activeAirport.Level == Levels.Elite) {
+            payUpgrade.interactable = false;
+            upgradePrice.text = $"Max Level Reached";
+        }
+        else
+        {
+            upgradePrice.text = $"{_upgradePrice.ToString("#,#")} coins";
+            if (_economy.GetBalance() < _upgradePrice)
+            {
+                payUpgrade.interactable = false;
+            }
+            else
+            {
+                payUpgrade.interactable = true;
+            }
+
+        }
+        
+    }
+
+    private void ShowUpgrade()
+    {
+        upgradeMessage.SetActive(true);
+    }
+
+    private void CloseUpgrade()
+    {
+        upgradeMessage.SetActive(false);
     }
 
     private void BuyAirplanes()
@@ -122,6 +166,15 @@ public class AirportUI : MonoBehaviour
                 _info.EnablePriority(activeAirport);
                 _info.notificationSystem.AddNotification($"Enabled Priority in {activeAirport.Name}", "airport", "green");
             }
+        }
+    }
+
+    private void PayUpgrade()
+    {
+        int _upgradePrice = ((int)activeAirport.Level+1) * 1500000;
+        if (_economy.SubtractCoins(_upgradePrice))
+        {
+            activeAirport.Upgrade();
         }
     }
 }
