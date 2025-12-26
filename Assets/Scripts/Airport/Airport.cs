@@ -217,6 +217,14 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
             {
                 statusLight.color = Color.green;
                 _lightInt = 1;
+
+                if (_lightInt != 1)
+                {
+                    if (_info.playerCamera.GetComponent<PlayerMovement>() is SpaceCamera camera)
+                    {
+                        camera.DeactivateAlertMusic();
+                    }
+                }
             }
             else if (ratio < 0.7)
             {
@@ -224,7 +232,7 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
                 if (_lightInt == 1)
                 {
                     _info.notificationSystem.AddNotification($"{Name} is over 50% capacity", "warning", "orange");
-                }
+                } 
                 _lightInt = 2;
             }
             else
@@ -234,6 +242,13 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
                 {
                     _info.notificationSystem.AddNotification($"{Name} is over 70% capacity", "alert", "red");
                 }
+                
+
+                if (_info.playerCamera.GetComponent<PlayerMovement>() is SpaceCamera camera && _lightInt != 3)
+                {
+                    camera.ActivateAlertMusic();
+                }
+
                 _lightInt = 3;
             }
         }
@@ -352,7 +367,15 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
             if (airport != this)
             {
                 //Debug.Log((int)(rand.Next(GameConstants.minTravellersRandom, GameConstants.maxTravellersRandom) * multiplier));
-                TravellersToAirport[airport] += (int)(rand.Next(GameConstants.minTravellersRandom, GameConstants.maxTravellersRandom) * multiplier);
+                if (multiplier < airport.Phase)
+                {
+                    TravellersToAirport[airport] += (int)(rand.Next(GameConstants.minTravellersRandom, GameConstants.maxTravellersRandom) * multiplier); 
+                }
+                else
+                {
+                    TravellersToAirport[airport] += (int)(rand.Next(GameConstants.minTravellersRandom, GameConstants.maxTravellersRandom) * airport.Phase);
+                }
+
             }
         }
     }

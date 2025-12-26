@@ -48,9 +48,9 @@ public class AirplaneStore : MonoBehaviour
 
     public Dictionary<AirplaneTypes, List<Airplane>> AvailableAirplanes { get; private set; }
 
-    private int smallAirplanes = 9;
-    private int mediumAirplanes = 7;
-    private int largeAirplanes = 5;
+    private int smallAirplanes = 10000;
+    private int mediumAirplanes = 10000;
+    private int largeAirplanes = 10000;
 
     private InfoSingleton _info = InfoSingleton.GetInstance();
     private AirplaneFactory _airplaneFactory = AirplaneFactory.GetInstance();
@@ -72,9 +72,9 @@ public class AirplaneStore : MonoBehaviour
 
     public void RestartAirplanes()
     {
-        smallAirplanes = 9;
-        mediumAirplanes = 7;
-        largeAirplanes = 5;
+        smallAirplanes = 10000;
+        mediumAirplanes = 10000;
+        largeAirplanes = 10000;
 
         _smallAirplanePriceMultiplier = 1.01;
         _mediumAirplanePriceMultiplier = 1.02;

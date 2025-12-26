@@ -17,6 +17,7 @@ public abstract class PlayerMovement : MonoBehaviour
     [SerializeField] private float sensitivity = 1f;
     [SerializeField] protected float zoomFactor;
 
+    
 
     protected bool _enabled = false;
     protected InfoSingleton _info = InfoSingleton.GetInstance();

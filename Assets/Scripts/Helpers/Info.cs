@@ -280,4 +280,13 @@ public class InfoSingleton
         Time.timeScale = 1;
         SceneManager.UnloadSceneAsync("Hangar");
     }
+
+    public void ToggleMute()
+    {
+        if (playerCamera.GetComponent<PlayerMovement>() is SpaceCamera camera)
+        {
+            AudioSource source = camera.GetComponent<AudioSource>();
+            source.mute = !source.mute;
+        }
+    }
 }

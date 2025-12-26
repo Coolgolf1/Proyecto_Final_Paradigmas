@@ -8,12 +8,17 @@ public class NotificationSystem : MonoBehaviour
 
     private List<CustomNotif> queuedNotifications;
 
+    private AudioSource source;
+    [SerializeField] private AudioClip popSound;
+
     private float _baseY = -50;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         queuedNotifications = new List<CustomNotif>();
+        source = GetComponent<AudioSource>();
+        source.clip = popSound;
     }
 
     // Update is called once per frame
@@ -36,6 +41,8 @@ public class NotificationSystem : MonoBehaviour
 
         RectTransform rt = notif.GetComponent<RectTransform>();
         rt.anchoredPosition = new Vector2(rt.anchoredPosition.x, _baseY - 55 * (queuedNotifications.Count - 1));
+
+        source.Play();
     }
 
     private void CheckNotifications()

@@ -10,6 +10,10 @@ public class SpaceCamera : PlayerMovement
     [SerializeField] private float zoomDecay = 8f;
     [SerializeField] private float zoomSensitivity = 2500f;
 
+    [SerializeField] private AudioClip defaultMusic;
+    [SerializeField] private AudioClip alertMusic;
+
+
     private float targetZoom = 0;
     private float previousZoom = 0;
     private float actualZoom = 0;
@@ -21,6 +25,9 @@ public class SpaceCamera : PlayerMovement
     public bool GoingToMenu { get; set; }
     public bool GoingToInit { get; set; }
 
+    private bool _alert = false;
+    private int activatedCount = 0;
+
     private Airport airportObj;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     public void Start()
@@ -29,17 +36,49 @@ public class SpaceCamera : PlayerMovement
         UIEvents.OnRestartGame.AddListener(RestartGame);
         GoingToMenu = false;
         GoingToInit = false;
+
+        GetComponent<AudioSource>().clip = defaultMusic;
+        GetComponent<AudioSource>().Play();
     }
 
     public void RestartGame()
     {
-        //GoingToInit = true;
+        GetComponent<AudioSource>().Stop();
+        GetComponent<AudioSource>().clip = defaultMusic;
+        GetComponent<AudioSource>().Play();
     }
+
+    public void ActivateAlertMusic()
+    {
+        activatedCount++;
+        if (!_alert)
+        {
+            GetComponent<AudioSource>().Stop();
+            GetComponent<AudioSource>().clip = alertMusic;
+            GetComponent<AudioSource>().Play();
+            _alert = true;
+        }
+    }
+
+    public void DeactivateAlertMusic(bool mainMenu = false)
+    {
+        activatedCount--;
+        if (_alert && (activatedCount <= 0 || mainMenu))
+        {
+            GetComponent<AudioSource>().Stop();
+            GetComponent<AudioSource>().clip = defaultMusic;
+            GetComponent<AudioSource>().Play();
+            _alert = false;
+            activatedCount = 0;
+        }
+    }
+
 
     public void StopFollowing()
     {
         followingAirplane = null;
         airportObj = null;
+        GetComponent<AudioSource>().Stop();
     }
 
     // Update is called once per frame

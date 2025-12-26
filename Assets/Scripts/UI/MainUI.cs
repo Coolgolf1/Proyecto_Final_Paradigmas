@@ -6,21 +6,32 @@ using UnityEngine.UI;
 public class MainUI : MonoBehaviour
 {
     private float _elapsedTime;
-    [SerializeField] private TMP_Text timeCounter;
-    [SerializeField] private TMP_Text dayCounter;
-    [SerializeField] private TMP_Text score;
+
+    [Header("Sprites")]
+    [SerializeField] private Sprite muteSprite;
+    [SerializeField] private Sprite volumeSprite;
+
+    [Header("Buttons")]
     [SerializeField] private Button play;
     [SerializeField] private Button pause;
     [SerializeField] private Button fastForward;
-    [SerializeField] private TMP_Text money;
+    [SerializeField] private Button muteButton;
 
+    [Header("Text Fields")]
+    [SerializeField] private TMP_Text timeCounter;
+    [SerializeField] private TMP_Text dayCounter;
+    [SerializeField] private TMP_Text score;
+    [SerializeField] private TMP_Text money;
     private int _days = 0;
 
     private bool _enabled = false;
 
     private int _currentMoney = 0;
 
+    private bool muteStatus = false;
+
     private EconomyManager _economy = EconomyManager.GetInstance();
+    private InfoSingleton _info = InfoSingleton.GetInstance();
 
     private Tuple<int, int, int> refTime = Tuple.Create(9, 0, 0);
 
@@ -32,6 +43,7 @@ public class MainUI : MonoBehaviour
         pause.onClick.AddListener(Pause);
         fastForward.onClick.AddListener(FastForward);
         _economy.MoneyChange += HandleMoneyChange;
+        muteButton.onClick.AddListener(ToggleMute);
 
         UIEvents.OnPlayEnter.AddListener(StartGame);
         UIEvents.OnMainMenuEnter.AddListener(HideUI);
@@ -62,6 +74,22 @@ public class MainUI : MonoBehaviour
         _currentMoney = Player.Money;
     }
 
+    private void ToggleMute()
+    {
+        Image icon = muteButton.GetComponent<Image>();
+
+        if (muteStatus)
+        {
+            icon.sprite = volumeSprite;
+        }
+        else
+        {
+            icon.sprite = muteSprite;
+        }
+
+        _info.ToggleMute();
+        muteStatus = !muteStatus;
+    }
     // Update is called once per frame
     private void Update()
     {

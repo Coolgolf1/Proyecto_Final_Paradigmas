@@ -45,6 +45,8 @@ public class MainMenuUI : MonoBehaviour
 
     public void ShowButtons()
     {
+        SpaceCamera camera = player.GetComponent<SpaceCamera>();
+        camera.DeactivateAlertMusic(mainMenu: true);
         logo.gameObject.SetActive(true);
 
         startGame.interactable = true;
@@ -64,6 +66,7 @@ public class MainMenuUI : MonoBehaviour
     void Start()
     {
         startGame.onClick.AddListener(StartLoad);
+        exitButton.onClick.AddListener(Application.Quit);
         //earth.GetComponent<SpinFree>().enabled = true;
         UIEvents.OnMainMenuEnter.AddListener(RestartMenu);
     }
