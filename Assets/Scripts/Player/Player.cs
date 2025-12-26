@@ -32,6 +32,7 @@ public static class Player
     {
         UnlockedAirports.Add(airport);
         airport.Unlock();
+        _info.notificationSystem.AddNotification($"Unlocked new airport: {airport.Name}.", "airport", "blue");
     }
 
     public static void Restart()
