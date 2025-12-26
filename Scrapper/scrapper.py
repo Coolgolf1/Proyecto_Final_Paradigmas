@@ -81,5 +81,8 @@ def save_data(airports):
 
 if __name__ == "__main__":
     airports = ["mad", "dxb", "sfo", "cdg", "pvg", "gru",
-                "syd", "jfk", "cpt", "hnl", "bom", "svo", "osl", "cai", "lim"]
+                "syd", "jfk", "cpt", "hnl", "bom", "svo",
+                "osl", "cai", "lim", "aep", "mex", "ccs",
+                "ymg", "mia", "asu", "hnd", "bkk", "pom",
+                "mnl", "sin", "yks", "tnr", "nbo", "dss"]
     save_data(airports)
