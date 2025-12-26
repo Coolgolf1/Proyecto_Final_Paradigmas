@@ -253,6 +253,21 @@ public class InfoSingleton
         return airplanesInRoute;
     }
 
+    public void EnablePriority(Airport airport)
+    {
+        foreach (Airport airportItem in savedAirports.Values)
+        {
+            if (airportItem == airport)
+            {
+                airportItem.PriorityOn = true;
+            }
+            else
+            {
+                airportItem.PriorityOn = false;
+            }
+        }
+    }
+
     public void GoToHangar(Airplane airplane)
     {
         Time.timeScale = 0;

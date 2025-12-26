@@ -34,6 +34,7 @@ public class CustomNotif : MonoBehaviour
         spriteDict["route"] = route;
         spriteDict["airport"] = airport;
 
+
         if (canvasGroup == null)
         {
             canvasGroup = GetComponent<CanvasGroup>();
@@ -60,6 +61,9 @@ public class CustomNotif : MonoBehaviour
                 break;
             case "orange":
                 newColor = new Color(1f, 0.62f, 0f, 0.5f);
+                break;
+            case "green":
+                newColor = new Color(0f, 1f, 0.4f, 0.5f);
                 break;
             default:
                 newColor = new Color(0.35f, 0.6f, 1f, 0.8f);

@@ -17,6 +17,7 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
     public int Capacity { get; private set; }
     public bool Unlocked { get; private set; } = false;
     public double Phase { get; private set; }
+    public bool PriorityOn { get; set; }
 
     // Collections
     public List<Airplane> Hangar { get; } = new List<Airplane>();
@@ -64,6 +65,8 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
         Phase = Phases.Easy;
         SetNextEventTime();
         _nextSpawnTime = Time.time + GetSpawnIntervalForPhase();
+
+        PriorityOn = false;
     }
 
     private void SetNextEventTime()
@@ -589,7 +592,10 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
         foreach (Airport airport in TravellersToAirport.Keys)
         {
             // Min priority queue, so negative number
-            airportQueue.Enqueue(airport, -TravellersToAirport[airport]);
+            if (airport.PriorityOn)
+                airportQueue.Enqueue(airport, -100000000);
+            else
+                airportQueue.Enqueue(airport, -TravellersToAirport[airport]);
         }
 
         List<Airplane> airplanesInFlight = new List<Airplane>();

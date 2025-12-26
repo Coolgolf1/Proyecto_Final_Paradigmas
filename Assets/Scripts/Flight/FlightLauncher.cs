@@ -32,7 +32,10 @@ public static class FlightLauncher
 
             foreach (Airport airport in origAirport.TravellersToAirport.Keys)
             {
-                airportDestinationQueue.Enqueue(airport, -origAirport.TravellersToAirport[airport]);
+                if (airport.PriorityOn)
+                    airportDestinationQueue.Enqueue(airport, -100000000);
+                else
+                    airportDestinationQueue.Enqueue(airport, -origAirport.TravellersToAirport[airport]);
             }
 
             while (airportDestinationQueue.Count > 0)

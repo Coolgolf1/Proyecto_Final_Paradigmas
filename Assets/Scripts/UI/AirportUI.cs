@@ -14,7 +14,8 @@ public class AirportUI : MonoBehaviour
     [SerializeField] private Button buyAirplanes;
     [SerializeField] private Button upgradeAirport;
     [SerializeField] private AirplaneStore store;
-    [SerializeField] private TMP_Text maxClients; 
+    [SerializeField] private TMP_Text maxClients;
+    [SerializeField] private Button activatePriority;
 
     private InfoSingleton _info = InfoSingleton.GetInstance();
 
@@ -26,6 +27,7 @@ public class AirportUI : MonoBehaviour
         
         closeButton.onClick.AddListener(CloseUI);
         buyAirplanes.onClick.AddListener(BuyAirplanes);
+        activatePriority.onClick.AddListener(TogglePriority);
 
         UIEvents.OnAirplaneStoreEnter.AddListener(CloseUI);
         UIEvents.OnRouteStoreEnter.AddListener(CloseUI);
@@ -87,11 +89,39 @@ public class AirportUI : MonoBehaviour
         passengers.text = passengersText;
 
         numAirplanes.text = $"{activeAirport.Hangar.Count}";
+
+        if (activeAirport.PriorityOn)
+        {
+            activatePriority.GetComponent<Image>().color = Color.lightGreen;
+            activatePriority.GetComponentInChildren<TMP_Text>().text = "Priority On";
+        }
+        else
+        {
+            activatePriority.GetComponent<Image>().color = Color.red;
+            activatePriority.GetComponentInChildren<TMP_Text>().text = "Priority Off";
+        }
     }
 
     private void BuyAirplanes()
     {
         store.OpenStoreFor(activeAirport);
         
+    }
+
+    private void TogglePriority()
+    {
+        if (activeAirport != null)
+        {
+            if (activeAirport.PriorityOn)
+            {
+                activeAirport.PriorityOn = false;
+                _info.notificationSystem.AddNotification($"Disabled Priority in {activeAirport.Name}", "airport", "blue");
+            }
+            else
+            {
+                _info.EnablePriority(activeAirport);
+                _info.notificationSystem.AddNotification($"Enabled Priority in {activeAirport.Name}", "airport", "green");
+            }
+        }
     }
 }
