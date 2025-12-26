@@ -82,6 +82,8 @@ public class MainMenuUI : MonoBehaviour
 
         if (_startAnimation)
         {
+            SpaceCamera camera = player.GetComponent<SpaceCamera>();
+            camera.GoingToMenu = false;
             player.transform.position = Vector3.Lerp(player.transform.position, GameConstants.initCameraPosition, 3 * Time.deltaTime);
             player.transform.rotation = Quaternion.Lerp(player.transform.rotation, GameConstants.initCameraRotation, 3 * Time.deltaTime);
 

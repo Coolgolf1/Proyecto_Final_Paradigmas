@@ -37,6 +37,8 @@ public class AirportUI : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
+        if (activeAirport is not null)
+            UpdateStats();
     }
 
     private void CloseUI()
@@ -64,22 +66,27 @@ public class AirportUI : MonoBehaviour
             }
         }
 
-        airportID.text = airport.Id.ToUpper();
-        airportName.text = airport.Name;
-        maxClients.text = $"{airport.Capacity} max";
+        
+    }
+
+    private void UpdateStats()
+    {
+        airportID.text = activeAirport.Id.ToUpper();
+        airportName.text = activeAirport.Name;
+        maxClients.text = $"{activeAirport.Capacity} max";
         string passengersText = "";
         foreach (Airport destAirport in Player.UnlockedAirports)
         {
-            if (destAirport != airport)
-                passengersText += $"- {destAirport.Id.ToUpper()}: {airport.TravellersToAirport[destAirport]}\n";
-            
+            if (destAirport != activeAirport)
+                passengersText += $"- {destAirport.Id.ToUpper()}: {activeAirport.TravellersToAirport[destAirport]}\n";
+
         }
 
         //passengersText += $"\n- En Destino Final: {airport.ReceivedTravellers} pasajeros\n";
 
         passengers.text = passengersText;
 
-        numAirplanes.text = $"{airport.Hangar.Count}";
+        numAirplanes.text = $"{activeAirport.Hangar.Count}";
     }
 
     private void BuyAirplanes()

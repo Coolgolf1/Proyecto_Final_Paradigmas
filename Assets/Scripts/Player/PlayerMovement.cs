@@ -7,6 +7,7 @@ public abstract class PlayerMovement : MonoBehaviour
     protected InputAction drag;
     protected InputAction look;
     protected InputAction zoom;
+    protected InputAction click;
     private Vector2 velocity;
     private Vector2 moveValue;
 
@@ -26,6 +27,8 @@ public abstract class PlayerMovement : MonoBehaviour
         drag = InputSystem.actions.FindAction("IsDragging");
         look = InputSystem.actions.FindAction("Look");
         zoom = InputSystem.actions.FindAction("Zoom");
+        click = InputSystem.actions.FindAction("Click");
+
         UIEvents.OnMainMenuEnter.AddListener(DisableActions);
         UIEvents.OnPlayEnter.AddListener(EnableActions);
         UIEvents.OnAirplaneStoreEnter.AddListener(DisableActions);
@@ -41,6 +44,7 @@ public abstract class PlayerMovement : MonoBehaviour
         drag.Disable();
         look.Disable();
         zoom.Disable();
+        click.Disable();
         _enabled = false;
 
     }
@@ -50,6 +54,7 @@ public abstract class PlayerMovement : MonoBehaviour
         drag.Enable();
         look.Enable();
         zoom.Enable();
+        click.Enable();
         _enabled = true;
     }
 

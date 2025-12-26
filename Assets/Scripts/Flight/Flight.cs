@@ -80,11 +80,11 @@ public class Flight : MonoBehaviour
 
         int remainingCapacity = Airplane.Capacity - occupiedCapacity;
 
-        int travellersInAirport = AirportOrig.TravellersToAirport[passengerFinalAirport];
+        //int travellersInAirport = AirportOrig.TravellersToAirport[passengerFinalAirport];
 
-        if (travellersInAirport <= remainingCapacity)
+        if (passengers <= remainingCapacity)
         {
-            TravellersToAirport[passengerFinalAirport] += travellersInAirport;
+            TravellersToAirport[passengerFinalAirport] += passengers;
             AirportOrig.TravellersToAirport[passengerFinalAirport] -= TravellersToAirport[passengerFinalAirport];
         }
         else

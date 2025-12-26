@@ -163,25 +163,7 @@ public static class RouteAssigner
         if (!previous.ContainsKey(end) && start != end)
         {
             
-            //List<Airport> pathPartial = new List<Airport>();
-            //Airport uP = partialFarthest;
-            //while (previous.ContainsKey(uP))
-            //{
-            //    pathPartial.Insert(0, uP);
-            //    uP = previous[uP];
-            //}
-            //pathPartial.Insert(0, start);
-
-            //if (pathPartial.Count < 2)
                 return (null, null);
-            //Airport nextHopPartial = GetNextHop(pathPartial);
-
-            //Airplane nextAirplanePartial = null;
-            //if (nextHopPartial != null)
-            //    airplaneUsed.TryGetValue(nextHopPartial, out nextAirplanePartial);
-
-            //return (nextAirplanePartial, pathPartial);
-           
         }
        
 

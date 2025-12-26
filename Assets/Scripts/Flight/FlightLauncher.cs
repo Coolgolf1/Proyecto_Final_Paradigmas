@@ -13,7 +13,7 @@ public static class FlightLauncher
 
     public static void LaunchNewFlights()
     {
-        List<Airport> destinations = _info.savedAirports.Values.ToList();
+        List<Airport> destinations = Player.UnlockedAirports.ToList();
 
         Dictionary<Airplane, Flight> createdFlights = new Dictionary<Airplane, Flight>();
 
@@ -49,7 +49,7 @@ public static class FlightLauncher
                         continue;
                     }
 
-                    HashSet<Airplane> usedThisIteration = new HashSet<Airplane>();
+                    HashSet<Airplane> fullAirplanes = new HashSet<Airplane>();
 
                     while (_info.savedAirports[origAirport.Name].TravellersToAirport[objAirport] > 0)
                     {
@@ -62,18 +62,15 @@ public static class FlightLauncher
                             break;
                         }
 
-                        //if (usedThisIteration.Contains(objAirplane))
-                        //{
-                        //    break; // no more airplanes left
-                        //}
-                        //usedThisIteration.Add(objAirplane);
+                        if (fullAirplanes.Contains(objAirplane))
+                            break;
 
                         if (createdFlights.Keys.Contains(objAirplane))
                         {
                             flight = createdFlights[objAirplane];
                         }
-                        else if (airplaneInFlight.Contains(objAirplane))
-                            continue;
+                        //else if (airplaneInFlight.Contains(objAirplane))
+                        //    continue;
                         else
                         {
                             GameObject flightGO = new GameObject();
@@ -84,10 +81,13 @@ public static class FlightLauncher
                             _info.flights.Add(flight);
                             createdFlights[objAirplane] = flight;
 
-                            airplaneInFlight.Add(objAirplane);
+                            //airplaneInFlight.Add(objAirplane);
                         }
 
                         flight.Embark(_info.savedAirports[origAirport.Name].TravellersToAirport[objAirport], objAirport);
+
+                        if (flight.Full)
+                            fullAirplanes.Add(objAirplane);
                     }
                 }
             }
