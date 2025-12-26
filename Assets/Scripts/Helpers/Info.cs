@@ -21,7 +21,23 @@ public class InfoSingleton
         { "Moscow", new Vector3(12.3699999f,15.8000002f,1.87f) },
         { "Oslo", new Vector3(9.23999977f,17.7600002f,-2.05999994f) },
         { "Cairo", new Vector3(17.9599991f,9.22999954f,-1.21000004f) },
-        { "Lima",  new Vector3(-9.59000015f,0.0700000003f,-17.8500004f)}
+        { "Lima",  new Vector3(-9.59000015f,0.0700000003f,-17.8500004f)},
+        { "Buenos Aires", new Vector3(-3.50999999f,-8.25f,-18.0499992f) },
+        { "Ciudad de México",  new Vector3(-14.6000004f,9.71000004f,-10.25f)},
+        { "Caracas",  new Vector3(-6.30000019f,7.28999996f,-17.9099998f)},
+        { "Winnipeg",  new Vector3(-9.39999962f,17.0599995f,-5.78999996f)},
+        { "Miami",  new Vector3(-9.18000031f,11.8900003f,-13.54f)},
+        { "Asunción",  new Vector3(-3.20000005f,-4.76999998f,-19.5499992f)},
+        { "Tokyo",  new Vector3(-1.76900005f,8.82199955f,18.0709991f)},
+        { "Bangkok",  new Vector3(10.3549995f,1.41400003f,17.4120007f)},
+        { "Puerto Moresby",  new Vector3(-5.46099997f,-6.25299978f,18.6259995f)},
+        { "Manila",  new Vector3(3.7579999f,1.52999997f,19.9610004f)},
+        { "Singapur",  new Vector3(9.40400028f,-3.04994011f,17.6700001f)},
+        { "Yakutsk",  new Vector3(1.02100003f,15.9460001f,12.4589996f)},
+        { "Antananarivo",  new Vector3(18.7779999f,-7.82600021f,0.606000006f)},
+        { "Nairobi",  new Vector3(20.2029991f,-0.897000015f,-1.64699996f)},
+        { "Dakar",  new Vector3(10.7150002f,7.61399984f,-15.6230001f)}
+
     };
 
     public List<Tuple<string, string>> stringCityRoutes = new List<Tuple<string, string>>()
@@ -48,7 +64,29 @@ public class InfoSingleton
         new Tuple<string, string>("Oslo", "Cairo"),
         new Tuple<string, string>("Oslo", "New York"),
         new Tuple<string, string>("Madrid", "Sao Paulo"),
-        new Tuple<string, string>("Paris", "Oslo")
+        new Tuple<string, string>("Paris", "Oslo"),
+        new Tuple<string, string>("Paris", "Oslo"),
+        new Tuple<string, string>("Paris", "Oslo"),
+        new Tuple<string, string>("Paris", "Oslo"),
+        new Tuple<string, string>("Paris", "Oslo"),
+        new Tuple<string, string>("Paris", "Oslo"),
+        new Tuple<string, string>("Paris", "Oslo"),
+        new Tuple<string, string>("Paris", "Oslo"),
+        new Tuple<string, string>("Paris", "Oslo"),
+        new Tuple<string, string>("Paris", "Oslo"),
+        new Tuple<string, string>("Paris", "Oslo"),
+        new Tuple<string, string>("Paris", "Oslo"),
+        new Tuple<string, string>("Paris", "Oslo"),
+        new Tuple<string, string>("Paris", "Oslo"),
+        new Tuple<string, string>("Paris", "Oslo"),
+        new Tuple<string, string>("Paris", "Oslo"),
+        new Tuple<string, string>("Paris", "Oslo"),
+        new Tuple<string, string>("Paris", "Oslo"),
+        new Tuple<string, string>("Paris", "Oslo"),
+        new Tuple<string, string>("Paris", "Oslo"),
+        new Tuple<string, string>("Paris", "Oslo"),
+        new Tuple<string, string>("Paris", "Oslo"),
+        new Tuple<string, string>("Paris", "Oslo"),
     };
 
     public Dictionary<string, string> stringCityCodes = new Dictionary<string, string>()
@@ -67,7 +105,22 @@ public class InfoSingleton
         { "Moscow", "svo" },
         { "Oslo", "osl" },
         { "Cairo", "cai" },
-        { "Lima", "lim" }
+        { "Lima", "lim" },
+        { "Buenos Aires", "aep" },
+        { "Ciudad de México", "mex" },
+        { "Caracas", "ccs" },
+        { "Winnipeg", "ymg" },
+        { "Miami", "mia" },
+        { "Asunción", "asu" },
+        { "Tokyo", "hnd" },
+        { "Bangkok", "bkk" },
+        { "Puerto Moresby", "pom" },
+        { "Manila", "mnl" },
+        { "Singapur", "sin" },
+        { "Yakutsk", "yks" },
+        { "Antananarivo", "tnr" },
+        { "Nairobi", "nbo" },
+        { "Dakar", "dss" },
     };
 
     // Saved data
