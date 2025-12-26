@@ -56,15 +56,14 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
 
         Capacity = -GameConstants.maxTravellersInAirport;
         Level = Levels.Basic;
-        Phase = Phases.Easy;
 
         gameObject.SetActive(false);
 
         GameEvents.OnAirportUnlock.AddListener(UpdateCapacity);
 
-        _nextSpawnTime = Time.time + 2.0f;
-
+        Phase = Phases.Easy;
         SetNextEventTime();
+        _nextSpawnTime = Time.time + GetSpawnIntervalForPhase();
     }
 
     private void SetNextEventTime()
@@ -72,23 +71,19 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
         switch (Phase)
         {
             case Phases.Easy:
-                // Stay in Easy for 45 to 60 seconds
-                _phaseTimer = UnityEngine.Random.Range(45f, 60f);
+                _phaseTimer = UnityEngine.Random.Range(50f, 80f);
                 break;
 
             case Phases.Medium:
-                // Stay in Medium for 60 to 90 seconds
-                _phaseTimer = UnityEngine.Random.Range(60f, 90f);
+                _phaseTimer = UnityEngine.Random.Range(120f, 210f);
                 break;
 
             case Phases.Hard:
-                // Stay in Hard for 30 to 50 seconds before the next Surge hits
-                _phaseTimer = UnityEngine.Random.Range(30f, 50f);
+                _phaseTimer = UnityEngine.Random.Range(10f, 25f);
                 break;
 
             case Phases.Surge:
-                // Surges are short: Only last 15 to 25 seconds
-                _phaseTimer = UnityEngine.Random.Range(15f, 25f);
+                _phaseTimer = UnityEngine.Random.Range(5f, 10f);
                 break;
         }
     }
@@ -102,6 +97,24 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
             if (Phase == Phases.Surge)
             {
                 ReducePhase();
+            }
+            else if (Phase == Phases.Hard)
+            {
+                int choice = UnityEngine.Random.Range(-1, 2);
+
+                switch (choice)
+                {
+                    case -1:
+                        ReducePhase();
+                        break;
+
+                    case 0:
+                        break;
+
+                    case 1:
+                        AdvancePhase();
+                        break;
+                }
             }
             else
             {
@@ -120,16 +133,16 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
                 return 3.0f;
 
             case Phases.Medium:
-                return 2.0f;
+                return 2.5f;
 
             case Phases.Hard:
-                return 1.0f;
+                return 2.25f;
 
             case Phases.Surge:
-                return 0.5f;
+                return 2.0f;
 
             default:
-                return 2.0f;
+                return 3.0f;
         }
     }
 
@@ -142,7 +155,7 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
             float baseInterval = GetSpawnIntervalForPhase();
 
             float randomVariance = UnityEngine.Random.Range(-SpawnJitter, SpawnJitter);
-            float interval = Mathf.Max(0.5f, baseInterval + randomVariance);
+            float interval = Mathf.Max(0.1f, baseInterval + randomVariance);
 
             _nextSpawnTime = Time.time + interval;
         }
@@ -161,10 +174,6 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
                 break;
 
             case Phases.Hard:
-                Phase = Phases.Surge;
-                break;
-
-            case Phases.Surge:
                 Phase = Phases.Surge;
                 break;
         }
@@ -195,12 +204,12 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
     private void UpdateLight()
     {
         int totalTravellers = TravellersToAirport.Values.Sum();
-        
+
         float ratio = (float)totalTravellers / Capacity;
-        
+
         if (Capacity != 0)
         {
-            
+
             if (ratio < 0.5)
             {
                 statusLight.color = Color.green;
@@ -232,7 +241,7 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
         Unlocked = true;
         _unlockTime = Time.time;
         gameObject.SetActive(Unlocked);
-        
+
         GameEvents.OnAirportUnlock?.Invoke();
     }
 
@@ -503,13 +512,13 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
     public void CheckMaxPassengers()
     {
         int count = TravellersToAirport.Values.Sum();
-        
+
         if (count > Capacity)
         {
             if (_info.playerCamera.GetComponent<PlayerMovement>() is SpaceCamera camera)
             {
                 camera.SetAirport(this);
-                
+
             }
             _gm.ChangeState(_gm.End);
         }

@@ -71,7 +71,9 @@ public class GameManager : MonoBehaviour
 
         Phase = Phases.Easy;
 
-        _phaseTimer = _rand.Next(50, 70);
+        _phaseTimer = GetPhaseTimer();
+        UpdateExpansionRules();
+        _nextUnlockTime = Time.time + 5f;
     }
 
     public void StartMainMenuGame()
@@ -120,7 +122,7 @@ public class GameManager : MonoBehaviour
 
     public void StartGame()
     {
-        
+
 
         // Initialise Factory
         _airplaneFactory.Initialise(airplaneSpawner);
@@ -334,7 +336,7 @@ public class GameManager : MonoBehaviour
 
     }
 
-    private double GetPhaseTimer()
+    private float GetPhaseTimer()
     {
         double randomNoise = _rand.Next(-5, 5);
 
@@ -343,15 +345,11 @@ public class GameManager : MonoBehaviour
         switch (Phase)
         {
             case Phases.Medium:
-                phaseDuration = _rand.Next(80, 100);
+                phaseDuration = _rand.Next(100, 120);
                 break;
 
             case Phases.Hard:
-                phaseDuration = _rand.Next(40, 60);
-                break;
-
-            case Phases.Surge:
-                phaseDuration = _rand.Next(5, 15);
+                phaseDuration = _rand.Next(50, 70);
                 break;
 
             default:
@@ -359,7 +357,7 @@ public class GameManager : MonoBehaviour
                 break;
         }
 
-        return phaseDuration + randomNoise;
+        return (float)(phaseDuration + randomNoise);
     }
 
     private void UpdateDirector()
@@ -368,19 +366,17 @@ public class GameManager : MonoBehaviour
 
         if (_phaseTimer <= 0)
         {
-            if (Phase == Phases.Surge)
+            if (Phase == Phases.Hard)
             {
-                Phase = Phases.Hard;
-                _phaseTimer = (float)GetPhaseTimer();
+                Phase = Phases.Medium;
+                _phaseTimer = GetPhaseTimer();
+                UpdateExpansionRules();
             }
             else
             {
                 AdvancePhase();
             }
-
         }
-
-        UpdateExpansionRules();
     }
 
     private void AdvancePhase()
@@ -389,19 +385,15 @@ public class GameManager : MonoBehaviour
         {
             case Phases.Easy:
                 Phase = Phases.Medium;
-                _phaseTimer = 90f;
                 break;
 
             case Phases.Medium:
                 Phase = Phases.Hard;
-                _phaseTimer = 60f;
-                break;
-
-            case Phases.Hard:
-                Phase = Phases.Surge;
-                _phaseTimer = 15f;
                 break;
         }
+        //Debug.Log($"Game phase: {Phases.Surge}");
+        _phaseTimer = GetPhaseTimer();
+        UpdateExpansionRules();
     }
 
     private void UpdateExpansionRules()
@@ -409,20 +401,34 @@ public class GameManager : MonoBehaviour
         switch (Phase)
         {
             case Phases.Easy:
-                _currentMaxExpansion = 5000;
+                _currentMaxExpansion = 3000;
                 break;
 
             case Phases.Medium:
-                _currentMaxExpansion = 10000;
+                _currentMaxExpansion = 5000;
                 break;
 
             case Phases.Hard:
-                _currentMaxExpansion = 20000;
+                _currentMaxExpansion = 10000;
                 break;
+        }
+    }
 
-            case Phases.Surge:
-                _currentMaxExpansion = 20000;
-                break;
+    private float GetSpawnIntervalForPhase()
+    {
+        switch (Phase)
+        {
+            case Phases.Easy:
+                return _rand.Next(90, 120);
+
+            case Phases.Medium:
+                return _rand.Next(70, 90);
+
+            case Phases.Hard:
+                return _rand.Next(60, 70);
+
+            default:
+                return 100f;
         }
     }
 
@@ -437,8 +443,8 @@ public class GameManager : MonoBehaviour
         if (Time.time > _nextUnlockTime)
         {
             TriggerAirportExpansion();
-
-            _nextUnlockTime = Time.time + _phaseTimer;
+            float interval = GetSpawnIntervalForPhase();
+            _nextUnlockTime = Time.time + interval;
         }
     }
 }
