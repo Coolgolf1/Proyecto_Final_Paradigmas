@@ -51,6 +51,13 @@ public class EconomyManager
         return true;
     }
 
+    public bool AddCoins(int money)
+    {
+        Player.Money += money;
+        MoneyChange?.Invoke(this, EventArgs.Empty);
+        return true;
+    }
+
     public int GetBalance()
     {
         return Player.Money;

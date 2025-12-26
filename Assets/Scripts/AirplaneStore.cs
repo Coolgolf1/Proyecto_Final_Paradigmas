@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -60,6 +61,13 @@ public class AirplaneStore : MonoBehaviour
     {
         GameEvents.OnPlayEnter.AddListener(RestartAirplanes);
         UIEvents.OnEndGameEnter.AddListener(CloseStoreUI);
+
+        _economy.MoneyChange += HandleMoneyChange;
+    }
+
+    private void HandleMoneyChange(object sender, EventArgs e)
+    {
+        UpdateButtons();
     }
 
     public void RestartAirplanes()

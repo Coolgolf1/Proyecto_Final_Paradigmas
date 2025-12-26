@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -34,8 +35,13 @@ public class RoutesUI : MonoBehaviour
 
         UIEvents.OnAirplaneStoreEnter.AddListener(CloseStoreUI);
         UIEvents.OnEndGameEnter.AddListener(CloseStoreUI);
+        _economy.MoneyChange += HandleMoneyChange;
     }
 
+    private void HandleMoneyChange(object sender, EventArgs e)
+    {
+        UpdatePriceAndButton();
+    }
     void LoadStore()
     {
 
@@ -97,20 +103,32 @@ public class RoutesUI : MonoBehaviour
 
         _price = (int)Mathf.Pow((float)distance, 1.55f);
 
-        priceText.text = $"{_price.ToString("#,#")} coins";
+        
 
-        if (_economy.GetBalance() < _price)
+        
+        if (_info.savedRoutes.ContainsKey($"{a1value}-{a2value}"))
         {
-            buyRoute.interactable = false;
+            buyRoute.interactable = true;
+            priceText.text = $"+{(_price/2).ToString("#,#")} coins";
+            priceText.color = Color.darkGreen;
+            buyRoute.GetComponentInChildren<TMP_Text>().text = "Remove";
+            buyRoute.GetComponent<Image>().color = Color.red;
         }
-        else if (_info.savedRoutes.ContainsKey($"{a1value}-{a2value}"))
+        else if (_economy.GetBalance() < _price)
         {
-            priceText.text = $"Already Purchased";
+            priceText.text = $"{_price.ToString("#,#")} coins";
             buyRoute.interactable = false;
+            priceText.color = Color.black;
+            buyRoute.GetComponentInChildren<TMP_Text>().text = "Buy";
+            buyRoute.GetComponent<Image>().color = Color.white;
         }
         else
         {
+            priceText.text = $"{_price.ToString("#,#")} coins";
             buyRoute.interactable = true;
+            priceText.color = Color.black;
+            buyRoute.GetComponentInChildren<TMP_Text>().text = "Buy";
+            buyRoute.GetComponent<Image>().color = Color.white;
         }
     }
 
@@ -163,11 +181,27 @@ public class RoutesUI : MonoBehaviour
 
                 FlightLauncher.LaunchNewFlights();
 
-                priceText.text = $"Already Purchased";
-                buyRoute.interactable = false;
+                UpdatePriceAndButton();
 
                 _info.notificationSystem.AddNotification($"Created Route {location1}-{location2}", "route", "blue");
             }
+        }
+        else
+        {
+            _economy.AddCoins(_price / 2);
+
+            _info.savedRoutes[$"{location1}-{location2}"].AwaitingRemoval = true;
+
+            _info.savedRoutes.Remove($"{location1}-{location2}");
+            _info.savedRoutes.Remove($"{location2}-{location1}");
+            Auxiliary.LoadRouteDistances(_info.savedRoutes);
+
+            // Calculate initial Dijkstra Graph
+            Auxiliary.CalculateDijkstraGraph();
+
+            _info.notificationSystem.AddNotification($"Removed Route {location1}-{location2}", "route", "red");
+
+            UpdatePriceAndButton();
         }
     }
 

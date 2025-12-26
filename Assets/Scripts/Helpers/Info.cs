@@ -239,6 +239,20 @@ public class InfoSingleton
         return null;
     }
 
+    public List<Airplane> GetAirplanesInRoute(Route route)
+    {
+        List<Airplane> airplanesInRoute = new List<Airplane>();
+        foreach (Flight flight in flights)
+        {
+            if (flight.Route == route)
+            {
+                airplanesInRoute.Add(flight.Airplane);
+            }
+        }
+
+        return airplanesInRoute;
+    }
+
     public void GoToHangar(Airplane airplane)
     {
         Time.timeScale = 0;

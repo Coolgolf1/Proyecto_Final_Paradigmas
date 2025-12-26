@@ -12,12 +12,17 @@ public class Route : MonoBehaviour
     [SerializeField] private int nSegments = 100;
     public bool lit;
 
+    public bool AwaitingRemoval { get; set; }
+
+    private InfoSingleton _info = InfoSingleton.GetInstance();
+
     public void Initialise(Airport airport1, Airport airport2)
     {
         Airport1 = airport1;
         Airport2 = airport2;
         IdOfFlightInRoute = 1;
         lit = false;
+        AwaitingRemoval = false;
     }
 
     public void SetDistance(double distance)
@@ -52,6 +57,10 @@ public class Route : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
+        if (AwaitingRemoval && _info.GetAirplanesInRoute(this).Count <= 0)
+        {
+            Destroy(gameObject);
+        }
     }
 
     public List<Vector3> GetGreatCirclePoints(Vector3 A, Vector3 B, int segments)
