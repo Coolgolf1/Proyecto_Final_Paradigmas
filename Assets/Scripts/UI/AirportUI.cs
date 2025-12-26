@@ -171,10 +171,14 @@ public class AirportUI : MonoBehaviour
 
     private void PayUpgrade()
     {
-        int _upgradePrice = ((int)activeAirport.Level+1) * 1500000;
-        if (_economy.SubtractCoins(_upgradePrice))
+        if (activeAirport is not null)
         {
-            activeAirport.Upgrade();
+            int _upgradePrice = ((int)activeAirport.Level + 1) * 1500000;
+            if (_economy.SubtractCoins(_upgradePrice))
+            {
+                activeAirport.Upgrade();
+                _info.notificationSystem.AddNotification($"Airport {activeAirport.Name} upgraded", "airport", "green");
+            }
         }
     }
 }
