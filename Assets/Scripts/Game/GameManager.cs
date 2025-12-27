@@ -153,7 +153,7 @@ public class GameManager : MonoBehaviour
         else
         {
 
-            _economy.SetCoins(2000000);
+            _economy.SetCoins(1000000);
             _clickAction.Enable();
 
             _info.ResetRoutes();
@@ -418,13 +418,13 @@ public class GameManager : MonoBehaviour
         switch (Phase)
         {
             case Phases.Easy:
-                return _rand.Next(90, 120);
+                return _rand.Next(120, 150);
 
             case Phases.Medium:
-                return _rand.Next(70, 90);
+                return _rand.Next(90, 120);
 
             case Phases.Hard:
-                return _rand.Next(60, 70);
+                return _rand.Next(60, 90);
 
             default:
                 return 100f;

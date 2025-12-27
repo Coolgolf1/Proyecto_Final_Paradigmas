@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class AirplaneStore : MonoBehaviour
 {
-    private double _smallAirplanePriceMultiplier = 1.01;
+    private double _smallAirplanePriceMultiplier = GameConstants.smallPriceMultiplier;
     [SerializeField] private TMP_Text smallAirplaneTitle;
     [SerializeField] private Image smallAirplaneImage;
     [SerializeField] private TMP_Text smallAirplanePrice;
@@ -16,7 +16,7 @@ public class AirplaneStore : MonoBehaviour
     [SerializeField] private TMP_Dropdown smallAirplaneSelector;
     [SerializeField] private Button smallAirplaneBuy;
 
-    private double _mediumAirplanePriceMultiplier = 1.02;
+    private double _mediumAirplanePriceMultiplier = GameConstants.mediumPriceMultiplier;
     [SerializeField] private TMP_Text mediumAirplaneTitle;
     [SerializeField] private Image mediumAirplaneImage;
     [SerializeField] private TMP_Text mediumAirplanePrice;
@@ -26,7 +26,7 @@ public class AirplaneStore : MonoBehaviour
     [SerializeField] private TMP_Dropdown mediumAirplaneSelector;
     [SerializeField] private Button mediumAirplaneBuy;
 
-    private double _largeAirplanePriceMultiplier = 1.03;
+    private double _largeAirplanePriceMultiplier = GameConstants.largePriceMultiplier;
     [SerializeField] private TMP_Text largeAirplaneTitle;
     [SerializeField] private Image largeAirplaneImage;
     [SerializeField] private TMP_Text largeAirplanePrice;
@@ -48,9 +48,9 @@ public class AirplaneStore : MonoBehaviour
 
     public Dictionary<AirplaneTypes, List<Airplane>> AvailableAirplanes { get; private set; }
 
-    private int smallAirplanes = 10000;
-    private int mediumAirplanes = 10000;
-    private int largeAirplanes = 10000;
+    private int smallAirplanes = 0;
+    private int mediumAirplanes = 0;
+    private int largeAirplanes = 0;
 
     private InfoSingleton _info = InfoSingleton.GetInstance();
     private AirplaneFactory _airplaneFactory = AirplaneFactory.GetInstance();
@@ -72,23 +72,23 @@ public class AirplaneStore : MonoBehaviour
 
     public void RestartAirplanes()
     {
-        smallAirplanes = 10000;
-        mediumAirplanes = 10000;
-        largeAirplanes = 10000;
+        smallAirplanes = 0;
+        mediumAirplanes = 0;
+        largeAirplanes = 0;
 
-        _smallAirplanePriceMultiplier = 1.01;
-        _mediumAirplanePriceMultiplier = 1.02;
-        _largeAirplanePriceMultiplier = 1.03;
+        _smallAirplanePriceMultiplier = GameConstants.smallPriceMultiplier;
+        _mediumAirplanePriceMultiplier = GameConstants.mediumPriceMultiplier;
+        _largeAirplanePriceMultiplier = GameConstants.largePriceMultiplier;
     }
 
     public void smallAirplaneBought()
     {
         // If no more remaining cannot buy
-        if (smallAirplanes == 0)
-        {
-            //BuyMessageFailureNoStock("small");
-            return;
-        }
+        //if (smallAirplanes == 0)
+        //{
+        //    //BuyMessageFailureNoStock("small");
+        //    return;
+        //}
 
         if ((int)(GameConstants.smallPrice * _smallAirplanePriceMultiplier) > Player.Money)
         {
@@ -118,11 +118,14 @@ public class AirplaneStore : MonoBehaviour
         _info.savedAirports[airportName].Hangar.Add(airplane);
 
         // Remove airplane from remaining
-        if (smallAirplanes > 0)
-        {
-            smallAirplanes--;
-        }
-        _smallAirplanePriceMultiplier = Mathf.Pow((float)_smallAirplanePriceMultiplier, 2);
+        //if (smallAirplanes > 0)
+        //{
+        //    smallAirplanes--;
+        //}
+
+        smallAirplanes++;
+
+        _smallAirplanePriceMultiplier = Mathf.Pow((float)GameConstants.smallPriceMultiplier, smallAirplanes);
         UpdateButtons();
         _info.notificationSystem.AddNotification($"Added Small airplane to {airportName}", "airplane", "blue");
         // Success message
@@ -137,11 +140,11 @@ public class AirplaneStore : MonoBehaviour
     public void mediumAirplaneBought()
     {
         // If no more remaining cannot buy
-        if (mediumAirplanes == 0)
-        {
-            //BuyMessageFailureNoStock("medium");
-            return;
-        }
+        //if (mediumAirplanes == 0)
+        //{
+        //    //BuyMessageFailureNoStock("medium");
+        //    return;
+        //}
 
         if ((int)(GameConstants.mediumPrice * _mediumAirplanePriceMultiplier) > Player.Money)
         {
@@ -171,14 +174,16 @@ public class AirplaneStore : MonoBehaviour
         _info.savedAirports[airportName].Hangar.Add(airplane);
 
         // Remove airplane from remaining
-        if (mediumAirplanes > 0)
-        {
-            mediumAirplanes--;
-        }
+        //if (mediumAirplanes > 0)
+        //{
+        //    mediumAirplanes--;
+        //}
+
+        mediumAirplanes++;
 
         // Success message
         //BuyMessageSuccess("medium", airportName);
-        _mediumAirplanePriceMultiplier = Mathf.Pow((float)_mediumAirplanePriceMultiplier, 2);
+        _mediumAirplanePriceMultiplier = Mathf.Pow((float)GameConstants.mediumPriceMultiplier, mediumAirplanes);
         _info.notificationSystem.AddNotification($"Added Medium airplane to {airportName}", "airplane", "blue");
         UpdateButtons();
         // Launch flight
@@ -187,11 +192,11 @@ public class AirplaneStore : MonoBehaviour
     public void largeAirplaneBought()
     {
         // If no more remaining cannot buy
-        if (largeAirplanes == 0)
-        {
-            //BuyMessageFailureNoStock("large");
-            return;
-        }
+        //if (largeAirplanes == 0)
+        //{
+        //    //BuyMessageFailureNoStock("large");
+        //    return;
+        //}
 
         if ((int)(GameConstants.largePrice * _largeAirplanePriceMultiplier) > Player.Money)
         {
@@ -221,15 +226,17 @@ public class AirplaneStore : MonoBehaviour
         _info.savedAirports[airportName].Hangar.Add(airplane);
 
         // Remove airplane from remaining
-        if (largeAirplanes > 0)
-        {
-            largeAirplanes--;
-        }
+        //if (largeAirplanes > 0)
+        //{
+        //    largeAirplanes--;
+        //}
+
+        largeAirplanes++;
 
         // Success message
         //BuyMessageSuccess("large", airportName);
 
-        _largeAirplanePriceMultiplier = Mathf.Pow((float)_largeAirplanePriceMultiplier, 2);
+        _largeAirplanePriceMultiplier = Mathf.Pow((float)GameConstants.largePriceMultiplier, largeAirplanes);
 
         UpdateButtons();
         _info.notificationSystem.AddNotification($"Added Large airplane to {airportName}", "airplane", "blue");
@@ -295,7 +302,7 @@ public class AirplaneStore : MonoBehaviour
     private void UpdateButtons()
     {
         smallAirplanePrice.text = $"Price: {(int)(GameConstants.smallPrice * _smallAirplanePriceMultiplier)} coins";
-        if (_economy.GetBalance() >= GameConstants.smallPrice * _smallAirplanePriceMultiplier && smallAirplanes != 0)
+        if (_economy.GetBalance() >= GameConstants.smallPrice * _smallAirplanePriceMultiplier)
         {
             smallAirplaneBuy.interactable = true;
         }
@@ -305,7 +312,7 @@ public class AirplaneStore : MonoBehaviour
         }
 
         mediumAirplanePrice.text = $"Price: {(int)(GameConstants.mediumPrice * _mediumAirplanePriceMultiplier)} coins";
-        if (_economy.GetBalance() >= GameConstants.mediumPrice * _mediumAirplanePriceMultiplier && mediumAirplanes != 0)
+        if (_economy.GetBalance() >= GameConstants.mediumPrice * _mediumAirplanePriceMultiplier)
         {
             mediumAirplaneBuy.interactable = true;
         }
@@ -315,7 +322,7 @@ public class AirplaneStore : MonoBehaviour
         }
 
         largeAirplanePrice.text = $"Price: {(int)(GameConstants.largePrice * _largeAirplanePriceMultiplier)} coins";
-        if (_economy.GetBalance() >= GameConstants.largePrice * _largeAirplanePriceMultiplier && largeAirplanes != 0)
+        if (_economy.GetBalance() >= GameConstants.largePrice * _largeAirplanePriceMultiplier)
         {
             largeAirplaneBuy.interactable = true;
         }

@@ -24,18 +24,21 @@ public static class GameConstants
     // Small Airplane
     public const double smallRange = 5000;
     public const double smallSpeedMultiplier = 3;
+    public const double smallPriceMultiplier = 1.06;
     public const int smallCapacity = 100;
     public const int smallPrice = 10000;
 
     // Medium Airplane
     public const double mediumRange = 10000;
     public const double mediumSpeedMultiplier = 4;
+    public const double mediumPriceMultiplier = 1.07;
     public const int mediumCapacity = 200;
     public const int mediumPrice = 22500;
 
     // Large Airplane
     public const double largeRange = 20000;
     public const double largeSpeedMultiplier = 4.7;
+    public const double largePriceMultiplier = 1.08;
     public const int largeCapacity = 300;
     public const int largePrice = 50000;
 }

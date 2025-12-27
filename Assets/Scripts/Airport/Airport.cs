@@ -103,20 +103,14 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
             }
             else if (Phase == Phases.Hard)
             {
-                int choice = UnityEngine.Random.Range(-1, 2);
+                int choice = UnityEngine.Random.Range(0, 10);
 
-                switch (choice)
+                if (choice > 8)
                 {
-                    case -1:
-                        ReducePhase();
-                        break;
-
-                    case 0:
-                        break;
-
-                    case 1:
-                        AdvancePhase();
-                        break;
+                    AdvancePhase();
+                } else if (choice < 6)
+                {
+                    ReducePhase();
                 }
             }
             else
@@ -136,10 +130,10 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
                 return 3.0f;
 
             case Phases.Medium:
-                return 2.5f;
+                return 2.75f;
 
             case Phases.Hard:
-                return 2.25f;
+                return 2.5f;
 
             case Phases.Surge:
                 return 2.0f;
