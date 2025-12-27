@@ -1,10 +1,14 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
 internal static class Auxiliary
 {
-    private static string _pathName = Path.Combine(Application.streamingAssetsPath, "../flight_distance.csv");
+
+    //private static string _pathName = Path.Combine(Application.streamingAssetsPath, "../flight_distance.csv");
+
+    private static TextAsset csv = Resources.Load<TextAsset>("flight_distance");
 
     private static double _defaultDistance = 10000;
 
@@ -55,19 +59,25 @@ internal static class Auxiliary
     {
 
 
-        string[] lines = File.ReadAllLines(_pathName)[1..];
+        string[] lines = csv.text.Split(
+            new[] { "\r\n", "\n" },
+            StringSplitOptions.RemoveEmptyEntries
+        );
 
         Dictionary<string, double> dictDistances = new Dictionary<string, double>();
 
         foreach (string line in lines)
         {
+            if (!line.Contains("airports,distance"))
+            {
+                string[] data = line.Split(",");
+                
+                string codes = data[0];
 
-            string[] data = line.Split(",");
-            string codes = data[0];
+                double distance = double.Parse(data[1]);
 
-            double distance = double.Parse(data[1]);
-
-            dictDistances[codes] = distance;
+                dictDistances[codes] = distance;
+            }
         }
 
         return dictDistances;

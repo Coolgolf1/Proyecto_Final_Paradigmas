@@ -65,6 +65,23 @@ public class InfoSingleton
         new Tuple<string, string>("Oslo", "New York"),
         new Tuple<string, string>("Madrid", "Sao Paulo"),
         new Tuple<string, string>("Paris", "Oslo"),
+
+        // Nuevas rutas para cubrir todos los aeropuertos
+        new Tuple<string, string>("Buenos Aires", "Sao Paulo"),
+        new Tuple<string, string>("Mexico City", "Miami"),
+        new Tuple<string, string>("Caracas", "Miami"),
+        new Tuple<string, string>("Winnipeg", "New York"),
+        new Tuple<string, string>("Miami", "New York"),
+        new Tuple<string, string>("Asuncion", "Buenos Aires"),
+        new Tuple<string, string>("Tokyo", "Shanghai"),
+        new Tuple<string, string>("Bangkok", "Singapore"),
+        new Tuple<string, string>("Port Moresby", "Sydney"),
+        new Tuple<string, string>("Manila", "Singapore"),
+        new Tuple<string, string>("Singapore", "Dubai"),
+        new Tuple<string, string>("Yakutsk", "Moscow"),
+        new Tuple<string, string>("Antananarivo", "Nairobi"),
+        new Tuple<string, string>("Nairobi", "Cairo"),
+        new Tuple<string, string>("Dakar", "Madrid"),
     };
 
     public Dictionary<string, string> stringCityCodes = new Dictionary<string, string>()

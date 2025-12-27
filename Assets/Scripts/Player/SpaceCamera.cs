@@ -33,6 +33,7 @@ public class SpaceCamera : PlayerMovement
     public void Start()
     {
         UIEvents.OnEndGameEnter.AddListener(StopFollowing);
+        UIEvents.OnEndGameEnter.AddListener(StopMusic);
         UIEvents.OnRestartGame.AddListener(RestartGame);
         GoingToMenu = false;
         GoingToInit = false;
@@ -73,12 +74,16 @@ public class SpaceCamera : PlayerMovement
         }
     }
 
+    public void StopMusic()
+    {
+        GetComponent<AudioSource>().Stop();
+    }
 
     public void StopFollowing()
     {
         followingAirplane = null;
         airportObj = null;
-        GetComponent<AudioSource>().Stop();
+        
     }
 
     // Update is called once per frame

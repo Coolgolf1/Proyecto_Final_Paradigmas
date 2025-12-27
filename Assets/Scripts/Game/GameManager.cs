@@ -34,6 +34,7 @@ public class GameManager : MonoBehaviour
     public double Phase { get; private set; }
     private double _currentMaxExpansion = 2000;
     private float _nextUnlockTime = 0f;
+    private float _nextLaunchTime = 0f;
     private float _phaseTimer;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -443,6 +444,12 @@ public class GameManager : MonoBehaviour
             TriggerAirportExpansion();
             float interval = GetSpawnIntervalForPhase();
             _nextUnlockTime = Time.time + interval;
+        }
+
+        if (Time.time > _nextLaunchTime)
+        {
+            FlightLauncher.LaunchNewFlights();
+            _nextLaunchTime = Time.time + 2f;
         }
     }
 }
