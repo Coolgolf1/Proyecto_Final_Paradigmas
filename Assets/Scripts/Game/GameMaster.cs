@@ -1,6 +1,3 @@
-
-using UnityEngine;
-
 public class GameMaster
 {
     private static GameMaster _instance;
@@ -23,7 +20,7 @@ public class GameMaster
         InHangar = new InHangarState(this);
         End = new EndState(this);
 
-        // ARREGLAR ESTO EN OTRO SITIO ============================================
+        // ARREGLAR ESTO EN OTRO SITIO =====================================================================
         DijkstraGraph.Initialise();
 
         UIEvents.LoadedListeners.AddListener(InitState);
@@ -47,7 +44,7 @@ public class GameMaster
     public void ChangeState(GameState nextState)
     {
 
-        if (currentState is not null && currentState.GetType() ==  nextState.GetType()) 
+        if (currentState is not null && currentState.GetType() == nextState.GetType())
             return;
         currentState?.OnStateExit();
         currentState = nextState;

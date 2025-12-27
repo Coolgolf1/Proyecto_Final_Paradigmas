@@ -232,7 +232,7 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
                 if (_lightInt == 1)
                 {
                     _info.notificationSystem.AddNotification($"{Name} is over 50% capacity", "warning", "orange");
-                } 
+                }
                 _lightInt = 2;
             }
             else
@@ -242,7 +242,7 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
                 {
                     _info.notificationSystem.AddNotification($"{Name} is over 70% capacity", "alert", "red");
                 }
-                
+
 
                 if (_info.playerCamera.GetComponent<PlayerMovement>() is SpaceCamera camera && _lightInt != 3)
                 {
@@ -369,7 +369,7 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
                 //Debug.Log((int)(rand.Next(GameConstants.minTravellersRandom, GameConstants.maxTravellersRandom) * multiplier));
                 if (multiplier < airport.Phase)
                 {
-                    TravellersToAirport[airport] += (int)(rand.Next(GameConstants.minTravellersRandom, GameConstants.maxTravellersRandom) * multiplier); 
+                    TravellersToAirport[airport] += (int)(rand.Next(GameConstants.minTravellersRandom, GameConstants.maxTravellersRandom) * multiplier);
                 }
                 else
                 {
@@ -572,36 +572,9 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
         }
     }
 
-    //public Dictionary<Airplane, Flight> SaveNotEmptyAirportFlights(Dictionary<Airplane, Flight> createdFlights)
-    //{
-    //    foreach (Airplane airplane in Hangar)
-    //    {
-    //        (Airplane emptyAirplane, Airport emptyHop, Airport emptyAirport) = GetHopFromEmptyAirport(airplane);
-
-    //        if (emptyAirplane is not null && emptyHop is not null)
-    //        {
-    //            Flight emptyFlight;
-
-    //            GameObject flightGO = new GameObject();
-    //            flightGO.name = $"{Name}-{emptyHop.Name}";
-    //            emptyFlight = flightGO.AddComponent<Flight>();
-    //            emptyFlight.Initialise(this, emptyHop, _info.savedRoutes[$"{Name}-{emptyHop.Name}"], emptyAirplane);
-    //            _info.flights.Add(emptyFlight);
-    //            createdFlights[emptyAirplane] = emptyFlight;
-
-    //            _info.airplanesGoingFromEmptyAirport[emptyAirport].Add(emptyAirplane);
-    //        }
-    //    }
-
-    //    return createdFlights;
-    //}
-
     public void HandleLanding(object sender, EventArgs e)
     {
         Flight flight = (Flight)sender;
-
-        if (_info.airplanesGoingFromEmptyAirport.Keys.Contains(this))
-            _info.airplanesGoingFromEmptyAirport[this].Remove(flight.Airplane);
 
         Hangar.Add(flight.Airplane);
 
@@ -621,8 +594,6 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
                 airportQueue.Enqueue(airport, -TravellersToAirport[airport]);
         }
 
-        List<Airplane> airplanesInFlight = new List<Airplane>();
-
         while (airportQueue.Count > 0)
         {
             Airport airport = airportQueue.Dequeue();
@@ -634,8 +605,6 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
             if (TravellersToAirport[airport] <= 0)
                 continue;
 
-            HashSet<Airplane> fullAirplanes = new HashSet<Airplane>();
-
             while (TravellersToAirport[airport] > 0)
             {
                 Flight newFlight;
@@ -643,19 +612,15 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
                 (Airplane objAirplane, Airport nextHop) = FindHopForTravellersToAirport(airport);
 
                 if (objAirplane is null || nextHop is null)
+                {
+                    //Debug.Log(objAirplane);
                     break;
-
-                if (fullAirplanes.Contains(objAirplane))
-                    break;
+                }
 
                 if (createdFlights.Keys.Contains(objAirplane))
                 {
                     newFlight = createdFlights[objAirplane];
                 }
-                //else if (airplaneInFlight.Contains(objAirplane))
-                //{
-                //    break;
-                //}
                 else
                 {
                     GameObject flightGO = new GameObject();
@@ -665,15 +630,9 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
                     newFlight.Initialise(this, nextHop, _info.savedRoutes[$"{Name}-{nextHop.Name}"], objAirplane);
                     _info.flights.Add(newFlight);
                     createdFlights[objAirplane] = newFlight;
-
-                    //airplanesInFlight.Add(objAirplane);
                 }
 
                 newFlight.Embark(TravellersToAirport[airport], airport);
-
-                if (newFlight.Full)
-                    fullAirplanes.Add(objAirplane);
-
             }
         }
 

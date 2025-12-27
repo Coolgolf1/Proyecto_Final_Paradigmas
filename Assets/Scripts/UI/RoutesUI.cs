@@ -103,13 +103,11 @@ public class RoutesUI : MonoBehaviour
 
         _price = (int)Mathf.Pow((float)distance, 1.55f);
 
-        
 
-        
         if (_info.savedRoutes.ContainsKey($"{a1value}-{a2value}"))
         {
             buyRoute.interactable = true;
-            priceText.text = $"+{(_price/2).ToString("#,#")} coins";
+            priceText.text = $"+{(_price / 2).ToString("#,#")} coins";
             priceText.color = Color.darkGreen;
             buyRoute.GetComponentInChildren<TMP_Text>().text = "Remove";
             buyRoute.GetComponent<Image>().color = Color.red;

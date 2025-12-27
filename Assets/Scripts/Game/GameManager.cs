@@ -205,7 +205,15 @@ public class GameManager : MonoBehaviour
         // Calculate initial Dijkstra Graph
         Auxiliary.CalculateDijkstraGraph();
 
-        List<Airport> destinations = _info.savedAirports.Values.ToList();
+        //foreach (List<Edge> edges in DijkstraGraph.graph.Values)
+        //{
+        //    foreach (Edge edge in edges)
+        //    {
+        //        Debug.Log(edge);
+        //    }
+        //}
+
+        List<Airport> destinations = Player.UnlockedAirports;
 
         Dictionary<Airport, Dictionary<Airplane, Flight>> airportFlights = new Dictionary<Airport, Dictionary<Airplane, Flight>>();
         foreach (Airport airport in destinations)
@@ -229,40 +237,31 @@ public class GameManager : MonoBehaviour
                     continue;
                 }
 
-                if (_info.savedAirports[origAirport.Name].TravellersToAirport[objAirport] <= 0)
+                if (origAirport.TravellersToAirport[objAirport] <= 0)
                 {
                     continue;
                 }
 
-                HashSet<Airplane> fullAirplanes = new HashSet<Airplane>();
-
-                while (_info.savedAirports[origAirport.Name].TravellersToAirport[objAirport] > 0)
+                while (origAirport.TravellersToAirport[objAirport] > 0)
                 {
                     Flight flight;
 
-                    (Airplane objAirplane, Airport nextHop) = _info.savedAirports[origAirport.Name].FindHopForTravellersToAirport(objAirport);
+                    (Airplane objAirplane, Airport nextHop) = origAirport.FindHopForTravellersToAirport(objAirport);
 
                     if (objAirplane is null || nextHop is null)
-                        break;
-
-                    if (fullAirplanes.Contains(objAirplane))
                         break;
 
                     if (airportFlights[origAirport].Keys.Contains(objAirplane))
                     {
                         flight = airportFlights[origAirport][objAirplane];
                     }
-                    else if (airplaneInFlight.Contains(objAirplane))
-                    {
-                        break;
-                    }
                     else
                     {
                         GameObject flightGO = new GameObject();
-                        flightGO.name = $"{_info.savedAirports[origAirport.Name].Name}-{nextHop.Name}";
+                        flightGO.name = $"{origAirport.Name}-{nextHop.Name}";
                         flight = flightGO.AddComponent<Flight>();
 
-                        flight.Initialise(_info.savedAirports[origAirport.Name], nextHop, _info.savedRoutes[$"{origAirport.Name}-{nextHop.Name}"], objAirplane);
+                        flight.Initialise(origAirport, nextHop, _info.savedRoutes[$"{origAirport.Name}-{nextHop.Name}"], objAirplane);
 
                         _info.flights.Add(flight);
                         airportFlights[origAirport][objAirplane] = flight;
@@ -270,10 +269,7 @@ public class GameManager : MonoBehaviour
                         airplaneInFlight.Add(objAirplane);
                     }
 
-                    flight.Embark(_info.savedAirports[origAirport.Name].TravellersToAirport[objAirport], objAirport);
-
-                    if (flight.Full)
-                        fullAirplanes.Add(objAirplane);
+                    flight.Embark(origAirport.TravellersToAirport[objAirport], objAirport);
                 }
             }
         }
