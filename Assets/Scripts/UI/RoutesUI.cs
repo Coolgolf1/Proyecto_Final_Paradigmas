@@ -203,7 +203,7 @@ public class RoutesUI : MonoBehaviour
 
                 FlightLauncher.LaunchNewFlights();
 
-                UpdatePriceAndButton();
+                UpdateFirstChoice();
 
                 _info.notificationSystem.AddNotification($"Created Route {location1}-{location2}", "route", "blue");
             }
