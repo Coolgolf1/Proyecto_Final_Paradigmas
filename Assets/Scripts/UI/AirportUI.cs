@@ -22,6 +22,10 @@ public class AirportUI : MonoBehaviour
     [SerializeField] private Button payUpgrade;
     [SerializeField] private Button closeUpgrade;
 
+    [Header("Table")]
+    [SerializeField] private TableUIManager tableManager;
+    
+
     [Header("Others")]
     [SerializeField] private AirplaneStore store;
     [SerializeField] private GameObject upgradeMessage;
@@ -90,17 +94,19 @@ public class AirportUI : MonoBehaviour
         airportID.text = activeAirport.Id.ToUpper();
         airportName.text = activeAirport.Name;
         maxClients.text = $"{activeAirport.Capacity} max";
-        string passengersText = "";
-        foreach (Airport destAirport in Player.UnlockedAirports)
-        {
-            if (destAirport != activeAirport)
-                passengersText += $"- {destAirport.Id.ToUpper()}: {activeAirport.TravellersToAirport[destAirport]}\n";
+        //string passengersText = "";
+        //foreach (Airport destAirport in Player.UnlockedAirports)
+        //{
+        //    if (destAirport != activeAirport)
+        //        passengersText += $"- {destAirport.Id.ToUpper()}: {activeAirport.TravellersToAirport[destAirport]}\n";
 
-        }
+        //}
 
         //passengersText += $"\n- En Destino Final: {airport.ReceivedTravellers} pasajeros\n";
 
-        passengers.text = passengersText;
+        //passengers.text = passengersText;
+
+        tableManager.UpdateTable(activeAirport);
 
         numAirplanes.text = $"{activeAirport.Hangar.Count}";
 

@@ -185,11 +185,11 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
                 break;
 
             case Phases.Medium:
-                Phase = Phases.Medium;
+                Phase = Phases.Easy;
                 break;
 
             case Phases.Hard:
-                Phase = Phases.Hard;
+                Phase = Phases.Medium;
                 break;
 
             case Phases.Surge:
