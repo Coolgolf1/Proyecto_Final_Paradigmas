@@ -35,23 +35,22 @@ public class RoutesUI : MonoBehaviour
 
         UIEvents.OnAirplaneStoreEnter.AddListener(CloseStoreUI);
         UIEvents.OnEndGameEnter.AddListener(CloseStoreUI);
-        _economy.MoneyChange += HandleMoneyChange;
+        
     }
 
     private void HandleMoneyChange(object sender, EventArgs e)
     {
+        
         UpdatePriceAndButton();
     }
     void LoadStore()
     {
-
         UpdateFirstChoice();
         UpdateSecondChoice();
         UpdatePriceAndButton();
-
         airport2.onValueChanged.AddListener(delegate { UpdatePriceAndButton(); });
         airport1.onValueChanged.AddListener(delegate { UpdateSecondChoice(); UpdatePriceAndButton(); });
-
+        
     }
 
     // Update is called once per frame
@@ -133,7 +132,7 @@ public class RoutesUI : MonoBehaviour
     public void ShowStoreUI()
     {
         //_economy.SetCoins(1000000);
-
+        _economy.MoneyChange += HandleMoneyChange;
         UpdateFirstChoice();
         UpdateSecondChoice();
         UpdatePriceAndButton();
@@ -144,6 +143,7 @@ public class RoutesUI : MonoBehaviour
 
     public void CloseStoreUI()
     {
+        _economy.MoneyChange -= HandleMoneyChange;
         gameObject.SetActive(false);
         if (_gm.currentState != _gm.End)
             UIEvents.OnRouteStoreExit.Invoke();

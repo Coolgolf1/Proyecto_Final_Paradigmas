@@ -62,7 +62,7 @@ public class AirplaneStore : MonoBehaviour
         GameEvents.OnPlayEnter.AddListener(RestartAirplanes);
         UIEvents.OnEndGameEnter.AddListener(CloseStoreUI);
 
-        _economy.MoneyChange += HandleMoneyChange;
+        
     }
 
     private void HandleMoneyChange(object sender, EventArgs e)
@@ -349,6 +349,7 @@ public class AirplaneStore : MonoBehaviour
         gameObject.SetActive(true);
         UpdateAirports();
         UIEvents.OnAirplaneStoreEnter.Invoke();
+        _economy.MoneyChange += HandleMoneyChange;
     }
 
     public void OpenStoreFor(Airport airport)
@@ -378,6 +379,7 @@ public class AirplaneStore : MonoBehaviour
 
     public void CloseStoreUI()
     {
+        _economy.MoneyChange -= HandleMoneyChange;
         gameObject.SetActive(false);
         if (_gm.currentState != _gm.End)
             UIEvents.OnAirplaneStoreExit.Invoke();
