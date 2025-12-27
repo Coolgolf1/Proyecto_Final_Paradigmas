@@ -40,16 +40,15 @@ public class RoutesUI : MonoBehaviour
 
     private void HandleMoneyChange(object sender, EventArgs e)
     {
-        
-        UpdatePriceAndButton();
+        if (airport2.interactable)
+            UpdatePriceAndButton();
     }
     void LoadStore()
     {
         UpdateFirstChoice();
-        UpdateSecondChoice();
-        UpdatePriceAndButton();
+        
         airport2.onValueChanged.AddListener(delegate { UpdatePriceAndButton(); });
-        airport1.onValueChanged.AddListener(delegate { UpdateSecondChoice(); UpdatePriceAndButton(); });
+        airport1.onValueChanged.AddListener(delegate { UpdateSecondChoice(); });
         
     }
 
@@ -63,31 +62,56 @@ public class RoutesUI : MonoBehaviour
     {
         List<TMP_Dropdown.OptionData> options1 = new List<TMP_Dropdown.OptionData>();
 
+        options1.Add(new TMP_Dropdown.OptionData("Select..."));
+
         foreach (Airport airport in Player.UnlockedAirports)
         {
-            if (airport.Name != airport2.options[airport2.value].text)
-                options1.Add(new TMP_Dropdown.OptionData(airport.Name));
+            options1.Add(new TMP_Dropdown.OptionData(airport.Name));
         }
 
         airport1.ClearOptions();
         airport1.AddOptions(options1);
+
+        airport2.ClearOptions();
+        airport2.interactable = false;
+
+        priceText.text = $"Select a Route";
+        buyRoute.interactable = false;
+        priceText.color = Color.black;
+        buyRoute.GetComponentInChildren<TMP_Text>().text = "Buy";
+        buyRoute.GetComponent<Image>().color = Color.white;
     }
 
     void UpdateSecondChoice()
     {
-        List<TMP_Dropdown.OptionData> options2 = new List<TMP_Dropdown.OptionData>();
-        airport2.interactable = true;
-
-        foreach (Airport airport in Player.UnlockedAirports)
+        if (airport1.options[airport1.value].text != "Select...")
         {
-            if (airport.Name != airport1.options[airport1.value].text)
-            {
-                options2.Add(new TMP_Dropdown.OptionData(airport.Name));
-            }
-        }
+            List<TMP_Dropdown.OptionData> options2 = new List<TMP_Dropdown.OptionData>();
+            airport2.interactable = true;
 
-        airport2.ClearOptions();
-        airport2.AddOptions(options2);
+            foreach (Airport airport in Player.UnlockedAirports)
+            {
+                if (airport.Name != airport1.options[airport1.value].text)
+                {
+                    options2.Add(new TMP_Dropdown.OptionData(airport.Name));
+                }
+            }
+
+            airport2.ClearOptions();
+            airport2.AddOptions(options2);
+
+            UpdatePriceAndButton();
+        }
+        else
+        {
+            airport2.ClearOptions();
+            airport2.interactable = false;
+            priceText.text = $"Select a Route";
+            buyRoute.interactable = false;
+            priceText.color = Color.black;
+            buyRoute.GetComponentInChildren<TMP_Text>().text = "Buy";
+            buyRoute.GetComponent<Image>().color = Color.white;
+        }
     }
 
     void UpdatePriceAndButton()
@@ -134,8 +158,8 @@ public class RoutesUI : MonoBehaviour
         //_economy.SetCoins(1000000);
         _economy.MoneyChange += HandleMoneyChange;
         UpdateFirstChoice();
-        UpdateSecondChoice();
-        UpdatePriceAndButton();
+        //UpdateSecondChoice();
+        //UpdatePriceAndButton();
 
         gameObject.SetActive(true);
         UIEvents.OnRouteStoreEnter.Invoke();
