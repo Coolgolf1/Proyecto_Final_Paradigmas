@@ -6,7 +6,7 @@ using UnityEngine;
 public static class Player
 {
     public static int Score { get; set; } = 0;
-    public static int Money { get; set; } = 0;
+    public static long Money { get; set; } = 0;
     public static List<Airplane> Airplanes { get; private set; }
     public static List<Airport> UnlockedAirports { get; set; } = new List<Airport>();
 

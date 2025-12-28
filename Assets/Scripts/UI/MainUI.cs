@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -22,11 +23,14 @@ public class MainUI : MonoBehaviour
     [SerializeField] private TMP_Text dayCounter;
     [SerializeField] private TMP_Text score;
     [SerializeField] private TMP_Text money;
+
+    [Header("Value Fields")]
+
     private int _days = 0;
 
     private bool _enabled = false;
 
-    private int _currentMoney = 0;
+    private long _currentMoney = 0;
 
     private bool muteStatus = false;
 
@@ -90,6 +94,20 @@ public class MainUI : MonoBehaviour
         _info.ToggleMute();
         muteStatus = !muteStatus;
     }
+
+    public string FormatValue(long value)
+    {
+        if (value < 1_000_000)
+            return value.ToString("N0", CultureInfo.InvariantCulture);
+
+        if (value < 1_000_000_000)
+            return (value / 1_000_000d).ToString("0.0", CultureInfo.InvariantCulture) + "M";
+
+        return (value / 1_000_000_000d).ToString("0.0", CultureInfo.InvariantCulture) + "B";
+
+    }
+
+
     // Update is called once per frame
     private void Update()
     {
@@ -102,9 +120,10 @@ public class MainUI : MonoBehaviour
             string minutes = ((Mathf.Floor(_elapsedTime / 60) + refTime.Item2) % 60).ToString("00");
             //string seconds = ((Mathf.Floor(_elapsedTime % 60) + refTime.Item3) % 60).ToString("00");
             timeCounter.text = $"{hours}:{minutes}";
-            score.text = $"Score: {Player.Score}";
-            money.text = $"Coins: {_currentMoney}";
-            dayCounter.text = $"Day: {_days}";
+            dayCounter.text = $"{_days}";
+
+            score.text = $"{Player.Score.ToString("N0", CultureInfo.InvariantCulture)}";
+            money.text = $"{FormatValue(_currentMoney)}";
         }
     }
 

@@ -28,19 +28,19 @@ public class EconomyManager
 
         if (passengers > 0)
         {
-            Player.Money += (int)(passengers * distance / 25);
+            Player.Money += (long)(passengers * distance / 25);
             Player.UpdateScore(passengers);
             MoneyChange?.Invoke(this, EventArgs.Empty);
         }
     }
 
-    public void SetCoins(int money)
+    public void SetCoins(long money)
     {
         Player.Money = money;
         MoneyChange?.Invoke(this, EventArgs.Empty);
     }
 
-    public bool SubtractCoins(int money)
+    public bool SubtractCoins(long money)
     {
         if (Player.Money < money)
         {
@@ -51,14 +51,14 @@ public class EconomyManager
         return true;
     }
 
-    public bool AddCoins(int money)
+    public bool AddCoins(long money)
     {
         Player.Money += money;
         MoneyChange?.Invoke(this, EventArgs.Empty);
         return true;
     }
 
-    public int GetBalance()
+    public long GetBalance()
     {
         return Player.Money;
     }
