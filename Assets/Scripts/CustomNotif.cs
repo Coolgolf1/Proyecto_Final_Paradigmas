@@ -1,8 +1,10 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 using TMPro;
 using System.Collections.Generic;
 using System.Collections;
+using Unity.VisualScripting;
 
 public class CustomNotif : MonoBehaviour
 {
@@ -18,6 +20,7 @@ public class CustomNotif : MonoBehaviour
     [SerializeField] private Image iconUI;
     [SerializeField] private Image panelBase;
     [SerializeField] private CanvasGroup canvasGroup;
+    [SerializeField] private Button actionButton;
 
     private Dictionary<string, Sprite> spriteDict = new Dictionary<string, Sprite>();
 
@@ -47,7 +50,7 @@ public class CustomNotif : MonoBehaviour
         UpdatePosition();
     }
 
-    public void UpdateContents(string message, string type, string color)
+    public void UpdateContents(string message, string type, string color, UnityAction onClickFunc = null)
     {
         Color newColor;
 
@@ -73,6 +76,18 @@ public class CustomNotif : MonoBehaviour
         panelBase.color = newColor;
         messageUI.text = message;
         iconUI.sprite = spriteDict[type];
+
+        if (onClickFunc is not null)
+        {
+            actionButton.onClick.AddListener(onClickFunc);
+        }
+        
+        actionButton.onClick.AddListener(ExpireNotification);
+    }
+
+    private void ExpireNotification()
+    {
+        createdTime = -100000;
     }
 
     private void UpdatePosition()

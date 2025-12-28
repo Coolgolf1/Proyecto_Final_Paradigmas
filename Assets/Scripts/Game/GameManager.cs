@@ -185,9 +185,20 @@ public class GameManager : MonoBehaviour
             Airport initialAirport2 = reachableAirports[_rand.Next(0, reachableAirports.Count)];
 
             Player.UnlockAirport(initialAirport1);
-            _info.notificationSystem.AddNotification($"Unlocked new airport: {initialAirport1.Name}.", "airport", "blue");
             Player.UnlockAirport(initialAirport2);
-            _info.notificationSystem.AddNotification($"Unlocked new airport: {initialAirport2.Name}.", "airport", "blue");
+            if (playerCamera.GetComponent<PlayerMovement>() is SpaceCamera spaceCamera)
+            {
+                _info.notificationSystem.AddNotification($"Unlocked new airport: {initialAirport1.Name}.", "airport", "blue", delegate { spaceCamera.SetAirport(initialAirport1); });
+                _info.notificationSystem.AddNotification($"Unlocked new airport: {initialAirport2.Name}.", "airport", "blue", delegate { spaceCamera.SetAirport(initialAirport2); });
+            }
+            else
+            {
+                _info.notificationSystem.AddNotification($"Unlocked new airport: {initialAirport1.Name}.", "airport", "blue");
+                _info.notificationSystem.AddNotification($"Unlocked new airport: {initialAirport2.Name}.", "airport", "blue");
+            }
+            
+            
+            
 
             if (_info.playerCamera.GetComponent<PlayerMovement>() is SpaceCamera camera)
             {
@@ -330,7 +341,13 @@ public class GameManager : MonoBehaviour
 
         //Debug.Log($"Unlocked new airport: {newAirport}.");
 
-        _info.notificationSystem.AddNotification($"Unlocked new airport: {newAirport.Name}.", "airport", "blue");
+        if (playerCamera.GetComponent<PlayerMovement>() is SpaceCamera camera)
+        {
+            _info.notificationSystem.AddNotification($"Unlocked new airport: {newAirport.Name}.", "airport", "blue", delegate { camera.SetAirport(newAirport); });
+        }
+        else {
+            _info.notificationSystem.AddNotification($"Unlocked new airport: {newAirport.Name}.", "airport", "blue");
+        }
 
 
     }

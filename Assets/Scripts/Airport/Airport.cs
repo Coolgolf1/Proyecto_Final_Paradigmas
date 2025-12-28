@@ -39,6 +39,12 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
 
     // Serialize Field
     [SerializeField] private Light statusLight;
+    [SerializeField] private LineRenderer lightRay;
+
+    private bool _lightRayOn = false;
+    private double _lightRayExpiry = 0f;
+    private bool _enableLightRay = false;
+
     private int _lightInt;
 
     // AI Spawner
@@ -67,6 +73,8 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
         _nextSpawnTime = Time.time + GetSpawnIntervalForPhase();
 
         PriorityOn = false;
+
+        lightRay.enabled = true;
     }
 
     private void SetNextEventTime()
@@ -226,6 +234,7 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
                 if (_lightInt == 1)
                 {
                     _info.notificationSystem.AddNotification($"{Name} is over 50% capacity", "warning", "orange");
+                    EnableLightRay("orange");
                 }
                 _lightInt = 2;
             }
@@ -235,6 +244,7 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
                 if (_lightInt != 3)
                 {
                     _info.notificationSystem.AddNotification($"{Name} is over 70% capacity", "alert", "red");
+                    EnableLightRay("red");
                 }
 
 
@@ -248,11 +258,63 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
         }
     }
 
+    private void EnableLightRay(string color)
+    {
+        lightRay.enabled = true;
+        _lightRayOn = true;
+        _lightRayExpiry = Time.time + 20f;
+
+        Vector3 origin = transform.position;
+        Vector3 direction = (transform.position - _info.earth.transform.position).normalized;
+
+        lightRay.SetPosition(0, origin);
+
+        lightRay.SetPosition(1, origin + direction * 8f);
+
+        switch (color)
+        {
+            case "red":
+                lightRay.material = Resources.Load("RojoLightRay", typeof(Material)) as Material;
+                break;
+            case "orange":
+                lightRay.material = Resources.Load("NaranjaLightRay", typeof(Material)) as Material;
+                break;
+            case "green":
+                lightRay.material = Resources.Load("VerdeLightRay", typeof(Material)) as Material;
+                break;
+            default:
+                lightRay.material = Resources.Load("VerdeLightRay", typeof(Material)) as Material;
+                break;
+        }
+
+        
+
+    }
+
+    private void CheckLightRay()
+    {
+        if (_enableLightRay)
+        {
+            EnableLightRay("green");
+            _enableLightRay = false;
+        }
+        else if (_lightRayOn && _lightRayExpiry < Time.time)
+        {
+            _lightRayOn = false;
+            lightRay.enabled = false;
+        }
+    }
+
     public void Unlock()
     {
         Unlocked = true;
         _unlockTime = Time.time;
         gameObject.SetActive(Unlocked);
+
+        if (_gm.currentState != _gm.MainMenu)
+        {
+            _enableLightRay = true;
+        }
 
         GameEvents.OnAirportUnlock?.Invoke();
     }
@@ -661,6 +723,7 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
         if (!Unlocked)
             return;
 
+
         HandleSpawning();
 
         PhaseDirectorUpdate();
@@ -668,5 +731,7 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
         CheckMaxPassengers();
 
         UpdateLight();
+
+        CheckLightRay();
     }
 }

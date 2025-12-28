@@ -196,6 +196,12 @@ public class SpaceCamera : PlayerMovement
 
     private void GoToAirport()
     {
+
+        if (drag.IsPressed())
+        {
+            _arrivedAirport = true;
+            airportObj = null;
+        }
     
         if (!_arrivedAirport) {
             Vector3 earthCenter = _info.earth.transform.position;

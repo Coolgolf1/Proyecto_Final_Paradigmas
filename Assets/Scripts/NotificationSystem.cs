@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class NotificationSystem : MonoBehaviour
 {
@@ -27,13 +28,13 @@ public class NotificationSystem : MonoBehaviour
         CheckNotifications();
     }
 
-    public void AddNotification(string message, string type, string color)
+    public void AddNotification(string message, string type, string color, UnityAction onClickFunc = null)
     {
         GameObject notif = Instantiate(notificationPrefab, transform);
 
         CustomNotif notifComp = notif.GetComponent<CustomNotif>();
 
-        notifComp.UpdateContents(message, type, color);
+        notifComp.UpdateContents(message, type, color, onClickFunc);
 
         queuedNotifications.Add(notifComp);
 
