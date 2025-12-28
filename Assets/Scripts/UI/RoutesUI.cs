@@ -14,6 +14,8 @@ public class RoutesUI : MonoBehaviour
     [SerializeField] private Button openUI;
     [SerializeField] private Button closeUI;
     [SerializeField] private TMP_Text priceText;
+    [SerializeField] private Image coinImage;
+    [SerializeField] private TMP_Text selectText;
 
     [Header("Routes")]
     [SerializeField] private GameObject routePrefab;
@@ -22,6 +24,10 @@ public class RoutesUI : MonoBehaviour
     private EconomyManager _economy = EconomyManager.GetInstance();
     private InfoSingleton _info = InfoSingleton.GetInstance();
     private GameMaster _gm = GameMaster.GetInstance();
+
+    private Color _outlineColor;
+    private Color _priceColor;
+    private Color _sellColor;
 
     private int _price;
 
@@ -36,7 +42,11 @@ public class RoutesUI : MonoBehaviour
 
         UIEvents.OnAirplaneStoreEnter.AddListener(CloseStoreUI);
         UIEvents.OnEndGameEnter.AddListener(CloseStoreUI);
-        
+
+        ColorUtility.TryParseHtmlString("#9FB6C8", out _outlineColor);
+        ColorUtility.TryParseHtmlString("#F1F5F9", out _priceColor);
+        ColorUtility.TryParseHtmlString("#63B7A5", out _sellColor);
+
     }
 
     private void HandleMoneyChange(object sender, EventArgs e)
@@ -76,9 +86,12 @@ public class RoutesUI : MonoBehaviour
         airport2.ClearOptions();
         airport2.interactable = false;
 
-        priceText.text = $"Select a Route";
+        coinImage.gameObject.SetActive(false);
+        selectText.gameObject.SetActive(true);
+        priceText.gameObject.SetActive(false);
+        selectText.text = $"Select a Route";
         buyRoute.interactable = false;
-        priceText.color = Color.black;
+        selectText.color = Color.black;
         buyRoute.GetComponentInChildren<TMP_Text>().text = "Buy";
         buyRoute.GetComponent<Image>().color = Color.white;
     }
@@ -87,6 +100,9 @@ public class RoutesUI : MonoBehaviour
     {
         if (airport1.options[airport1.value].text != "Select...")
         {
+            coinImage.gameObject.SetActive(true);
+            selectText.gameObject.SetActive(false);
+            priceText.gameObject.SetActive(true);
             List<TMP_Dropdown.OptionData> options2 = new List<TMP_Dropdown.OptionData>();
             airport2.interactable = true;
 
@@ -107,9 +123,12 @@ public class RoutesUI : MonoBehaviour
         {
             airport2.ClearOptions();
             airport2.interactable = false;
-            priceText.text = $"Select a Route";
+            coinImage.gameObject.SetActive(false);
+            selectText.gameObject.SetActive(true);
+            priceText.gameObject.SetActive(false);
+            selectText.text = $"Select a Route";
             buyRoute.interactable = false;
-            priceText.color = Color.black;
+            selectText.color = Color.black;
             buyRoute.GetComponentInChildren<TMP_Text>().text = "Buy";
             buyRoute.GetComponent<Image>().color = Color.white;
         }
@@ -131,26 +150,29 @@ public class RoutesUI : MonoBehaviour
         if (_info.savedRoutes.ContainsKey($"{a1value}-{a2value}"))
         {
             buyRoute.interactable = true;
-            priceText.text = $"+{(_price / 2).ToString("N0", CultureInfo.InvariantCulture)} coins";
-            priceText.color = Color.darkGreen;
+            priceText.text = $"+{Auxiliary.FormatValue(_price / 2)}";
+            priceText.color = _sellColor;
             buyRoute.GetComponentInChildren<TMP_Text>().text = "Remove";
             buyRoute.GetComponent<Image>().color = Color.red;
+            buyRoute.GetComponent<Outline>().effectColor = Color.darkRed;
         }
         else if (_economy.GetBalance() < _price)
         {
-            priceText.text = $"{_price.ToString("N0", CultureInfo.InvariantCulture)} coins";
+            priceText.text = $"{Auxiliary.FormatValue(_price)}";
             buyRoute.interactable = false;
-            priceText.color = Color.black;
+            priceText.color = _priceColor;
             buyRoute.GetComponentInChildren<TMP_Text>().text = "Buy";
             buyRoute.GetComponent<Image>().color = Color.white;
+            buyRoute.GetComponent<Outline>().effectColor = _outlineColor;
         }
         else
         {
-            priceText.text = $"{_price.ToString("N0", CultureInfo.InvariantCulture)} coins";
+            priceText.text = $"{Auxiliary.FormatValue(_price)}";
             buyRoute.interactable = true;
-            priceText.color = Color.black;
+            priceText.color = _priceColor;
             buyRoute.GetComponentInChildren<TMP_Text>().text = "Buy";
             buyRoute.GetComponent<Image>().color = Color.white;
+            buyRoute.GetComponent<Outline>().effectColor = _outlineColor;
         }
     }
 
@@ -169,9 +191,9 @@ public class RoutesUI : MonoBehaviour
     public void CloseStoreUI()
     {
         _economy.MoneyChange -= HandleMoneyChange;
-        gameObject.SetActive(false);
         if (_gm.currentState != _gm.End)
             UIEvents.OnRouteStoreExit.Invoke();
+        gameObject.SetActive(false);
     }
 
     void BuyRoute()

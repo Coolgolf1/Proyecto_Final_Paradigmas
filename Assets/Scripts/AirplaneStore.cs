@@ -252,24 +252,24 @@ public class AirplaneStore : MonoBehaviour
 
         // Small Airplane 
 
-        smallAirplaneCapacity.text = $"Capacity: {GameConstants.smallCapacity}";
-        smallAirplaneSpeed.text = $"Speed: {(int)(baseSpeed * GameConstants.smallSpeedMultiplier * 5)}  km/h";
-        smallAirplaneRange.text = $"Range: {GameConstants.smallRange} km";
+        smallAirplaneCapacity.text = $"{GameConstants.smallCapacity}";
+        smallAirplaneSpeed.text = $"{Auxiliary.FormatValue((int)(baseSpeed * GameConstants.smallSpeedMultiplier * 5))}  km/h";
+        smallAirplaneRange.text = $"{Auxiliary.FormatValue((int)GameConstants.smallRange)} km";
 
         smallAirplaneBuy.onClick.AddListener(smallAirplaneBought);
 
         // Medium Airplane 
 
-        mediumAirplaneCapacity.text = $"Capacity: {GameConstants.mediumCapacity}";
-        mediumAirplaneSpeed.text = $"Speed: {(int)(baseSpeed * GameConstants.mediumSpeedMultiplier * 5)} km/h";
-        mediumAirplaneRange.text = $"Range: {GameConstants.mediumRange} km";
+        mediumAirplaneCapacity.text = $"{GameConstants.mediumCapacity}";
+        mediumAirplaneSpeed.text = $"{Auxiliary.FormatValue((int)(baseSpeed * GameConstants.mediumSpeedMultiplier * 5))} km/h";
+        mediumAirplaneRange.text = $"{Auxiliary.FormatValue((int)GameConstants.mediumRange)} km";
         mediumAirplaneBuy.onClick.AddListener(mediumAirplaneBought);
 
         // Large Airplane 
 
-        largeAirplaneCapacity.text = $"Capacity: {GameConstants.largeCapacity}";
-        largeAirplaneSpeed.text = $"Speed: {(int)(baseSpeed * GameConstants.largeSpeedMultiplier * 5)} km/h";
-        largeAirplaneRange.text = $"Range: {GameConstants.largeRange} km";
+        largeAirplaneCapacity.text = $"{GameConstants.largeCapacity}";
+        largeAirplaneSpeed.text = $"{Auxiliary.FormatValue((int)(baseSpeed * GameConstants.largeSpeedMultiplier * 5))} km/h";
+        largeAirplaneRange.text = $"{Auxiliary.FormatValue((int)GameConstants.largeRange)} km";
         largeAirplaneBuy.onClick.AddListener(largeAirplaneBought);
 
         // Dropdowns
@@ -301,7 +301,7 @@ public class AirplaneStore : MonoBehaviour
 
     private void UpdateButtons()
     {
-        smallAirplanePrice.text = $"Price: {(int)(GameConstants.smallPrice * _smallAirplanePriceMultiplier)} coins";
+        smallAirplanePrice.text = $"{Auxiliary.FormatValue((int)(GameConstants.smallPrice * _smallAirplanePriceMultiplier))}";
         if (_economy.GetBalance() >= GameConstants.smallPrice * _smallAirplanePriceMultiplier)
         {
             smallAirplaneBuy.interactable = true;
@@ -311,7 +311,7 @@ public class AirplaneStore : MonoBehaviour
             smallAirplaneBuy.interactable = false;
         }
 
-        mediumAirplanePrice.text = $"Price: {(int)(GameConstants.mediumPrice * _mediumAirplanePriceMultiplier)} coins";
+        mediumAirplanePrice.text = $"{Auxiliary.FormatValue((int)(GameConstants.mediumPrice * _mediumAirplanePriceMultiplier))}";
         if (_economy.GetBalance() >= GameConstants.mediumPrice * _mediumAirplanePriceMultiplier)
         {
             mediumAirplaneBuy.interactable = true;
@@ -321,7 +321,7 @@ public class AirplaneStore : MonoBehaviour
             mediumAirplaneBuy.interactable = false;
         }
 
-        largeAirplanePrice.text = $"Price: {(int)(GameConstants.largePrice * _largeAirplanePriceMultiplier)} coins";
+        largeAirplanePrice.text = $"{Auxiliary.FormatValue((int)(GameConstants.largePrice * _largeAirplanePriceMultiplier))}";
         if (_economy.GetBalance() >= GameConstants.largePrice * _largeAirplanePriceMultiplier)
         {
             largeAirplaneBuy.interactable = true;

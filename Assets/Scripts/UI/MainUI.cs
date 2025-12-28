@@ -105,18 +105,6 @@ public class MainUI : MonoBehaviour
         muteStatus = !muteStatus;
     }
 
-    public string FormatValue(long value)
-    {
-        if (value < 1_000_000)
-            return value.ToString("N0", CultureInfo.InvariantCulture);
-
-        if (value < 1_000_000_000)
-            return (value / 1_000_000d).ToString("0.0", CultureInfo.InvariantCulture) + "M";
-
-        return (value / 1_000_000_000d).ToString("0.0", CultureInfo.InvariantCulture) + "B";
-
-    }
-
 
     // Update is called once per frame
     private void Update()
@@ -132,8 +120,8 @@ public class MainUI : MonoBehaviour
             timeCounter.text = $"{hours}:{minutes}";
             dayCounter.text = $"{_days}";
 
-            score.text = $"{Player.Score.ToString("N0", CultureInfo.InvariantCulture)}";
-            money.text = $"{FormatValue(_currentMoney)}";
+            score.text = $"{Auxiliary.FormatValue(Player.Score)}";
+            money.text = $"{Auxiliary.FormatValue(_currentMoney)}";
         }
     }
 

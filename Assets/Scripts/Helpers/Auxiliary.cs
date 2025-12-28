@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using UnityEngine;
 
@@ -164,5 +165,17 @@ internal static class Auxiliary
         {
             airport.InitTravellers(mainMenuGame);
         }
+    }
+
+    public static string FormatValue(long value)
+    {
+        if (value < 1_000_000)
+            return value.ToString("N0", CultureInfo.InvariantCulture);
+
+        if (value < 1_000_000_000)
+            return (value / 1_000_000d).ToString("0.0", CultureInfo.InvariantCulture) + "M";
+
+        return (value / 1_000_000_000d).ToString("0.0", CultureInfo.InvariantCulture) + "B";
+
     }
 }

@@ -5,6 +5,7 @@ using TMPro;
 using System.Collections.Generic;
 using System.Collections;
 using Unity.VisualScripting;
+using UnityEngine.InputSystem.Controls;
 
 public class CustomNotif : MonoBehaviour
 {
@@ -27,6 +28,8 @@ public class CustomNotif : MonoBehaviour
     public float createdTime;
 
     public float objY;
+
+    private bool _fadingOut = false;
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
@@ -37,6 +40,10 @@ public class CustomNotif : MonoBehaviour
         spriteDict["route"] = route;
         spriteDict["airport"] = airport;
 
+        UIEvents.OnAirplaneStoreEnter.AddListener(Hide);
+        UIEvents.OnRouteStoreEnter.AddListener(Hide);
+        UIEvents.OnAirplaneStoreExit.AddListener(Show);
+        UIEvents.OnRouteStoreExit.AddListener(Show);
 
         if (canvasGroup == null)
         {
@@ -120,6 +127,7 @@ public class CustomNotif : MonoBehaviour
     {
         float elapsed = 0f;
         float startAlpha = canvasGroup.alpha;
+        _fadingOut = true;
 
         while (elapsed < duration)
         {
@@ -131,5 +139,17 @@ public class CustomNotif : MonoBehaviour
 
         canvasGroup.alpha = 0f;
         Destroy(gameObject);
+    }
+
+    public void Hide()
+    {
+        //createdTime += Time.deltaTime;
+        canvasGroup.alpha = 0;
+    }
+
+    public void Show()
+    {
+        if (!_fadingOut)
+            canvasGroup.alpha = 1;
     }
 }
