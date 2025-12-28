@@ -64,7 +64,7 @@ public class HangarUI : MonoBehaviour
         if (_info.airplaneInHangar.Level != Levels.Elite)
         {
             speedUpgrade.text = $"+{_upgradeQuantity}";
-            upgradeText.text = $"{_upgradeQuantity * 100} coins";
+            upgradeText.text = $"{Auxiliary.FormatValue(_upgradeQuantity * 100)}";
         }
         else
         {

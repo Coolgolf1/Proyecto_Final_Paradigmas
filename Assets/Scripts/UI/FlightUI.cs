@@ -13,6 +13,8 @@ public class FlightUI : MonoBehaviour
     private Airplane _linkedAirplane;
     private InfoSingleton _info = InfoSingleton.GetInstance();
 
+    private Color _passengerTextColor;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Start()
     {
@@ -28,7 +30,9 @@ public class FlightUI : MonoBehaviour
         UIEvents.OnRouteStoreEnter.AddListener(CloseUI);
 
         UIEvents.OnMainMenuEnter.AddListener(CloseUI);
-        
+
+        ColorUtility.TryParseHtmlString("#D6E0E8", out _passengerTextColor);
+
     }
 
     // Update is called once per frame
@@ -87,6 +91,7 @@ public class FlightUI : MonoBehaviour
             passengersText += $"- {destAirport.Id.ToUpper()}: {flight.TravellersToAirport[destAirport]}\n";
         }
 
+        passengers.color = _passengerTextColor;
         passengers.text = passengersText;
     }
 }

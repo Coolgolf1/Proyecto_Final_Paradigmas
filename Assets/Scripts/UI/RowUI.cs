@@ -10,7 +10,7 @@ public class RowUI : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
@@ -23,5 +23,6 @@ public class RowUI : MonoBehaviour
     {
         cell1.text = v1;
         cell2.text = v2;
+
     }
 }
