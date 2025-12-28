@@ -17,6 +17,8 @@ public class MainUI : MonoBehaviour
     [SerializeField] private Button pause;
     [SerializeField] private Button fastForward;
     [SerializeField] private Button muteButton;
+    [SerializeField] private Button settingsButton;
+    [SerializeField] private Button homeButton;
 
     [Header("Text Fields")]
     [SerializeField] private TMP_Text timeCounter;
@@ -36,6 +38,7 @@ public class MainUI : MonoBehaviour
 
     private EconomyManager _economy = EconomyManager.GetInstance();
     private InfoSingleton _info = InfoSingleton.GetInstance();
+    private GameMaster _gm = GameMaster.GetInstance();
 
     private Tuple<int, int, int> refTime = Tuple.Create(9, 0, 0);
 
@@ -48,6 +51,7 @@ public class MainUI : MonoBehaviour
         fastForward.onClick.AddListener(FastForward);
         _economy.MoneyChange += HandleMoneyChange;
         muteButton.onClick.AddListener(ToggleMute);
+        homeButton.onClick.AddListener(ExitToMenu);
 
         UIEvents.OnPlayEnter.AddListener(StartGame);
         UIEvents.OnMainMenuEnter.AddListener(HideUI);
@@ -76,6 +80,12 @@ public class MainUI : MonoBehaviour
     private void HandleMoneyChange(object sender, EventArgs e)
     {
         _currentMoney = Player.Money;
+    }
+
+    private void ExitToMenu()
+    {
+        _gm.ChangeState(_gm.End);
+        _gm.ChangeState(_gm.MainMenu);
     }
 
     private void ToggleMute()

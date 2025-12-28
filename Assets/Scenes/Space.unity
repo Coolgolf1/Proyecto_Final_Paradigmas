@@ -18045,6 +18045,8 @@ MonoBehaviour:
   pause: {fileID: 1164344613}
   fastForward: {fileID: 767244324}
   muteButton: {fileID: 51906210}
+  settingsButton: {fileID: 2051875001}
+  homeButton: {fileID: 1031367655}
   timeCounter: {fileID: 1619017866}
   dayCounter: {fileID: 1849582229}
   score: {fileID: 1970086105}

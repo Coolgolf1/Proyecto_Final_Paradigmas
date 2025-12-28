@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -130,14 +131,14 @@ public class RoutesUI : MonoBehaviour
         if (_info.savedRoutes.ContainsKey($"{a1value}-{a2value}"))
         {
             buyRoute.interactable = true;
-            priceText.text = $"+{(_price / 2).ToString("#,#")} coins";
+            priceText.text = $"+{(_price / 2).ToString("0.0", CultureInfo.InvariantCulture)} coins";
             priceText.color = Color.darkGreen;
             buyRoute.GetComponentInChildren<TMP_Text>().text = "Remove";
             buyRoute.GetComponent<Image>().color = Color.red;
         }
         else if (_economy.GetBalance() < _price)
         {
-            priceText.text = $"{_price.ToString("#,#")} coins";
+            priceText.text = $"{_price.ToString("0.0", CultureInfo.InvariantCulture)} coins";
             buyRoute.interactable = false;
             priceText.color = Color.black;
             buyRoute.GetComponentInChildren<TMP_Text>().text = "Buy";
@@ -145,7 +146,7 @@ public class RoutesUI : MonoBehaviour
         }
         else
         {
-            priceText.text = $"{_price.ToString("#,#")} coins";
+            priceText.text = $"{_price.ToString("0.0", CultureInfo.InvariantCulture)} coins";
             buyRoute.interactable = true;
             priceText.color = Color.black;
             buyRoute.GetComponentInChildren<TMP_Text>().text = "Buy";
