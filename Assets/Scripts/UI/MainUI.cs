@@ -1,6 +1,7 @@
 using System;
 using System.Globalization;
 using TMPro;
+using UnityEditor.Search;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -18,6 +19,7 @@ public class MainUI : MonoBehaviour
     [SerializeField] private Button fastForward;
     [SerializeField] private Button muteButton;
     [SerializeField] private Button settingsButton;
+    [SerializeField] private Button exitPromptButton;
     [SerializeField] private Button homeButton;
 
     [Header("Text Fields")]
@@ -26,7 +28,8 @@ public class MainUI : MonoBehaviour
     [SerializeField] private TMP_Text score;
     [SerializeField] private TMP_Text money;
 
-    [Header("Value Fields")]
+    [Header("Others")]
+    [SerializeField] private GameObject exitCanvas;
 
     private int _days = 0;
 
@@ -53,6 +56,8 @@ public class MainUI : MonoBehaviour
         muteButton.onClick.AddListener(ToggleMute);
         homeButton.onClick.AddListener(ExitToMenu);
         settingsButton.onClick.AddListener(OpenSettings);
+        exitPromptButton.onClick.AddListener(ToggleExitPrompt);
+
 
         UIEvents.OnPlayEnter.AddListener(StartGame);
         UIEvents.OnMainMenuEnter.AddListener(HideUI);
@@ -91,6 +96,14 @@ public class MainUI : MonoBehaviour
     private void HandleMoneyChange(object sender, EventArgs e)
     {
         _currentMoney = Player.Money;
+    }
+
+    private void ToggleExitPrompt()
+    {
+        if (exitCanvas.activeSelf)
+            exitCanvas.SetActive(false);
+        else
+            exitCanvas.SetActive(true);
     }
 
     private void ExitToMenu()
@@ -146,6 +159,7 @@ public class MainUI : MonoBehaviour
 
         _enabled = true;
         gameObject.GetComponent<CanvasGroup>().alpha = 1.0f;
+        exitCanvas.SetActive(false);
     }
 
     public void HideUI()
