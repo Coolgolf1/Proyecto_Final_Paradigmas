@@ -1,7 +1,5 @@
 using System;
-using System.Globalization;
 using TMPro;
-using UnityEditor.Search;
 using UnityEngine;
 using UnityEngine.UI;
 
