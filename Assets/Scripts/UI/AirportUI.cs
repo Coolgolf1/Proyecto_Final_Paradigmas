@@ -129,7 +129,7 @@ public class AirportUI : MonoBehaviour
         }
         else
         {
-            upgradePrice.text = $"{_upgradePrice.ToString("#,#")} coins";
+            upgradePrice.text = $"{Auxiliary.FormatValue(_upgradePrice)}";
             if (_economy.GetBalance() < _upgradePrice)
             {
                 payUpgrade.interactable = false;

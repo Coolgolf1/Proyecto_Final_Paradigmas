@@ -91,7 +91,7 @@ public class RoutesUI : MonoBehaviour
         priceText.gameObject.SetActive(false);
         selectText.text = $"Select a Route";
         buyRoute.interactable = false;
-        selectText.color = Color.black;
+        selectText.color = Color.white;
         buyRoute.GetComponentInChildren<TMP_Text>().text = "Buy";
         buyRoute.GetComponent<Image>().color = Color.white;
     }
@@ -128,7 +128,7 @@ public class RoutesUI : MonoBehaviour
             priceText.gameObject.SetActive(false);
             selectText.text = $"Select a Route";
             buyRoute.interactable = false;
-            selectText.color = Color.black;
+            selectText.color = Color.white;
             buyRoute.GetComponentInChildren<TMP_Text>().text = "Buy";
             buyRoute.GetComponent<Image>().color = Color.white;
         }

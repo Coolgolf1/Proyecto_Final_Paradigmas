@@ -65,6 +65,7 @@ public class SettingsUI : MonoBehaviour
         SpaceCamera camera = player.GetComponent<SpaceCamera>();
         camera.UseSlerp = true;
         camera.Sun = sun;
+        camera.GoingToSettings = false;
         if (camera.ComingFromGame)
             camera.GoingBackToGame = true;
         else

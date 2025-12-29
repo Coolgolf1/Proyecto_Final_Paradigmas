@@ -40,10 +40,7 @@ public class CustomNotif : MonoBehaviour
         spriteDict["route"] = route;
         spriteDict["airport"] = airport;
 
-        UIEvents.OnAirplaneStoreEnter.AddListener(Hide);
-        UIEvents.OnRouteStoreEnter.AddListener(Hide);
-        UIEvents.OnAirplaneStoreExit.AddListener(Show);
-        UIEvents.OnRouteStoreExit.AddListener(Show);
+        
 
         if (canvasGroup == null)
         {
@@ -131,7 +128,7 @@ public class CustomNotif : MonoBehaviour
 
         while (elapsed < duration)
         {
-            elapsed += Time.deltaTime;
+            elapsed += Time.fixedDeltaTime;
             float t = Mathf.Clamp01(elapsed / duration);
             canvasGroup.alpha = Mathf.Lerp(startAlpha, 0f, t);
             yield return null;
@@ -141,13 +138,13 @@ public class CustomNotif : MonoBehaviour
         Destroy(gameObject);
     }
 
-    public void Hide()
+    public void SetHidden()
     {
         //createdTime += Time.deltaTime;
         canvasGroup.alpha = 0;
     }
 
-    public void Show()
+    public void SetShow()
     {
         if (!_fadingOut)
             canvasGroup.alpha = 1;

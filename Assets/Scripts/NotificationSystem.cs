@@ -14,12 +14,20 @@ public class NotificationSystem : MonoBehaviour
 
     private float _baseY = -50;
 
+    private bool _hidden = false;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         queuedNotifications = new List<CustomNotif>();
         source = GetComponent<AudioSource>();
         source.clip = popSound;
+        UIEvents.OnMainMenuEnter.AddListener(ClearAllNotifications);
+        UIEvents.OnSettingsEnter.AddListener(ClearAllNotifications);
+        UIEvents.OnAirplaneStoreEnter.AddListener(HideNotifications);
+        UIEvents.OnRouteStoreEnter.AddListener(HideNotifications);
+        UIEvents.OnAirplaneStoreExit.AddListener(ShowNotifications);
+        UIEvents.OnRouteStoreExit.AddListener(ShowNotifications);
     }
 
     // Update is called once per frame
@@ -44,6 +52,11 @@ public class NotificationSystem : MonoBehaviour
         rt.anchoredPosition = new Vector2(rt.anchoredPosition.x, _baseY - 55 * (queuedNotifications.Count - 1));
 
         source.Play();
+
+        if (_hidden)
+        {
+            notifComp.SetHidden();
+        }
     }
 
     private void CheckNotifications()
@@ -62,6 +75,37 @@ public class NotificationSystem : MonoBehaviour
         for (int i = 0; i < queuedNotifications.Count; i++)
         {
             queuedNotifications[i].objY = _baseY - 55 * i;
+        }
+    }
+
+    public void ClearAllNotifications()
+    {
+        List<CustomNotif> actualNotifs = queuedNotifications.ToList();
+
+        foreach (CustomNotif notif in actualNotifs)
+        {
+            
+            queuedNotifications.Remove(notif);
+            notif.FadeOutAndDestroy();
+            
+        }
+    }
+
+    public void HideNotifications()
+    {
+        _hidden = true;
+        foreach (CustomNotif notif in queuedNotifications)
+        {
+            notif.SetHidden();
+        }
+    }
+
+    public void ShowNotifications()
+    {
+        _hidden = false;
+        foreach (CustomNotif notif in queuedNotifications)
+        {
+            notif.SetShow();
         }
     }
 }

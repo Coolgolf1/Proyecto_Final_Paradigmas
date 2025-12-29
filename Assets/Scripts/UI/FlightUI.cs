@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
 
 public class FlightUI : MonoBehaviour
 {
@@ -85,10 +86,15 @@ public class FlightUI : MonoBehaviour
 
         flightNumber.text = flight.FlightID;
         routeText.text = $"{flight.AirportOrig.Id.ToUpper()} - {flight.AirportDest.Id.ToUpper()}";
+
+        var orderedTravellers = flight.TravellersToAirport.Where(kv1 => Player.UnlockedAirports.Contains(kv1.Key) && kv1.Value > 0).OrderByDescending(kv2 => kv2.Value).ToList();
+
+
         string passengersText = "";
-        foreach (Airport destAirport in Player.UnlockedAirports)
+        foreach (var keyValue in orderedTravellers)
         {
-            passengersText += $"- {destAirport.Id.ToUpper()}: {flight.TravellersToAirport[destAirport]}\n";
+            
+            passengersText += $"{keyValue.Key.Id.ToUpper()}: {keyValue.Value}\n";
         }
 
         passengers.color = _passengerTextColor;

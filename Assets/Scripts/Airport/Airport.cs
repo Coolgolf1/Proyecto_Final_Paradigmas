@@ -599,6 +599,7 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
         {
             if (_info.playerCamera.GetComponent<PlayerMovement>() is SpaceCamera camera)
             {
+                InputSystem.actions.FindAction("IsDragging").Disable();
                 camera.SetAirport(this);
 
             }
