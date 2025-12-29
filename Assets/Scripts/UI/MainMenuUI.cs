@@ -69,6 +69,9 @@ public class MainMenuUI : MonoBehaviour
         exitButton.onClick.AddListener(Application.Quit);
         //earth.GetComponent<SpinFree>().enabled = true;
         UIEvents.OnMainMenuEnter.AddListener(RestartMenu);
+        options.onClick.AddListener(LoadSettings);
+        UIEvents.OnSettingsLoaded.AddListener(SettingsLoaded);
+        UIEvents.OnSettingsExit.AddListener(OnSettingsExit);
     }
 
     public void RestartMenu()
@@ -115,5 +118,20 @@ public class MainMenuUI : MonoBehaviour
     public void StartPlay()
     {
         _gameMaster.ChangeState(_gameMaster.Play);
+    }
+
+    public void LoadSettings()
+    {
+        UIEvents.OnSettingsEnter?.Invoke();
+    }
+
+    public void SettingsLoaded()
+    {
+        gameObject.SetActive(false);
+    }
+
+    public void OnSettingsExit()
+    {
+        gameObject.SetActive(true);
     }
 }

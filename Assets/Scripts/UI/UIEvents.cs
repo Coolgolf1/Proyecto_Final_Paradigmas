@@ -5,6 +5,10 @@ public static class UIEvents
     public static UnityEvent OnMainMenuEnter = new UnityEvent();
     public static UnityEvent OnMainMenuExit = new UnityEvent();
 
+    public static UnityEvent OnSettingsEnter = new UnityEvent();
+    public static UnityEvent OnSettingsExit = new UnityEvent();
+    public static UnityEvent OnSettingsLoaded = new UnityEvent();
+
     public static UnityEvent OnPlayEnter = new UnityEvent();
 
     public static UnityEvent LoadedListeners = new UnityEvent();

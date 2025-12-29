@@ -41,4 +41,10 @@ public static class Player
         //Money = 1000000;
         UnlockedAirports.Clear();
     }
+
+    public static void ResetHighScore()
+    {
+        PlayerPrefs.SetInt(_scoreName, 0);
+        PlayerPrefs.Save();
+    }
 }

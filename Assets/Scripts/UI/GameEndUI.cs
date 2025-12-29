@@ -4,9 +4,14 @@ using UnityEngine.UI;
 
 public class GameEndUI : MonoBehaviour
 {
+    [Header("Text Fields")]
     [SerializeField] private TMP_Text gameOverText;
     [SerializeField] private TMP_Text highScoreText;
     [SerializeField] private TMP_Text gameScoreText;
+    [SerializeField] private TMP_Text newRecordText;
+
+
+    [Header("Buttons")]
     [SerializeField] private Button restartButton;
     [SerializeField] private Button mainMenuButton;
 
@@ -31,11 +36,18 @@ public class GameEndUI : MonoBehaviour
         if (currentScore > highScore)
         {
             Player.SaveHighScore();
+            newRecordText.gameObject.SetActive(true);
+            gameScoreText.gameObject.SetActive(false);
+
+        } else
+        {
+            newRecordText.gameObject.SetActive(false);
+            gameScoreText.gameObject.SetActive(true);
+            gameScoreText.text = $"Game Score: {currentScore}";
         }
 
-        highScoreText.text = $"High Score: {highScore}";
-        gameScoreText.text = $"Game Score: {currentScore}";
-
+        highScoreText.text = $"High Score: {Player.GetHighScore()}";
+        
         gameObject.SetActive(true);
     }
 
