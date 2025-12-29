@@ -1,4 +1,5 @@
 using System.Runtime.CompilerServices;
+using Unity.Collections.LowLevel.Unsafe;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -22,11 +23,31 @@ public class SpaceCamera : PlayerMovement
     private bool _arrivedAirplane;
     private bool _arrivedAirport;
 
+    private Vector3 gamePosition;
+    private Quaternion gameRotation;
+    private Quaternion? sunGameRotation;
+
     public bool GoingToMenu { get; set; }
     public bool GoingToInit { get; set; }
+    private bool _goingToSettings;
+    public bool GoingToSettings {
+        get { return _goingToSettings; }
+        set { _goingToSettings = value;
+            if (value)
+            {
+                gamePosition = transform.position;
+                gameRotation = transform.rotation;
+                sunGameRotation = Sun is null ? null : Sun.transform.rotation;
+            } }
+    }
+    public bool GoingBackToGame { get; set; }
+    public bool ComingFromGame { get; set; }
 
     private bool _alert = false;
     private int activatedCount = 0;
+
+    public bool UseSlerp { get; set; }
+    public GameObject Sun { get; set; }
 
     private Airport airportObj;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -119,6 +140,14 @@ public class SpaceCamera : PlayerMovement
         } else if (GoingToInit)
         {
             GoToInit();
+        } else if (GoingToSettings)
+        {
+            drag.Disable();
+            zoom.Disable();
+            GoToSettings();
+        } else if (GoingBackToGame)
+        {
+            GoBackToGame();
         }
 
     }
@@ -230,8 +259,22 @@ public class SpaceCamera : PlayerMovement
 
     public void GoToMainMenu()
     {
-        
-        transform.position = Vector3.Lerp(transform.position, GameConstants.mainMenuCameraPosition, Time.fixedDeltaTime);
+        GoingBackToGame = false;
+        GoingToSettings = false;
+        if (UseSlerp)
+        {
+            transform.position = Vector3.Slerp(transform.position, GameConstants.mainMenuCameraPosition, Time.fixedDeltaTime);
+        }
+        else
+        {
+            transform.position = Vector3.Lerp(transform.position, GameConstants.mainMenuCameraPosition, Time.fixedDeltaTime);
+        }
+
+        if (Sun is not null)
+        {
+            Sun.transform.rotation = Quaternion.Lerp(GameConstants.menuSunRotation, Sun.transform.rotation, Time.fixedDeltaTime);
+        }
+           
         transform.rotation = Quaternion.Lerp(transform.rotation, GameConstants.mainMenuCameraRotation, Time.fixedDeltaTime);
 
         // If not close enough to initial view
@@ -241,13 +284,44 @@ public class SpaceCamera : PlayerMovement
         // Animation finished
         transform.position = GameConstants.mainMenuCameraPosition;
         transform.rotation = GameConstants.mainMenuCameraRotation;
+        if (Sun is not null)
+            Sun.transform.rotation = GameConstants.menuSunRotation;
         GoingToMenu = false;
+        UseSlerp = false;
         
+        
+    }
+
+    public void GoToSettings()
+    {
+        GoingToMenu = false;
+        GoingBackToGame = false;
+        transform.position = Vector3.Slerp(transform.position, GameConstants.settingsCameraPosition, Time.fixedDeltaTime);
+        transform.rotation = Quaternion.Lerp(transform.rotation, GameConstants.settingsCameraRotation, Time.fixedDeltaTime);
+
+        if (Sun is not null)
+        {
+            Sun.transform.rotation = Quaternion.Lerp(Sun.transform.rotation, GameConstants.settingsSunRotation, Time.fixedDeltaTime);
+        }
+
+        // If not close enough to initial view
+        if ((GameConstants.settingsCameraPosition - transform.position).magnitude >= 0.1)
+            return;
+
+        // Animation finished
+        transform.position = GameConstants.settingsCameraPosition;
+        transform.rotation = GameConstants.settingsCameraRotation;
+        if (Sun is not null)
+            Sun.transform.rotation = GameConstants.settingsSunRotation;
+
+        GoingToSettings = false;
+        Sun = null;
     }
 
     public void GoToInit()
     {
-        
+        GoingToSettings = false;
+        GoingToMenu = false;
         transform.position = Vector3.Lerp(transform.position, GameConstants.initCameraPosition, Time.fixedDeltaTime);
         transform.rotation = Quaternion.Lerp(transform.rotation, GameConstants.initCameraRotation, Time.fixedDeltaTime);
 
@@ -260,5 +334,36 @@ public class SpaceCamera : PlayerMovement
         transform.rotation = GameConstants.initCameraRotation;
         GoingToInit = false;
         
+    }
+
+    public void GoBackToGame()
+    {
+        Time.timeScale = 1;
+        GoingToMenu = false;
+        GoingToSettings = false;
+
+        transform.position = Vector3.Slerp(transform.position, gamePosition, Time.fixedDeltaTime);
+        transform.rotation = Quaternion.Lerp(transform.rotation, gameRotation, Time.fixedDeltaTime);
+
+        if (Sun is not null && sunGameRotation is not null)
+        {
+            Sun.transform.rotation = Quaternion.Lerp(Sun.transform.rotation, (Quaternion)sunGameRotation, Time.fixedDeltaTime);
+        }
+
+        // If not close enough to initial view
+        if ((gamePosition - transform.position).magnitude >= 0.1)
+            return;
+
+        // Animation finished
+        transform.position = gamePosition;
+        transform.rotation = gameRotation;
+        if (Sun is not null && sunGameRotation is not null)
+            Sun.transform.rotation = (Quaternion)sunGameRotation;
+
+        GoingBackToGame = false;
+        
+        ComingFromGame = false;
+        drag.Enable();
+        zoom.Enable();
     }
 }

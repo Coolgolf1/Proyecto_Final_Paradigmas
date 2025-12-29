@@ -17,6 +17,11 @@ public static class GameConstants
     public static Vector3 initCameraPosition = new Vector3(52.46f, 1.1f, 8.75f);
     public static Quaternion initCameraRotation = new Quaternion(0f, 0.766044259f, 0f, -0.642787814f);
 
+    public static Vector3 settingsCameraPosition = new Vector3(3.74000001f, -31.1100006f, 6.69000006f);
+    public static Quaternion settingsCameraRotation = new Quaternion(-0.2301296f, -0.702412069f, -0.428652734f, 0.519532919f);
+    public static Quaternion settingsSunRotation = new Quaternion(-0.288833886f, 0.484140009f, 0.719054401f, -0.406379402f);
+
+
     public static Quaternion menuSunRotation = new Quaternion(-0.549872696f, 0.283733606f, 0.545989275f, -0.564828336f);
 
     // Airplane stats

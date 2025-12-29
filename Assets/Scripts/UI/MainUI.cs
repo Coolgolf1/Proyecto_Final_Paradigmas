@@ -52,14 +52,25 @@ public class MainUI : MonoBehaviour
         _economy.MoneyChange += HandleMoneyChange;
         muteButton.onClick.AddListener(ToggleMute);
         homeButton.onClick.AddListener(ExitToMenu);
+        settingsButton.onClick.AddListener(OpenSettings);
 
         UIEvents.OnPlayEnter.AddListener(StartGame);
         UIEvents.OnMainMenuEnter.AddListener(HideUI);
+        UIEvents.OnSettingsExit.AddListener(ShowUI);
 
         // Finished loading listeners
         UIEvents.LoadedListeners?.Invoke();
 
         UIEvents.OnEndGameEnter.AddListener(HideUI);
+    }
+
+    private void OpenSettings()
+    {
+        if (_info.playerCamera.GetComponent<PlayerMovement>() is SpaceCamera camera)
+            camera.ComingFromGame = true;
+        UIEvents.OnSettingsEnter?.Invoke();
+        Time.timeScale = 0;
+        HideUI();
     }
 
     private void Play()
@@ -140,5 +151,12 @@ public class MainUI : MonoBehaviour
     public void HideUI()
     {
         gameObject.SetActive(false);
+    }
+
+    public void ShowUI()
+    {
+        if (_info.playerCamera.GetComponent<PlayerMovement>() is SpaceCamera camera) 
+            if (camera.ComingFromGame)
+                gameObject.SetActive(true);
     }
 }

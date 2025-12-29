@@ -23,12 +23,7 @@ public class SettingsUI : MonoBehaviour
     [SerializeField] Button backToMenu;
     [SerializeField] GameObject background;
 
-    private Vector3 _camPosition = new Vector3(3.74000001f, -31.1100006f, 6.69000006f);
-    private Quaternion _camRotation = new Quaternion(-0.2301296f, -0.702412069f, -0.428652734f, 0.519532919f);
-    private Quaternion _sunRotation = new Quaternion(-0.288833886f, 0.484140009f, 0.719054401f, -0.406379402f);
-
-    private bool _startAnimation = false;
-    private bool _startMenuAnimation = false;
+    private bool _checkActive = false;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -37,6 +32,7 @@ public class SettingsUI : MonoBehaviour
         musicVolume.value = 0.6f;
         backToMenu.onClick.AddListener(ExitSettings);
         UIEvents.OnSettingsEnter.AddListener(EnterSettings);
+        
         gameObject.SetActive(false);    
     }
 
@@ -53,50 +49,41 @@ public class SettingsUI : MonoBehaviour
     public void EnterSettings()
     {
         gameObject.SetActive(true);
-        _startAnimation = true;
+        SpaceCamera camera = player.GetComponent<SpaceCamera>();
+        _checkActive = false;
+        camera.Sun = sun;
+        camera.GoingToMenu = false;
+        camera.GoingBackToGame = false;
+        camera.GoingToSettings = true;
+        
+        UIEvents.OnSettingsLoaded?.Invoke();
     }
 
     public void ExitSettings()
     {
         UIEvents.OnSettingsExit?.Invoke();
-        _startMenuAnimation = true;
+        SpaceCamera camera = player.GetComponent<SpaceCamera>();
+        camera.UseSlerp = true;
+        camera.Sun = sun;
+        if (camera.ComingFromGame)
+            camera.GoingBackToGame = true;
+        else
+            camera.GoingToMenu = true;
+        
+        _checkActive = true;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (_startAnimation)
-        {
-            SpaceCamera camera = player.GetComponent<SpaceCamera>();
-            camera.GoingToMenu = false;
-            player.transform.position = Vector3.Lerp(player.transform.position, _camPosition, 3*Time.deltaTime);
-            player.transform.rotation = Quaternion.Lerp(player.transform.rotation, _camRotation, 3*Time.deltaTime);
-            sun.transform.rotation = Quaternion.Lerp(sun.transform.rotation, _sunRotation, Time.deltaTime);
+        if (_checkActive)
+           CheckActive();
+        
+    }
 
-            // If not close enough to initial view
-            if ((_camPosition - player.transform.position).magnitude >= 0.1)
-                return;
-
-            // Animation finished
-            player.transform.position = _camPosition;
-            player.transform.rotation = _camRotation;
-            sun.transform.rotation = _sunRotation;
-            _startAnimation = false;
-            UIEvents.OnSettingsLoaded?.Invoke();
-        }
-
-        if (_startMenuAnimation)
-        {
-            SpaceCamera camera = player.GetComponent<SpaceCamera>();
-            camera.GoingToMenu = true;
-            camera.GoToMainMenu();
-            sun.transform.rotation = Quaternion.Lerp(GameConstants.menuSunRotation, sun.transform.rotation, Time.deltaTime);
-            if (!camera.GoingToMenu)
-            {
-                sun.transform.rotation = GameConstants.menuSunRotation;
-                gameObject.SetActive(false);
-                _startMenuAnimation = false;
-            }
-        }
+    void CheckActive()
+    {
+        SpaceCamera camera = player.GetComponent<SpaceCamera>();
+        if (gameObject.activeSelf && !camera.GoingToMenu && !camera.GoingBackToGame) { gameObject.SetActive(false); _checkActive = false; }
     }
 }
