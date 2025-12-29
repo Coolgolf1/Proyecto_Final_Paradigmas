@@ -23,7 +23,8 @@ public class NotificationSystem : MonoBehaviour
         source = GetComponent<AudioSource>();
         source.clip = popSound;
         UIEvents.OnMainMenuEnter.AddListener(ClearAllNotifications);
-        UIEvents.OnSettingsEnter.AddListener(ClearAllNotifications);
+        UIEvents.OnSettingsEnter.AddListener(HideNotifications);
+        UIEvents.OnSettingsExit.AddListener(ShowNotifications);
         UIEvents.OnAirplaneStoreEnter.AddListener(HideNotifications);
         UIEvents.OnRouteStoreEnter.AddListener(HideNotifications);
         UIEvents.OnAirplaneStoreExit.AddListener(ShowNotifications);
