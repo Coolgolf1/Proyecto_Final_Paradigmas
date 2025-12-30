@@ -20,11 +20,15 @@ public class SettingsUI : MonoBehaviour
     [Header("Reset Buttons")]
     [SerializeField] Button resetHighScore;
     [SerializeField] Button resetTutorial;
+    [SerializeField] Button confirmReset;
+    [SerializeField] Button cancelReset;
 
     [Header("Menu")]
     [SerializeField] Button backToMenu;
     [SerializeField] GameObject background;
     [SerializeField] GameObject toggleImage;
+    [SerializeField] GameObject resetMessage;
+    [SerializeField] TMP_Text currentHighScore;
 
     private bool _checkActive = false;
 
@@ -77,9 +81,40 @@ public class SettingsUI : MonoBehaviour
 
         qualitySelector.onValueChanged.AddListener(HandleQuality);
 
-        HandleMaster(masterVolume.value); HandleMusic(musicVolume.value); HandleQuality(qualitySelector.value); HandleToggle(sfxToggle.isOn);
+        resetHighScore.onClick.AddListener(HandleScoreReset);
 
+        HandleMaster(masterVolume.value); 
+        HandleMusic(musicVolume.value); 
+        HandleQuality(qualitySelector.value); 
+        HandleToggle(sfxToggle.isOn);
+
+        currentHighScore.text = $"Current Highscore: {Player.GetHighScore()}";
+
+        resetMessage.gameObject.SetActive(false);
         gameObject.SetActive(false);
+    }
+
+    private void HandleScoreReset()
+    {
+        currentHighScore.text = $"Current Highscore: {Player.GetHighScore()}";
+        resetMessage.gameObject.SetActive(true);
+        confirmReset.onClick.AddListener(ResetScore);
+        cancelReset.onClick.AddListener(CancelResetScore);
+    }
+
+    private void ResetScore()
+    {
+        Player.ResetHighScore();
+        confirmReset.onClick.RemoveAllListeners();
+        cancelReset.onClick.RemoveAllListeners();
+        resetMessage.gameObject.SetActive(false);
+    }
+
+    private void CancelResetScore()
+    {
+        confirmReset.onClick.RemoveAllListeners();
+        cancelReset.onClick.RemoveAllListeners();
+        resetMessage.gameObject.SetActive(false);
     }
 
     private void HandleMaster(float value)
@@ -95,7 +130,6 @@ public class SettingsUI : MonoBehaviour
     public void HandleQuality(int quality)
     {
         QualitySettings.SetQualityLevel(quality);
-        Debug.Log(QualitySettings.GetQualityLevel());
     }
 
     public void HandleToggle(bool isOn)
