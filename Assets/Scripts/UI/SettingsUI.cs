@@ -7,6 +7,7 @@ public class SettingsUI : MonoBehaviour
     [Header("Dependencies")]
     [SerializeField] GameObject player;
     [SerializeField] GameObject sun;
+    [SerializeField] GameObject audioManager;
 
     [Header("Graphics")]
     [SerializeField] TMP_Dropdown qualitySelector;
@@ -14,6 +15,7 @@ public class SettingsUI : MonoBehaviour
     [Header("Sound")]
     [SerializeField] Slider masterVolume;
     [SerializeField] Slider musicVolume;
+    [SerializeField] Toggle sfxToggle;
 
     [Header("Reset Buttons")]
     [SerializeField] Button resetHighScore;
@@ -22,18 +24,69 @@ public class SettingsUI : MonoBehaviour
     [Header("Menu")]
     [SerializeField] Button backToMenu;
     [SerializeField] GameObject background;
+    [SerializeField] GameObject toggleImage;
 
     private bool _checkActive = false;
+
+    private string _qualityId = "quality";
+    private string _masterVolumeId = "masterVolume";
+    private string _musicVolumeId = "musicVolume";
+    private string _sfxToggleId = "sfxToggle";
+
+    SoundController musicController;
+    private void SavePlayerPrefs()
+    {
+        PlayerPrefs.SetInt(_qualityId, qualitySelector.value);
+        PlayerPrefs.SetFloat(_masterVolumeId, masterVolume.value);
+        PlayerPrefs.SetFloat(_musicVolumeId, musicVolume.value);
+        PlayerPrefs.SetInt(_sfxToggleId, sfxToggle.isOn ? 1 : 0);
+
+        PlayerPrefs.Save();
+    }
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        masterVolume.value = 0.8f;
-        musicVolume.value = 0.6f;
+        qualitySelector.value = PlayerPrefs.GetInt(_qualityId);
+        masterVolume.value = PlayerPrefs.GetFloat(_masterVolumeId);
+        musicVolume.value = PlayerPrefs.GetFloat(_musicVolumeId);
+        sfxToggle.isOn = PlayerPrefs.GetInt(_sfxToggleId) == 1;
+
         backToMenu.onClick.AddListener(ExitSettings);
         UIEvents.OnSettingsEnter.AddListener(EnterSettings);
+
+        musicController = audioManager.gameObject.GetComponent<SoundController>();
+
+        musicVolume.onValueChanged.AddListener(HandleMusic);
+        masterVolume.onValueChanged.AddListener(HandleMaster);
+        sfxToggle.onValueChanged.AddListener(HandleToggle);
+
+        qualitySelector.onValueChanged.AddListener(HandleQuality);
         
-        gameObject.SetActive(false);    
+        gameObject.SetActive(false);
+    }
+
+    private void HandleMaster(float value)
+    {
+        musicController.SetMasterVolume(value);
+    }
+
+    private void HandleMusic(float value)
+    {
+        musicController.SetMusicVolume(value);
+    }
+
+    public void HandleQuality(int quality)
+    {
+        QualitySettings.SetQualityLevel(quality);
+        Debug.Log(QualitySettings.GetQualityLevel());
+    }
+
+    public void HandleToggle(bool isOn)
+    {
+        musicController.ToggleSFX(isOn);
+        toggleImage.gameObject.SetActive(isOn);
     }
 
     public void HideUI()
@@ -61,7 +114,9 @@ public class SettingsUI : MonoBehaviour
 
     public void ExitSettings()
     {
+        SavePlayerPrefs();
         UIEvents.OnSettingsExit?.Invoke();
+
         SpaceCamera camera = player.GetComponent<SpaceCamera>();
         camera.UseSlerp = true;
         camera.Sun = sun;
@@ -79,7 +134,6 @@ public class SettingsUI : MonoBehaviour
     {
         if (_checkActive)
            CheckActive();
-        
     }
 
     void CheckActive()

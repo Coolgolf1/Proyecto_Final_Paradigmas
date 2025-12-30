@@ -296,12 +296,12 @@ public class SpaceCamera : PlayerMovement
     {
         GoingToMenu = false;
         GoingBackToGame = false;
-        transform.position = Vector3.Slerp(transform.position, GameConstants.settingsCameraPosition, Time.fixedDeltaTime);
-        transform.rotation = Quaternion.Lerp(transform.rotation, GameConstants.settingsCameraRotation, Time.fixedDeltaTime);
+        transform.position = Vector3.Slerp(transform.position, GameConstants.settingsCameraPosition, Time.fixedDeltaTime / 2.0f);
+        transform.rotation = Quaternion.Lerp(transform.rotation, GameConstants.settingsCameraRotation, Time.fixedDeltaTime / 2.0f);
 
         if (Sun is not null)
         {
-            Sun.transform.rotation = Quaternion.Lerp(Sun.transform.rotation, GameConstants.settingsSunRotation, Time.fixedDeltaTime);
+            Sun.transform.rotation = Quaternion.Lerp(Sun.transform.rotation, GameConstants.settingsSunRotation, Time.fixedDeltaTime / 2.0f);
         }
 
         // If not close enough to initial view
@@ -342,12 +342,12 @@ public class SpaceCamera : PlayerMovement
         GoingToMenu = false;
         GoingToSettings = false;
 
-        transform.position = Vector3.Slerp(transform.position, gamePosition, Time.fixedDeltaTime);
-        transform.rotation = Quaternion.Lerp(transform.rotation, gameRotation, Time.fixedDeltaTime);
+        transform.position = Vector3.Slerp(transform.position, gamePosition, Time.fixedDeltaTime / 2.0f);
+        transform.rotation = Quaternion.Lerp(transform.rotation, gameRotation, Time.fixedDeltaTime / 2.0f);
 
         if (Sun is not null && sunGameRotation is not null)
         {
-            Sun.transform.rotation = Quaternion.Lerp(Sun.transform.rotation, (Quaternion)sunGameRotation, Time.fixedDeltaTime);
+            Sun.transform.rotation = Quaternion.Lerp(Sun.transform.rotation, (Quaternion)sunGameRotation, Time.fixedDeltaTime / 2.0f);
         }
 
         // If not close enough to initial view

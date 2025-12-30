@@ -15,6 +15,7 @@ public class TableUIManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        UIEvents.OnEndGameExit.AddListener(Restart);
         CheckRows();
     }
 
@@ -22,6 +23,11 @@ public class TableUIManager : MonoBehaviour
     void Update()
     {
         
+    }
+
+    private void Restart()
+    {
+        rows.Clear();
     }
     
     void CheckRows()
