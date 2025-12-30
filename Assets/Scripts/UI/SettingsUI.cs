@@ -48,11 +48,24 @@ public class SettingsUI : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        qualitySelector.value = PlayerPrefs.GetInt(_qualityId);
-        masterVolume.value = PlayerPrefs.GetFloat(_masterVolumeId);
-        musicVolume.value = PlayerPrefs.GetFloat(_musicVolumeId);
-        sfxToggle.isOn = PlayerPrefs.GetInt(_sfxToggleId) == 1;
+        if (PlayerPrefs.HasKey(_qualityId))
+            qualitySelector.value = PlayerPrefs.GetInt(_qualityId);
+        else
+            qualitySelector.value = 2;
 
+        if (PlayerPrefs.HasKey(_masterVolumeId))
+            masterVolume.value = PlayerPrefs.GetFloat(_masterVolumeId);
+        else masterVolume.value = 1;
+
+        if (PlayerPrefs.HasKey(_musicVolumeId))
+            musicVolume.value = PlayerPrefs.GetFloat(_musicVolumeId);
+        else
+            musicVolume.value = 1;
+
+        if (PlayerPrefs.HasKey(_sfxToggleId))
+            sfxToggle.isOn = PlayerPrefs.GetInt(_sfxToggleId) == 1;
+        else sfxToggle.isOn = true;
+        
         backToMenu.onClick.AddListener(ExitSettings);
         UIEvents.OnSettingsEnter.AddListener(EnterSettings);
 
@@ -63,7 +76,9 @@ public class SettingsUI : MonoBehaviour
         sfxToggle.onValueChanged.AddListener(HandleToggle);
 
         qualitySelector.onValueChanged.AddListener(HandleQuality);
-        
+
+        HandleMaster(masterVolume.value); HandleMusic(musicVolume.value); HandleQuality(qualitySelector.value); HandleToggle(sfxToggle.isOn);
+
         gameObject.SetActive(false);
     }
 

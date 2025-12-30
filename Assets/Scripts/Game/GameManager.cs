@@ -200,7 +200,7 @@ public class GameManager : MonoBehaviour
             
             
 
-            if (_info.playerCamera.GetComponent<PlayerMovement>() is SpaceCamera camera)
+            if (playerCamera.GetComponent<PlayerMovement>() is SpaceCamera camera)
             {
                 camera.SetAirport(initialAirport1);
 

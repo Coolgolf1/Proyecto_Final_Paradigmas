@@ -55,7 +55,8 @@ public class SpaceCamera : PlayerMovement
     {
         UIEvents.OnEndGameEnter.AddListener(StopFollowing);
         UIEvents.OnEndGameEnter.AddListener(StopMusic);
-        UIEvents.OnRestartGame.AddListener(RestartGame);
+        UIEvents.OnRestartGame.AddListener(RestartSound);
+        UIEvents.OnMainMenuEnter.AddListener(RestartSound);
         GoingToMenu = false;
         GoingToInit = false;
 
@@ -63,7 +64,7 @@ public class SpaceCamera : PlayerMovement
         GetComponent<AudioSource>().Play();
     }
 
-    public void RestartGame()
+    public void RestartSound()
     {
         GetComponent<AudioSource>().Stop();
         GetComponent<AudioSource>().clip = defaultMusic;
@@ -231,7 +232,7 @@ public class SpaceCamera : PlayerMovement
             _arrivedAirport = true;
             airportObj = null;
         }
-    
+
         if (!_arrivedAirport) {
             Vector3 earthCenter = _info.earth.transform.position;
 

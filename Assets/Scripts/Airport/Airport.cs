@@ -46,6 +46,7 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
     private bool _enableLightRay = false;
 
     private int _lightInt;
+    private bool _activatedAlert = false;
 
     // AI Spawner
     private System.Random _rand = new System.Random();
@@ -224,7 +225,8 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
                 {
                     if (_info.playerCamera.GetComponent<PlayerMovement>() is SpaceCamera camera)
                     {
-                        camera.DeactivateAlertMusic();
+                        if (_activatedAlert)
+                            camera.DeactivateAlertMusic(); _activatedAlert = false;
                     }
                 }
 
@@ -235,7 +237,11 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
                 statusLight.color = Color.orange;
                 if (_lightInt == 1)
                 {
-                    _info.notificationSystem.AddNotification($"{Name} is over 50% capacity", "warning", "orange");
+                    if (_info.playerCamera.GetComponent<PlayerMovement>() is SpaceCamera camera)
+                        _info.notificationSystem.AddNotification($"{Name} is over 50% capacity", "warning", "orange", delegate { camera.SetAirport(this); });
+                    else
+                        _info.notificationSystem.AddNotification($"{Name} is over 50% capacity", "warning", "orange");
+
                     EnableLightRay("orange");
                 }
                 _lightInt = 2;
@@ -245,7 +251,11 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
                 statusLight.color = Color.red;
                 if (_lightInt != 3)
                 {
-                    _info.notificationSystem.AddNotification($"{Name} is over 70% capacity", "alert", "red");
+                    if (_info.playerCamera.GetComponent<PlayerMovement>() is SpaceCamera camera2)
+                        _info.notificationSystem.AddNotification($"{Name} is over 70% capacity", "alert", "red", delegate { camera2.SetAirport(this); });
+                    else
+                        _info.notificationSystem.AddNotification($"{Name} is over 70% capacity", "alert", "red");
+
                     EnableLightRay("red");
                 }
 
@@ -253,6 +263,7 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
                 if (_info.playerCamera.GetComponent<PlayerMovement>() is SpaceCamera camera && _lightInt != 3)
                 {
                     camera.ActivateAlertMusic();
+                    _activatedAlert = true;
                 }
 
                 _lightInt = 3;
