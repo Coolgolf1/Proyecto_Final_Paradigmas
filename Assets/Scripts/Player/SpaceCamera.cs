@@ -338,7 +338,7 @@ public class SpaceCamera : PlayerMovement
 
     public void GoBackToGame()
     {
-        Time.timeScale = 1;
+        
         GoingToMenu = false;
         GoingToSettings = false;
 
@@ -365,5 +365,6 @@ public class SpaceCamera : PlayerMovement
         ComingFromGame = false;
         drag.Enable();
         zoom.Enable();
+        Time.timeScale = 1;
     }
 }

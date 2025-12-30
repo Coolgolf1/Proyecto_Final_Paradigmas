@@ -218,7 +218,7 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
             if (ratio < 0.5)
             {
                 statusLight.color = Color.green;
-                _lightInt = 1;
+                
 
                 if (_lightInt != 1)
                 {
@@ -227,6 +227,8 @@ public class Airport : MonoBehaviour, IUpgradable, IObject
                         camera.DeactivateAlertMusic();
                     }
                 }
+
+                _lightInt = 1;
             }
             else if (ratio < 0.7)
             {
