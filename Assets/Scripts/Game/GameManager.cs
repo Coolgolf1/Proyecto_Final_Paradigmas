@@ -217,13 +217,7 @@ public class GameManager : MonoBehaviour
         // Calculate initial Dijkstra Graph
         Auxiliary.CalculateDijkstraGraph();
 
-        //foreach (List<Edge> edges in DijkstraGraph.graph.Values)
-        //{
-        //    foreach (Edge edge in edges)
-        //    {
-        //        Debug.Log(edge);
-        //    }
-        //}
+        
 
         List<Airport> destinations = Player.UnlockedAirports;
 

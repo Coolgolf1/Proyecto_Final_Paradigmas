@@ -84,11 +84,7 @@ public class AirplaneStore : MonoBehaviour
     public void smallAirplaneBought()
     {
         // If no more remaining cannot buy
-        //if (smallAirplanes == 0)
-        //{
-        //    //BuyMessageFailureNoStock("small");
-        //    return;
-        //}
+        
 
         if ((int)(GameConstants.smallPrice * _smallAirplanePriceMultiplier) > Player.Money)
         {
@@ -118,10 +114,7 @@ public class AirplaneStore : MonoBehaviour
         _info.savedAirports[airportName].Hangar.Add(airplane);
 
         // Remove airplane from remaining
-        //if (smallAirplanes > 0)
-        //{
-        //    smallAirplanes--;
-        //}
+        
 
         smallAirplanes++;
 
@@ -140,11 +133,7 @@ public class AirplaneStore : MonoBehaviour
     public void mediumAirplaneBought()
     {
         // If no more remaining cannot buy
-        //if (mediumAirplanes == 0)
-        //{
-        //    //BuyMessageFailureNoStock("medium");
-        //    return;
-        //}
+        
 
         if ((int)(GameConstants.mediumPrice * _mediumAirplanePriceMultiplier) > Player.Money)
         {
@@ -174,10 +163,7 @@ public class AirplaneStore : MonoBehaviour
         _info.savedAirports[airportName].Hangar.Add(airplane);
 
         // Remove airplane from remaining
-        //if (mediumAirplanes > 0)
-        //{
-        //    mediumAirplanes--;
-        //}
+        
 
         mediumAirplanes++;
 
@@ -192,11 +178,7 @@ public class AirplaneStore : MonoBehaviour
     public void largeAirplaneBought()
     {
         // If no more remaining cannot buy
-        //if (largeAirplanes == 0)
-        //{
-        //    //BuyMessageFailureNoStock("large");
-        //    return;
-        //}
+        
 
         if ((int)(GameConstants.largePrice * _largeAirplanePriceMultiplier) > Player.Money)
         {
@@ -226,15 +208,11 @@ public class AirplaneStore : MonoBehaviour
         _info.savedAirports[airportName].Hangar.Add(airplane);
 
         // Remove airplane from remaining
-        //if (largeAirplanes > 0)
-        //{
-        //    largeAirplanes--;
-        //}
-
+        
         largeAirplanes++;
 
         // Success message
-        //BuyMessageSuccess("large", airportName);
+       
 
         _largeAirplanePriceMultiplier = Mathf.Pow((float)GameConstants.largePriceMultiplier, largeAirplanes);
 
@@ -339,11 +317,7 @@ public class AirplaneStore : MonoBehaviour
 
         openStore.onClick.AddListener(ShowStoreUI);
         closeStore.onClick.AddListener(CloseStoreUI);
-        //closeBuyMessage.onClick.AddListener(CloseBuyMessage);
-
-        //smallAirplaneBuy.onClick.AddListener(OpenBuyMessage);
-        //mediumAirplaneBuy.onClick.AddListener(OpenBuyMessage);
-        //largeAirplaneBuy.onClick.AddListener(OpenBuyMessage);
+        
 
         UIEvents.OnRouteStoreEnter.AddListener(CloseStoreUI);
 
@@ -352,7 +326,6 @@ public class AirplaneStore : MonoBehaviour
 
     public void ShowStoreUI()
     {
-        //_economy.SetCoins(1000000);
         gameObject.SetActive(true);
         UpdateAirports();
         UIEvents.OnAirplaneStoreEnter.Invoke();
@@ -392,34 +365,5 @@ public class AirplaneStore : MonoBehaviour
             UIEvents.OnAirplaneStoreExit.Invoke();
     }
 
-    //public void OpenBuyMessage()
-    //{
-    //    buyMessagePanel.gameObject.SetActive(true);
-
-    //    // Disable close store button
-    //    closeStore.interactable = false;
-    //}
-
-    //public void CloseBuyMessage()
-    //{
-    //    buyMessagePanel.gameObject.SetActive(false);
-
-    //    // Enable close store button
-    //    closeStore.interactable = true;
-    //}
-
-    //public void BuyMessageSuccess(string airplaneType, string airportName)
-    //{
-    //    buyMessage.text = $"Sucess!\n\nThe {airplaneType} airplane is now in {airportName}";
-    //}
-
-    //public void BuyMessageFailureNotEnoughCoins(string airplaneType)
-    //{
-    //    buyMessage.text = $"Not enough coins to buy {airplaneType} airplane!";
-    //}
-
-    //public void BuyMessageFailureNoStock(string airplaneType)
-    //{
-    //    buyMessage.text = $"You have already bought all {airplaneType} airplanes!";
-    //}
+ 
 }
