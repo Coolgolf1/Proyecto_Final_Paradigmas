@@ -21,7 +21,7 @@ public class GameManager : MonoBehaviour
 
 
     private InfoSingleton _info = InfoSingleton.GetInstance();
-    private AirplaneFactory _airplaneFactory = AirplaneFactory.GetInstance();
+    private List<AirplaneFactory> _airplaneFactories = new List<AirplaneFactory> { SmallAirplaneFactory.GetInstance(), MediumAirplaneFactory.GetInstance() , LargeAirplaneFactory.GetInstance()};
     private EconomyManager _economy = EconomyManager.GetInstance();
     private Init _init;
     private bool _mainMenuGame = false;
@@ -112,7 +112,7 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < 20; i++)
         {
             int r = rand.Next(3);
-            Airplane airplane = (Airplane)_airplaneFactory.Build(AirplaneTypes.Small + r, earthTransform);
+            Airplane airplane = (Airplane)_airplaneFactories[r].Build(earthTransform);
 
             int a = rand.Next(_info.savedAirports.Count);
             string key = _info.savedAirports.Keys.ToList()[a];
@@ -125,8 +125,8 @@ public class GameManager : MonoBehaviour
     {
 
 
-        // Initialise Factory
-        _airplaneFactory.Initialise(airplaneSpawner);
+        // Initialise Factories
+        foreach (AirplaneFactory factory in _airplaneFactories) factory.Initialise(airplaneSpawner);
 
         // Save data of airports
         _init.SaveDataOfAirports(airportPrefab, earth.transform);

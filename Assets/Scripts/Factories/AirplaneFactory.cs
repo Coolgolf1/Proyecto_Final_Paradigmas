@@ -1,53 +1,72 @@
 using UnityEngine;
+using static UnityEditor.Experimental.AssetDatabaseExperimental.AssetDatabaseCounters;
 
-public class AirplaneFactory : ITypedFactory<IObject, AirplaneTypes>
+public abstract class AirplaneFactory : ITypedFactory<IObject, AirplaneTypes>
 {
-    private int _counter = 0;
-
-    private static AirplaneFactory _instance;
-
-    private AirplaneSpawner _spawner;
-
-    private AirplaneFactory() { }
-
-    public static AirplaneFactory GetInstance()
-    {
-        if (_instance == null)
-        {
-            _instance = new AirplaneFactory();
-        }
-        return _instance;
-    }
-
+    protected AirplaneSpawner _spawner;
+    protected int _counter = 0;
     public void Initialise(AirplaneSpawner spawner)
     {
         _spawner = spawner;
         GameEvents.OnTransitionExit.AddListener(ResetCounter);
     }
 
-    public IObject Build(AirplaneTypes type, Transform earthTransform)
+    public abstract IObject Build(Transform earthTransform);
+
+    protected void ResetCounter() => _counter = 0;
+
+}
+
+public class SmallAirplaneFactory : AirplaneFactory
+{
+    private static SmallAirplaneFactory _instance;
+
+    private SmallAirplaneFactory() { }
+
+    public static SmallAirplaneFactory GetInstance()
     {
-        GameObject prefab = _spawner.GetPrefab(type);
-        Airplane airplane;
-
-        switch (type)
+        if (_instance == null)
         {
-            case AirplaneTypes.Small:
-                airplane = _spawner.InstantiateAirplane<AirplaneSmall>(prefab, earthTransform);
-                break;
-
-            case AirplaneTypes.Medium:
-                airplane = _spawner.InstantiateAirplane<AirplaneMedium>(prefab, earthTransform);
-                break;
-
-            case AirplaneTypes.Large:
-                airplane = _spawner.InstantiateAirplane<AirplaneLarge>(prefab, earthTransform);
-                break;
-
-            default:
-                Debug.Log("type not set");
-                return null;
+            _instance = new SmallAirplaneFactory();
         }
+        return _instance;
+    }
+
+    public override IObject Build(Transform earthTransform)
+    {
+        GameObject prefab = _spawner.GetPrefab(AirplaneTypes.Small);
+        Airplane airplane;
+        airplane = _spawner.InstantiateAirplane<AirplaneSmall>(prefab, earthTransform);
+
+        airplane.Initialise(_counter);
+        _counter++;
+
+        return airplane;
+    }
+    
+}
+
+
+public class MediumAirplaneFactory : AirplaneFactory
+{
+    private static MediumAirplaneFactory _instance;
+    
+    private MediumAirplaneFactory() { }
+
+    public static MediumAirplaneFactory GetInstance()
+    {
+        if (_instance == null)
+        {
+            _instance = new MediumAirplaneFactory();
+        }
+        return _instance;
+    }
+
+    public override IObject Build(Transform earthTransform)
+    {
+        GameObject prefab = _spawner.GetPrefab(AirplaneTypes.Medium);
+        Airplane airplane;
+        airplane = _spawner.InstantiateAirplane<AirplaneMedium>(prefab, earthTransform);
 
         airplane.Initialise(_counter);
         _counter++;
@@ -55,8 +74,32 @@ public class AirplaneFactory : ITypedFactory<IObject, AirplaneTypes>
         return airplane;
     }
 
-    public void ResetCounter()
+}
+
+public class LargeAirplaneFactory : AirplaneFactory
+{
+    private static LargeAirplaneFactory _instance;
+
+    private LargeAirplaneFactory() { }
+
+    public static LargeAirplaneFactory GetInstance()
     {
-        _counter = 0;
+        if (_instance == null)
+        {
+            _instance = new LargeAirplaneFactory();
+        }
+        return _instance;
+    }
+
+    public override IObject Build(Transform earthTransform)
+    {
+        GameObject prefab = _spawner.GetPrefab(AirplaneTypes.Large);
+        Airplane airplane;
+        airplane = _spawner.InstantiateAirplane<AirplaneLarge>(prefab, earthTransform);
+
+        airplane.Initialise(_counter);
+        _counter++;
+
+        return airplane;
     }
 }

@@ -53,7 +53,10 @@ public class AirplaneStore : MonoBehaviour
     private int largeAirplanes = 0;
 
     private InfoSingleton _info = InfoSingleton.GetInstance();
-    private AirplaneFactory _airplaneFactory = AirplaneFactory.GetInstance();
+    private SmallAirplaneFactory _smallAirplaneFactory = SmallAirplaneFactory.GetInstance();
+    private MediumAirplaneFactory _mediumAirplaneFactory = MediumAirplaneFactory.GetInstance();
+    private LargeAirplaneFactory _largeAirplaneFactory = LargeAirplaneFactory.GetInstance();
+
     private EconomyManager _economy = EconomyManager.GetInstance();
     private GameMaster _gm = GameMaster.GetInstance();
 
@@ -107,15 +110,13 @@ public class AirplaneStore : MonoBehaviour
         _economy.SubtractCoins((int)(GameConstants.smallPrice * _smallAirplanePriceMultiplier));
 
         // Create airplane
-        Airplane airplane = (Airplane)_airplaneFactory.Build(AirplaneTypes.Small, earth.transform);
+        Airplane airplane = (Airplane)_smallAirplaneFactory.Build(earth.transform);
         _info.airplanes.Add(airplane);
 
         // Add airplane to hangar
         _info.savedAirports[airportName].Hangar.Add(airplane);
 
-        // Remove airplane from remaining
-        
-
+        // Add airplane to total bought
         smallAirplanes++;
 
         _smallAirplanePriceMultiplier = Mathf.Pow((float)GameConstants.smallPriceMultiplier, smallAirplanes);
@@ -156,15 +157,13 @@ public class AirplaneStore : MonoBehaviour
         _economy.SubtractCoins((int)(GameConstants.mediumPrice * _mediumAirplanePriceMultiplier));
 
         // Create airplane
-        Airplane airplane = (Airplane)_airplaneFactory.Build(AirplaneTypes.Medium, earth.transform);
+        Airplane airplane = (Airplane)_mediumAirplaneFactory.Build(earth.transform);
         _info.airplanes.Add(airplane);
 
         // Add airplane to hangar
         _info.savedAirports[airportName].Hangar.Add(airplane);
 
-        // Remove airplane from remaining
-        
-
+        // Add airplane to total bought
         mediumAirplanes++;
 
         // Success message
@@ -201,13 +200,13 @@ public class AirplaneStore : MonoBehaviour
         _economy.SubtractCoins((int)(GameConstants.largePrice * _largeAirplanePriceMultiplier));
 
         // Create airplane
-        Airplane airplane = (Airplane)_airplaneFactory.Build(AirplaneTypes.Large, earth.transform);
+        Airplane airplane = (Airplane)_largeAirplaneFactory.Build(earth.transform);
         _info.airplanes.Add(airplane);
 
         // Add airplane to hangar
         _info.savedAirports[airportName].Hangar.Add(airplane);
 
-        // Remove airplane from remaining
+        // Add airplane to total bought
         
         largeAirplanes++;
 
