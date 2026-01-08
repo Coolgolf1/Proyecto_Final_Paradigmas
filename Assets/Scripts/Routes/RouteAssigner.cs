@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using UnityEngine;
 
 public class Edge
 {
@@ -22,14 +21,14 @@ public static class RouteAssigner
 
         double distance = Auxiliary.GetDirectDistanceBetweenAirports(origin, edge.To);
         // Compute the shortest possible time (in hours) among all airplanes
-        double bestDistance = distance;
+        double bestTime = distance;
         Airplane bestAirplane = null;
+
+        double tempTime;
+        double tempDistance;
 
         foreach (Airplane airplane in start.Hangar)
         {
-            
-            double tempDistance;
-
             Flight flight = _info.GetFlightOfAirplane(airplane);
 
             // 1. Flight not yet created
@@ -55,19 +54,21 @@ public static class RouteAssigner
                 }
             }
 
+            tempTime = tempDistance / airplane.Speed;
+
             // Choose best airplane with distance
-            if (tempDistance <= bestDistance)
+            if (tempTime <= bestTime)
             {
-                bestDistance = tempDistance;
+                bestTime = tempTime;
                 if (distance <= airplane.Range)
                 {
                     bestAirplane = airplane;
-                    
+
                 }
             }
         }
 
-        return (bestAirplane, bestDistance);
+        return (bestAirplane, bestTime);
     }
 
     public static Airport GetNextHop(List<Airport> path)
@@ -84,7 +85,7 @@ public static class RouteAssigner
         PriorityQueue<Airport> queue = new PriorityQueue<Airport>();
         Dictionary<Airport, Airplane> airplaneUsed = new Dictionary<Airport, Airplane>();
 
-        
+
         // Initialize weights
         foreach (Airport node in DijkstraGraph.graph.Keys)
         {
@@ -96,7 +97,7 @@ public static class RouteAssigner
 
         HashSet<Airport> processed = new HashSet<Airport>();
 
-       
+
         while (queue.Count > 0)
         {
             Airport current = queue.Dequeue();
@@ -132,11 +133,11 @@ public static class RouteAssigner
             }
         }
 
-        
+
 
         // If nothing found
-        if (!previous.ContainsKey(end)) 
-           return (null, null);
+        if (!previous.ContainsKey(end))
+            return (null, null);
         // Reconstruct path
         List<Airport> path = new List<Airport>();
         Airport u = end;
@@ -146,14 +147,14 @@ public static class RouteAssigner
             u = previous[u];
         }
         path.Insert(0, start);
-        
-        
+
+
         Airport nextHop = GetNextHop(path);
 
         Airplane nextAirplane = null;
         if (nextHop != null)
             airplaneUsed.TryGetValue(nextHop, out nextAirplane);
-        
+
         return (nextAirplane, path);
     }
 }
