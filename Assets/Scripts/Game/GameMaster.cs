@@ -20,7 +20,7 @@ public class GameMaster
         InHangar = new InHangarState(this);
         End = new EndState(this);
 
-        // ARREGLAR ESTO EN OTRO SITIO =====================================================================
+        // Cargar dijkstra antes de empezar estados de juego
         DijkstraGraph.Initialise();
 
         UIEvents.LoadedListeners.AddListener(InitState);
