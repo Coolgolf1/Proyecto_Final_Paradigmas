@@ -69,6 +69,7 @@ public class MainUI : MonoBehaviour
 
     private void OpenSettings()
     {
+        exitCanvas.SetActive(false);
         if (_info.playerCamera.GetComponent<PlayerMovement>() is SpaceCamera camera)
             camera.ComingFromGame = true;
         UIEvents.OnSettingsEnter?.Invoke();
@@ -106,8 +107,10 @@ public class MainUI : MonoBehaviour
 
     private void ExitToMenu()
     {
+        exitCanvas.SetActive(false);
         _gm.ChangeState(_gm.End);
         _gm.ChangeState(_gm.MainMenu);
+       
     }
 
     private void ToggleMute()
