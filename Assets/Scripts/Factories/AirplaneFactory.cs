@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public abstract class AirplaneFactory : ITypedFactory<IObject, AirplaneTypes>
+public abstract class AirplaneFactory : IFactory<IObject>
 {
     protected AirplaneSpawner _spawner;
     protected int _counter = 0;
