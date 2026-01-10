@@ -1,5 +1,4 @@
 using UnityEngine;
-using static UnityEditor.Experimental.AssetDatabaseExperimental.AssetDatabaseCounters;
 
 public abstract class AirplaneFactory : ITypedFactory<IObject, AirplaneTypes>
 {
