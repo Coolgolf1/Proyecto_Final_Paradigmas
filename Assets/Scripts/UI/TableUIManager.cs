@@ -68,11 +68,7 @@ public class TableUIManager : MonoBehaviour
             rows[(i / 2)].UpdateValues(v1, v2);
         }
 
-        //if (orderedTravellers.Count % 2 != 0)
-        //{
-        //    var kv1 = orderedTravellers[orderedTravellers.Count - 1];
-        //    rows[rows.Count - 1].UpdateValues(v1: $"{kv1.Key.Id.ToUpper()}: {kv1.Value}");
-        //}
+        
     }
 
     private void CreateRow()

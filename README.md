@@ -1,24 +1,57 @@
-# MiniAirways
-## Lógica de Juego
-- Compra de rutas para aeropuertos desbloqueados. ✅
-- Desbloqueo de aeropuertos progresivo según número de pasajeros transportados. ✅
-- Ritmo de aparición de pasajeros que incrementa (solo en aeropuertos desbloqueados). ✅
-- Definir lógica de final de juego: límite de pasajeros en aeropuerto. ✅
-- Mejorar aeropuertos para más pasajeros de límite. ✅
-- Evento navideño. ❌
-- Tormentas o retrasos de vuelos. ❌
-- Eventos que aumentan la demanda (surges). ✅
-- Guardar highscore persistente. ✅
-- Compra de rutas que cuesta más cada vez. ✅
-- Ajustar la dificultad (nerfeen las phases) ❌
+<div align="center">
 
-## UI
-- Mejorar interfaces de aeropuertos/vuelos. ❌
-- Ver aviones en cada aeropuerto y comprar aviones desde el aeropuerto (que reenvíe a tienda directamente). ✅
-- Hacer interfaz de final de juego. 🟠⚒️ (mejorar).
-- Status de aeropuertos (colores con thresholds para cada aeropuerto). ✅
-- Sistema de notificaciones ✅
+# Mini Airways
+</div>
+<p align="center">
+  <img src="logo_mini_airways.png" alt="Mini Airways Logo"/>
+</p>
 
-## Extra
-- Cooldown de aviones. ❌
-- Tener en cuenta runways de aeropuertos. ❌
+<p align="center">
+  <strong>Un videojuego de simulación y estrategia aérea desarrollado en Unity 6.2.</strong>
+</p>
+
+---
+
+## 📝 Descripción
+
+**Mini Airways** es un juego de gestión y estrategia inspirado en títulos como *Mini Motorways* y *Mini Metro*. En este desafío, asumes el rol de un gestor de tráfico aéreo cuyo objetivo principal es evitar el colapso de los aeropuertos ante una demanda de pasajeros en constante crecimiento.
+
+El proyecto ha sido desarrollado como parte de la asignatura de **Paradigmas y Técnicas de Programación** en el grado de **iMAT (ICAI)**.
+
+## 🎮 Jugabilidad y Mecánicas
+
+- **Gestión de Vuelos:** Compra rutas y despliega aviones de tres tamaños (pequeño, mediano y grande).
+- **Dificultad Progresiva:** La demanda y el número de aeropuertos crecen dinámicamente.
+- **Economía:** Gana monedas transportando pasajeros y reinviértelas en mejoras.
+- **Mejoras:** Aumenta la velocidad/capacidad de tus aviones y amplía la capacidad de los aeropuertos.
+
+
+## 🛠️ Aspectos Técnicos
+
+El desarrollo se apoya en conceptos avanzados de programación y algoritmos:
+
+- **Algoritmo de Dijkstra:** Implementado para el cálculo automático de las rutas de vuelo más eficientes.
+- **Patrones de Diseño:**
+  - **Singleton:** Gestión centralizada de sistemas y factorías.
+  - **Factoría:** Creación dinámica de diferentes tipos de aeronaves.
+  - **Flyweight:** Optimización de recursos mediante el uso eficiente de Prefabs.
+  - **Command:** Gestión desacoplada del sistema de entrada de usuario.
+  - **Observer:** Notificaciones en tiempo real para aterrizajes y estados del juego.
+  - **State:** Máquinas de estados para las distintas fases del juego.
+
+## 👥 Autores
+
+Este proyecto ha sido desarrollado por:
+
+- **Alberto Prieto González** - [@prialgon](https://github.com/prialgon)
+- **Álvaro Pérez Ortega** - [@Coolgolf1](https://github.com/Coolgolf1)  
+
+
+---
+
+<div align="center">
+
+Universidad Pontificia Comillas - ICAI
+
+3º de Grado en Ingeniería Matemática e Inteligencia Artificial
+</div>

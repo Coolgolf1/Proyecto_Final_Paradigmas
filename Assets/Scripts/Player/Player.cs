@@ -38,7 +38,6 @@ public static class Player
     public static void Restart()
     {
         Score = 0;
-        //Money = 1000000;
         UnlockedAirports.Clear();
     }
 

@@ -69,6 +69,7 @@ public class SpaceCamera : PlayerMovement
         GetComponent<AudioSource>().Stop();
         GetComponent<AudioSource>().clip = defaultMusic;
         GetComponent<AudioSource>().Play();
+        activatedCount = 0;
     }
 
     public void ActivateAlertMusic()

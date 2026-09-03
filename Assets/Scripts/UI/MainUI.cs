@@ -69,6 +69,7 @@ public class MainUI : MonoBehaviour
 
     private void OpenSettings()
     {
+        exitCanvas.SetActive(false);
         if (_info.playerCamera.GetComponent<PlayerMovement>() is SpaceCamera camera)
             camera.ComingFromGame = true;
         UIEvents.OnSettingsEnter?.Invoke();
@@ -106,8 +107,10 @@ public class MainUI : MonoBehaviour
 
     private void ExitToMenu()
     {
+        exitCanvas.SetActive(false);
         _gm.ChangeState(_gm.End);
         _gm.ChangeState(_gm.MainMenu);
+       
     }
 
     private void ToggleMute()
@@ -138,7 +141,7 @@ public class MainUI : MonoBehaviour
             _days = (int)Mathf.Floor((_elapsedTime + refTime.Item1 * 3600) / 86400);
             string hours = ((Mathf.Floor(_elapsedTime / 3600) + refTime.Item1) % 24).ToString("00");
             string minutes = ((Mathf.Floor(_elapsedTime / 60) + refTime.Item2) % 60).ToString("00");
-            //string seconds = ((Mathf.Floor(_elapsedTime % 60) + refTime.Item3) % 60).ToString("00");
+            
             timeCounter.text = $"{hours}:{minutes}";
             dayCounter.text = $"{_days}";
 
